@@ -1,0 +1,29 @@
+{
+  "name": "react-popover",
+  "version": "1.0.0",
+  "description": "A specification backed popover for react",
+  "main": "lib/index.js",
+  "scripts": {
+    "dev-build-html": "mkdir -p dev-build; cp examples/basic/index.html dev-build/index.html",
+    "start": "npm run dev-build-html && webpack-dev-server --progress --colors --hot",
+    "dev": "npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/littlebits/react-popover.git"
+  },
+  "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/littlebits/react-popover/issues"
+  },
+  "homepage": "https://github.com/littlebits/react-popover",
+  "devDependencies": {
+    "babel-core": "^4.7.16",
+    "babel-loader": "^4.2.0",
+    "react": "^0.13.1",
+    "react-hot-loader": "^1.2.4",
+    "webpack": "^1.7.3",
+    "webpack-dev-server": "^1.8.0"
+  }
+}
