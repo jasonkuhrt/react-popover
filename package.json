@@ -22,6 +22,7 @@
     "babel-core": "^4.7.16",
     "babel-loader": "^4.2.0",
     "react": "^0.13.1",
+    "react-draggable": "^0.4.0",
     "react-hot-loader": "^1.2.4",
     "webpack": "^1.7.3",
     "webpack-dev-server": "^1.8.0"

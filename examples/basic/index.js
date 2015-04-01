@@ -1,28 +1,43 @@
 import React, { DOM as e } from 'react'
 import Popover from '../../lib'
+import Draggable from 'react-draggable'
 
+
+
+Draggable = React.createFactory(Draggable)
 
 
 
 let tracer = React.createClass({
   name: 'tracer',
   getInitialState: function() {
-    return { popove: null }
+    return {
+      popove: null
+    }
   },
-  openPopover() {
+  togglePopover() {
     this.setState({
-      popover: Popover({
-        lockPoint: React.findDOMNode(this).firstElementChild
-      })
+      popover: false ? null : React.createElement(Popover, {
+        lockPoint: '.lockpoint'
+      }, this)
     })
   },
   render() {
     let popover = this.state.popover
 
-    let lockPoint = e.div({
-      style: lockPointStyle,
-      onClick: this.openPopover
-    }, '!')
+    let lockPoint = (
+      Draggable({
+        handle: '.handle',
+        onstart: console.log.bind(console)
+      },
+        e.div({
+          className: 'handle lockpoint',
+          style: lockPointStyle,
+          onClick: this.togglePopover
+        }
+        )
+      )
+    )
 
     return e.div({}, lockPoint, popover)
   }
@@ -40,7 +55,10 @@ let app = React.createClass({
 
 
 let lockPointStyle = {
+  '-webkit-user-select': 'none',
   width: 50,
+  position: 'relative',
+  cursor: 'pointer',
   height: 50,
   background: 'red'
 }
