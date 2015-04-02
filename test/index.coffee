@@ -12,7 +12,7 @@ Tracer = React.createFactory React.createClass
   togglePopover: ->
     this.setState
       popover: if false then null else React.createElement(Popover, {
-        lockPoint: '.lockpoint'
+        lockPoint: '.Lock'
       }, this)
 
   render: ->
@@ -30,7 +30,7 @@ Tracer = React.createFactory React.createClass
 
     lockPoint = (
       e.div
-        className: 'handle lockpoint'
+        className: 'handle Lock'
         style: style
         onClick: this.togglePopover
     )
@@ -39,15 +39,35 @@ Tracer = React.createFactory React.createClass
 
 
 
+renderTracer = (props, cb)->
+  if arguments.length is 1
+    cb = props
+    props = {}
+
+  renderApp Tracer(props), ->
+    lockEl = $ '.Lock'
+    sim.click lockEl, this
+    cb lockEl, $ '.Popover'
+
+
 
 describe 'react-popover', ->
 
   it 'is a rendered element', ->
-    renderApp Tracer(), ->
-      sim.click $ '.lockpoint', this
-      a.popoverExists()
+    renderTracer (lock, popover)->
+      a popover, 'Popover is rendered'
 
-  it 'should layout in the zone with the largest area'
+
+
+describe 'react-popover rendering', ->
+
+  it 'should layout in the zone with the largest area', ->
+    renderTracer { style: left: '80%' }, (l, p)->
+      p = measure p
+      l = measure l
+      a p.x2 < l.x, 'Popover is left of lock'
+      a p.y is l.y, 'Popover is equal y of lock'
+
   it 'body should autosize to dimensions of content'
   it 'body should not autosize beyond frame bounds'
 

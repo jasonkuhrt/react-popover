@@ -18,10 +18,19 @@ g.$ = (query, el)->
 g.renderApp = (reactElementFactory, cb)->
   React.render reactElementFactory, $('#app'), cb
 
-a.popoverExists = ->
-  a $ '.Popover'
+g.getPopoverPosition = ->
+  measure $ '.Popover'
 
-
+g.measure = (el)->
+  d = {
+    x: el.offsetLeft
+    y: el.offsetTop
+    w: el.offsetWidth
+    h: el.offsetHeight
+  }
+  d.x2 = d.x + d.w
+  d.y2 = d.y + d.h
+  d
 
 before ->
   el = document.createElement 'div'
