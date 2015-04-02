@@ -7,7 +7,7 @@ src_files:
 serve_files:
   - build/**/*.js
 
-before_tests: npm run build
+before_tests: npm run test-build
 
 launch_in_dev:
   - chrome

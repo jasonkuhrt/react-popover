@@ -6,8 +6,8 @@
   "scripts": {
     "build-html": "mkdir -p dev-build; cp examples/basic/index.html dev-build/index.html",
     "test": "testem",
-    "build": "npm run build-html && webpack",
-    "start": "npm run build-html && webpack-dev-server --colors --hot",
+    "test-build": "npm run build-html && webpack --config webpack.test.config.js",
+    "start": "npm run build-html && webpack-dev-server --colors --hot --config webpack.examples.config.js",
     "dev": "npm start"
   },
   "repository": {
