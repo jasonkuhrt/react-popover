@@ -1,6 +1,6 @@
 require './_globals.coffee'
 
-tracer = React.createClass
+Tracer = React.createClass
   name: 'tracer'
 
   getInitialState: ->
@@ -36,17 +36,17 @@ tracer = React.createClass
 
 describe 'react-popover', ->
   beforeEach ->
-    el = document.createElement('div')
+    el = document.createElement 'div'
     el.id = 'app'
-    document.body.appendChild(el)
+    document.body.appendChild el
 
   it 'renders a popover', ->
     # Open the popover
-    com = React.createElement tracer
+    tracer = React.createElement Tracer
     React.render tracer, $('#app'), ->
       sim.click $ '.lockpoint', this
       # Check the popover exists
-      a $('.Popover')
+      a $ '.Popover'
 
 
 
