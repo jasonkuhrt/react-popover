@@ -1,10 +1,13 @@
 require './_globals.coffee'
 
-Tracer = React.createClass
+Tracer = React.createFactory React.createClass
   name: 'tracer'
 
   getInitialState: ->
     popove: null
+
+  getInitialProps: ->
+    style: this.props.style || {}
 
   togglePopover: ->
     this.setState
@@ -15,38 +18,38 @@ Tracer = React.createClass
   render: ->
     popover = this.state.popover
 
+    defaultStyle =
+      position: 'absolute'
+      background: 'red'
+      top: 0
+      left: 0
+      width: 50
+      height: 50
+
+    style = Object.assign defaultStyle, this.props.style
+
     lockPoint = (
-      e.div({
+      e.div
         className: 'handle lockpoint'
-        style:
-          width: 50
-          height: 50
-          background: 'red'
+        style: style
         onClick: this.togglePopover
-      }
-      )
     )
 
-    e.div { id: 'test' }, lockPoint, popover
-
-
+    e.div {}, lockPoint, popover
 
 
 
 
 describe 'react-popover', ->
-  beforeEach ->
-    el = document.createElement 'div'
-    el.id = 'app'
-    document.body.appendChild el
 
-  it 'renders a popover', ->
-    # Open the popover
-    tracer = React.createElement Tracer
-    React.render tracer, $('#app'), ->
+  it 'is a rendered element', ->
+    renderApp Tracer(), ->
       sim.click $ '.lockpoint', this
-      # Check the popover exists
-      a $ '.Popover'
+      a.popoverExists()
+
+  it 'should layout in the zone with the largest area'
+  it 'body should autosize to dimensions of content'
+  it 'body should not autosize beyond frame bounds'
 
 
 
