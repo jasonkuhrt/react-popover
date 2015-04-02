@@ -1,0 +1,14 @@
+framework: mocha
+
+src_files:
+  - lib/**/*.js
+  - test/**/*.coffee
+
+serve_files:
+  - build/**/*.js
+
+before_tests: npm run build
+
+launch_in_dev:
+  - chrome
+  - safari

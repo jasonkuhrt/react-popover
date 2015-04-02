@@ -4,10 +4,8 @@ var path = require('path').join.bind(null, __dirname)
 
 /* Environment-dependent Settings */
 
-var outputDir = path('dev-build')
-var indexEntry = ['./examples/basic/index.js', 'webpack/hot/dev-server']
-var jsLoaders = ['react-hot', 'babel']
-var devtool = 'source-map'
+var outputDir = path('./build')
+var indexEntry = ['./test/index.coffee']
 
 /* Webpack Config Proper */
 
@@ -21,10 +19,11 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loaders: jsLoaders }
+      { test: /\.js$/, exclude: /node_modules/, loaders: ['babel'] },
+      { test: /\.coffee$/, exclude: /node_modules/, loaders: ['coffee'] }
     ]
   },
-  devtool: devtool,
+  devtool: 'source-map',
   devServer: {
     contentBase: outputDir
   }
