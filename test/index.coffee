@@ -39,15 +39,13 @@ Tracer = React.createFactory React.createClass
 
 
 
-renderTracer = (props, cb)->
-  if arguments.length is 1
-    cb = props
-    props = {}
-
-  renderApp Tracer(props), ->
-    lockEl = $ '.Lock'
-    sim.click lockEl, this
-    cb lockEl, $ '.Popover'
+renderTracer = (props = {})->
+  new Promise (resolve)->
+    renderApp Tracer(props), ->
+      lockEl = $ '.Lock'
+      sim.click lockEl, this
+      resolve [lockEl, $ '.Popover']
+  .tap -> Promise.delay 500
 
 
 
@@ -62,17 +60,33 @@ describe 'react-popover', ->
 describe 'react-popover rendering', ->
 
   it 'should layout in the zone with the largest area', ->
-    renderTracer { style: left: '80%' }, (l, p)->
-      p = measure p
-      l = measure l
-      a p.x2 < l.x, 'Popover is left of lock'
-      a p.y is l.y, 'Popover is equal y of lock'
+    renderTracer style: left: '90%', transform: 'translateX(-50%)'
+    .spread (l, p)->
+      pb = calcBounds p
+      lb = calcBounds l
+      if isLandscape()
+        console.log pb.y, lb.y
+        a pb.x2 < lb.x, 'Popover is left of lock'
+        a pb.y is lb.y, 'Popover is equal y of lock'
+      else
+        console.log pb.y, lb.y2
+        a pb.y > lb.y2, 'Popover is bottom of lock'
+        a (pb.x < lb.x2 and pb.x2 > lb.x2), 'Popover is cross-axes-centered of lock'
 
   it 'body should autosize to dimensions of content'
   it 'body should not autosize beyond frame bounds'
 
 
 
+
+
+
+
+calcOrientation = ->
+  if window.innerWidth > window.innerHeight then 'landscape' else 'portrait'
+
+isLandscape = ->
+  calcOrientation() is 'landscape'
 
 
 

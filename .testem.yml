@@ -12,3 +12,4 @@ before_tests: npm run build
 launch_in_dev:
   - chrome
   - safari
+  - firefox

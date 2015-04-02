@@ -1,4 +1,5 @@
 g = window
+g.Promise = require 'bluebird'
 g.React = require 'react/addons'
 g.a = require('chai').assert
 g.testUtils = React.addons.TestUtils
@@ -21,16 +22,7 @@ g.renderApp = (reactElementFactory, cb)->
 g.getPopoverPosition = ->
   measure $ '.Popover'
 
-g.measure = (el)->
-  d = {
-    x: el.offsetLeft
-    y: el.offsetTop
-    w: el.offsetWidth
-    h: el.offsetHeight
-  }
-  d.x2 = d.x + d.w
-  d.y2 = d.y + d.h
-  d
+Object.assign window, require '../lib/utils'
 
 before ->
   el = document.createElement 'div'
@@ -38,6 +30,6 @@ before ->
   document.body.appendChild el
 
 afterEach ->
-  $ '#app'
-  .innerHTML = ''
+  #$ '#app'
+  #.innerHTML = ''
 
