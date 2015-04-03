@@ -55,7 +55,7 @@ let app = React.createClass({
 
 
 let lockPointStyle = {
-  '-webkit-user-select': 'none',
+  'WebkitUserSelect': 'none',
   width: 50,
   position: 'relative',
   cursor: 'pointer',
