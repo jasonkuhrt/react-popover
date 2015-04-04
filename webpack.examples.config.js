@@ -2,13 +2,9 @@ var path = require('path').join.bind(null, __dirname)
 
 
 
-/* Environment-dependent Settings */
-
 var outputDir = path('dev-build')
 var indexEntry = ['./examples/basic/index.js', 'webpack/hot/dev-server']
 var jsLoaders = ['react-hot', 'babel']
-
-/* Webpack Config Proper */
 
 module.exports = {
   entry: {
@@ -20,7 +16,8 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loaders: jsLoaders }
+      { test: /\.js$/, exclude: /node_modules/, loaders: jsLoaders },
+      { test: /\.css$/, exclude: /node_modules/, loaders: ['style', 'css'] }
     ]
   },
   devtool: 'source-map',

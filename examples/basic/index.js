@@ -1,3 +1,4 @@
+import styles from './index.css'
 import React, { DOM as e } from 'react'
 import Popover from '../../lib'
 import Draggable from 'react-draggable'
@@ -17,7 +18,7 @@ let tracer = React.createClass({
   },
   togglePopover() {
     this.setState({
-      popover: false ? null : React.createElement(Popover, {
+      popover: React.createElement(Popover, {
         lockPoint: '.lockpoint'
       }, this)
     })
@@ -32,9 +33,9 @@ let tracer = React.createClass({
       },
         e.div({
           className: 'handle lockpoint',
-          style: lockPointStyle,
           onClick: this.togglePopover
-        }
+        },
+        'Drag Me'
         )
       )
     )
@@ -51,17 +52,6 @@ let app = React.createClass({
     return React.createElement(tracer)
   }
 })
-
-
-
-let lockPointStyle = {
-  'WebkitUserSelect': 'none',
-  width: 50,
-  position: 'relative',
-  cursor: 'pointer',
-  height: 50,
-  background: 'red'
-}
 
 
 

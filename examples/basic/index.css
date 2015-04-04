@@ -1,0 +1,25 @@
+html {
+  font-family: Helvetica, Arial
+}
+
+.lockpoint {
+  -webkit-user-select: none;
+  padding: 0.5rem;
+  position: relative;
+  cursor: move;
+  width: 50px;
+  height: 50px;
+  background: red;
+  color: hsla(0, 0%, 0%, 0.34);
+  text-transform: uppercase;
+}
+
+.Popover-body {
+  background: hsl(0, 0%, 27%);
+  color: white;
+  border-radius: 0.3rem;
+}
+
+.Popover-tipShape {
+  fill: hsl(0, 0%, 27%)
+}
