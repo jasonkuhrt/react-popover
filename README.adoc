@@ -1,0 +1,24 @@
+# react-popover
+:toc: macro
+
+A specification backed popover for react
+
+
+toc::[]
+
+
+## Installation
+
+----
+npm install react-popover
+----
+
+
+## Examples
+
+The `examples` folder contains basic applications of this component. To try them locally run `npm start`.
+
+
+## API
+
+TODO
