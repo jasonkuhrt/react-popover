@@ -46,17 +46,5 @@ let tracer = React.createClass({
 
 
 
-let app = React.createClass({
-  name: 'basic-demo',
-  render() {
-    return React.createElement(tracer)
-  }
-})
-
-
-
-document.onreadystatechange = function () {
-  if (document.readyState === 'complete') {
-    React.render(React.createElement(app), window.document.body)
-  }
-}
+window.React = React
+window.Main = tracer

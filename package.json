@@ -4,10 +4,10 @@
   "description": "A specification backed popover for react",
   "main": "lib/index.js",
   "scripts": {
-    "build-html": "mkdir -p dev-build; cp examples/basic/index.html dev-build/index.html",
     "test": "testem",
-    "test-build": "npm run build-html && webpack --config webpack.test.config.js",
-    "start": "npm run build-html && webpack-dev-server --colors --hot --config webpack.examples.config.js",
+    "build-test": "webpack --config webpack.test.config.js",
+    "start": "webpack-dev-server --colors --hot --config webpack.examples.config.js",
+    "build-examples": "webpack --colors --config webpack.examples.config.js",
     "dev": "npm start"
   },
   "repository": {
@@ -24,6 +24,7 @@
     "babel-core": "^4.7.16",
     "babel-loader": "^4.2.0",
     "bluebird": "^2.9.24",
+    "bootstrap-webpack-plugin": "^0.2.0",
     "chai": "^2.2.0",
     "coffee-loader": "^0.7.2",
     "coffee-script": "^1.9.1",
@@ -31,9 +32,9 @@
     "react": "^0.13.1",
     "react-draggable": "^0.4.0",
     "react-hot-loader": "^1.2.4",
+    "style-loader": "^0.9.0",
     "webpack": "^1.7.3",
-    "webpack-dev-server": "^1.8.0",
-    "style-loader": "^0.9.0"
+    "webpack-dev-server": "^1.8.0"
   },
   "dependencies": {
     "debug": "^2.1.3",

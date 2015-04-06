@@ -1,8 +1,9 @@
+var Bootstrap = require('bootstrap-webpack-plugin')
 var path = require('path').join.bind(null, __dirname)
 
 
 
-var outputDir = path('dev-build')
+var outputDir = path('build')
 var indexEntry = ['./examples/basic/index.js', 'webpack/hot/dev-server']
 var jsLoaders = ['react-hot', 'babel']
 
@@ -23,5 +24,8 @@ module.exports = {
   devtool: 'source-map',
   devServer: {
     contentBase: outputDir
-  }
+  },
+  plugins: [Bootstrap({
+    template: 'examples/basic/index.html'
+  })]
 }
