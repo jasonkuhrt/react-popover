@@ -25,7 +25,5 @@ module.exports = {
   devServer: {
     contentBase: outputDir
   },
-  plugins: [Bootstrap({
-    template: 'examples/basic/index.html'
-  })]
+  plugins: [Bootstrap({})]
 }
