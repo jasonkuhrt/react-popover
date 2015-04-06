@@ -1,7 +1,7 @@
 # react-popover
 :toc: macro
 
-A specification backed popover for react
+A specification backed popover for react. See [demo](https://littlebits.github.io/react-popover/build).
 
 
 toc::[]
