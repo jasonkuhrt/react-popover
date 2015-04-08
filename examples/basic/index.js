@@ -5,6 +5,7 @@ import Draggable from 'react-draggable'
 
 
 
+Popover = React.createFactory(Popover)
 Draggable = React.createFactory(Draggable)
 
 
@@ -13,34 +14,35 @@ let tracer = React.createClass({
   name: 'tracer',
   getInitialState: function() {
     return {
-      popove: null
+      popoverIsOpen: false
     }
   },
   togglePopover() {
     this.setState({
-      popover: React.createElement(Popover, {
-        lockPoint: '.lockpoint'
-      }, this)
+      popoverIsOpen: !this.state.popoverIsOpen
     })
   },
   render() {
-    let popover = this.state.popover
-
     let lockPoint = (
       Draggable({
-        handle: '.handle',
-        onstart: console.log.bind(console)
+        handle: '.lockpoint'
       },
         e.div({
-          className: 'handle lockpoint',
-          onClick: this.togglePopover
+          className: 'lockpoint',
+          onDoubleClick: this.togglePopover
         },
         'Drag Me'
         )
       )
     )
 
-    return e.div({}, lockPoint, popover)
+    return (
+      Popover({
+          isOpen: this.state.popoverIsOpen
+        },
+        lockPoint
+      )
+    )
   }
 })
 
