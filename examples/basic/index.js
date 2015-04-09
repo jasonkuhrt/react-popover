@@ -38,7 +38,11 @@ let tracer = React.createClass({
 
     return (
       Popover({
-          isOpen: this.state.popoverIsOpen
+          isOpen: this.state.popoverIsOpen,
+          body: [
+            e.h1({}, 'Popover Title'),
+            e.div({}, 'Popover contents.')
+          ]
         },
         lockPoint
       )
