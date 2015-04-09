@@ -7,7 +7,7 @@ src_files:
 serve_files:
   - build/**/*.js
 
-before_tests: npm run build-test
+before_tests: ./node_modules/.bin/webpack --config webpack.test.config.js
 
 launch_in_dev:
   - chrome
