@@ -21,4 +21,13 @@ The `examples` folder contains basic applications of this component. To try them
 
 ## API
 
-TODO
+#### `export default` `Popover(props, target)`
+
+##### `props: {...}`
+
+- Standard props: `className`, `style`
+- `body`: Content for `popover` that becomes children of `Popover-body`. Therefore can be a single element or an array of elements.
+
+##### `target : React Element`
+
+- The React Element that this popover will orient itself around. `target` rendering tree is unaffected. `Popover` will simply become its `owner`.
