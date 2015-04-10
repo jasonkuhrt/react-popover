@@ -23,12 +23,12 @@ let tracer = React.createClass({
     })
   },
   render() {
-    let lockPoint = (
+    let target = (
       Draggable({
-        handle: '.lockpoint'
+        handle: '.Target'
       },
         e.div({
-          className: 'lockpoint',
+          className: 'Target',
           onDoubleClick: this.togglePopover
         },
         'Drag Me'
@@ -44,7 +44,7 @@ let tracer = React.createClass({
             e.div({}, 'Popover contents.')
           ]
         },
-        lockPoint
+        target
       )
     )
   }

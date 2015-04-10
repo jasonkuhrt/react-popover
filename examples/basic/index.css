@@ -2,7 +2,7 @@ html {
   font-family: Helvetica, Arial
 }
 
-.lockpoint {
+.Target {
   -webkit-user-select: none;
   padding: 0.5rem;
   position: relative;

@@ -4,20 +4,16 @@ Tracer = React.createFactory React.createClass
   name: 'tracer'
 
   getInitialState: ->
-    popove: null
+    isOpen: false
 
   getInitialProps: ->
     style: this.props.style || {}
 
   togglePopover: ->
     this.setState
-      popover: if false then null else React.createElement(Popover, {
-        lockPoint: '.Lock'
-      }, this)
+      isOpen: !this.state.isOpen
 
   render: ->
-    popover = this.state.popover
-
     defaultStyle =
       position: 'absolute'
       background: 'red'
@@ -28,23 +24,25 @@ Tracer = React.createFactory React.createClass
 
     style = Object.assign defaultStyle, this.props.style
 
-    lockPoint = (
+    target = (
       e.div
-        className: 'handle Lock'
+        className: 'handle Target'
         style: style
         onClick: this.togglePopover
     )
 
-    e.div {}, lockPoint, popover
+    React.createElement(Popover, {
+      isOpen: this.props.isOpen
+    }, target)
 
 
 
 renderTracer = (props = {})->
   new Promise (resolve)->
     renderApp Tracer(props), ->
-      lockEl = $ '.Lock'
-      sim.click lockEl, this
-      resolve [lockEl, $ '.Popover']
+      targetEl = $ '.Target'
+      sim.click targetEl, this
+      resolve [targetEl, $ '.Popover']
   .tap -> Promise.delay 500
 
 
@@ -52,7 +50,7 @@ renderTracer = (props = {})->
 describe 'react-popover', ->
 
   it 'is a rendered element', ->
-    renderTracer (lock, popover)->
+    renderTracer (target, popover)->
       a popover, 'Popover is rendered'
 
 
@@ -66,12 +64,12 @@ describe 'react-popover rendering', ->
       lb = calcBounds l
       if isLandscape()
         console.log pb.y, lb.y
-        a pb.x2 < lb.x, 'Popover is left of lock'
-        a pb.y is lb.y, 'Popover is equal y of lock'
+        a pb.x2 < lb.x, 'Popover is left of target'
+        a pb.y is lb.y, 'Popover is equal y of target'
       else
         console.log pb.y, lb.y2
-        a pb.y > lb.y2, 'Popover is bottom of lock'
-        a (pb.x < lb.x2 and pb.x2 > lb.x2), 'Popover is cross-axes-centered of lock'
+        a pb.y > lb.y2, 'Popover is bottom of target'
+        a (pb.x < lb.x2 and pb.x2 > lb.x2), 'Popover is cross-axes-centered of target'
 
   it 'body should autosize to dimensions of content'
   it 'body should not autosize beyond frame bounds'
