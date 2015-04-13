@@ -23,11 +23,11 @@ The `examples` folder contains basic applications of this component. To try them
 
 #### `export default` `Popover(props, target)`
 
-##### `props: {...}`
+##### `props : {...}`
 
-- Standard props: `className`, `style`
 - `body`: Content for `popover` that becomes children of `Popover-body`. Therefore can be a single element or an array of elements.
 - `isOpen`: Determines Whether or not the popover is rendered.
+- `className`, `style`
 
 ##### `target : React Element`
 
