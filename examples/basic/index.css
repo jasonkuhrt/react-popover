@@ -30,25 +30,3 @@ html {
 .Popover-tipShape {
   fill: hsl(0, 0%, 27%)
 }
-
-.Popover {
-  opacity: 0;
-}
-
-.Popover.is-leave,
-.Popover.is-enter {
-  transition-property: top, left, opacity, transform;
-  transition-duration: 500ms;
-  transition-timing-function: cubic-bezier(0.230, 1.000, 0.320, 1.000);
-  
-}
-
-.Popover.is-enter-start {
-}
-
-.Popover.is-enter-end {
-    opacity: 1;
-}
-.Popover.is-leave-start-end {
-  opactiy: 0;
-}
