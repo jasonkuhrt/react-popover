@@ -28,10 +28,14 @@ let tracer = React.createClass({
         handle: '.Target'
       },
         e.div({
-          className: 'Target',
+          className: ['Target', `is-${['open', 'closed'][Number(this.state.popoverIsOpen)]}`].join(' '),
           onDoubleClick: this.togglePopover
         },
-        'Drag Me'
+        'Drag ',
+        e.br(),
+        'OR',
+        e.br(),
+        'Double Click'
         )
       )
     )
