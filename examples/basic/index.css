@@ -1,23 +1,27 @@
 html {
-  font-family: Helvetica, Arial;
+  font-family: Helvetica, Arial, Sans-Serif;
   height: 200rem;
 }
-
+/* Styles that help visualize the Popover `target` for this demo. */
 .Target {
   -webkit-user-select: none;
   padding: 0.5rem;
   position: relative;
   cursor: move;
-  width: 5rem;
-  height: 4rem;
+  display: inline-block;
   background: red;
   color: hsla(0, 0%, 0%, 0.34);
   text-transform: uppercase;
+  white-space: pre-wrap;
 }
 
 .Target.is-open {
-    background: hsl(210, 100%, 67%);
+  background: hsl(210, 100%, 67%);
 }
+
+
+
+/* Styles that give the Popover a look-and-feel. */
 
 .Popover-body {
   display: inline-flex;

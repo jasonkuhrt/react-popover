@@ -10,8 +10,8 @@ Draggable = React.createFactory(Draggable)
 
 
 
-let tracer = React.createClass({
-  name: 'tracer',
+let Demo = React.createClass({
+  name: 'demo',
   getInitialState: function() {
     return {
       popoverIsOpen: false
@@ -23,38 +23,38 @@ let tracer = React.createClass({
     })
   },
   render() {
+    let targetProps = {
+      className: ['Target', `is-${['open', 'closed'][Number(this.state.popoverIsOpen)]}`].join(' '),
+      onDoubleClick: this.togglePopover
+    }
+
+    let draggableProps = {
+      handle: '.Target'
+    }
+
     let target = (
-      Draggable({
-        handle: '.Target'
-      },
-        e.div({
-          className: ['Target', `is-${['open', 'closed'][Number(this.state.popoverIsOpen)]}`].join(' '),
-          onDoubleClick: this.togglePopover
-        },
-        'Drag ',
-        e.br(),
-        'OR',
-        e.br(),
-        'Double Click'
+      Draggable(draggableProps,
+        e.div(targetProps,
+          'Drag \nOR\nDouble\nClick'
         )
       )
     )
 
-    return (
-      Popover({
-          isOpen: this.state.popoverIsOpen,
-          body: [
-            e.h1({}, 'Popover Title'),
-            e.div({}, 'Popover contents.')
-          ]
-        },
-        target
-      )
-    )
+    let popoverProps = {
+      isOpen: this.state.popoverIsOpen,
+      body: [
+        e.h1({}, 'Popover Title'),
+        e.div({}, 'Popover contents.')
+      ]
+    }
+
+    let popover = Popover(popoverProps, target)
+
+    return popover
   }
 })
 
 
 
 window.React = React
-window.Main = tracer
+window.Main = Demo

@@ -25,10 +25,10 @@ The `examples` folder contains basic applications of this component. To try them
 
 ##### `props : {...}`
 
-- `body`: Content for `popover` that becomes children of `Popover-body`. Therefore can be a single element or an array of elements.
-- `isOpen`: Determines Whether or not the popover is rendered.
-- `className`, `style`
+- `body : Node || Array Node`: The `popover` content. Content is rooted (becomes children of) `.Popover-body` and thus `body` can be a single `node` _or an array of `nodes`_.
+- `isOpen : Boolean`: Determines Whether or not the popover is rendered.
+- Plus support for standard props...: `className`, `style`
 
 ##### `target : React Element`
 
-- The React Element that this popover will orient itself around. `target` rendering tree is unaffected. `Popover` will simply become its `owner`.
+- The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
