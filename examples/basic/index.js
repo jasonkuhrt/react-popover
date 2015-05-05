@@ -17,9 +17,10 @@ let Demo = React.createClass({
       popoverIsOpen: false
     }
   },
-  togglePopover() {
+  togglePopover(toState) {
+    toState = typeof toState === 'boolean' ? toState : !this.state.popoverIsOpen
     this.setState({
-      popoverIsOpen: !this.state.popoverIsOpen
+      popoverIsOpen: toState
     })
   },
   render() {
@@ -42,6 +43,7 @@ let Demo = React.createClass({
 
     let popoverProps = {
       isOpen: this.state.popoverIsOpen,
+      onOuterAction: this.togglePopover.bind(null, false),
       body: [
         e.h1({}, 'Popover Title'),
         e.div({}, 'Popover contents.')

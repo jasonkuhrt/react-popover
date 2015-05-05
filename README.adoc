@@ -27,6 +27,7 @@ The `examples` folder contains basic applications of this component. To try them
 
 - `body : Node || Array Node`: The `popover` content. Content is rooted (becomes children of) `.Popover-body` and thus `body` can be a single `node` _or an array of `nodes`_.
 - `isOpen : Boolean`: Determines Whether or not the popover is rendered.
+- `onOuterAction : Function` : A callback function executed very time the user does an action (`mousedown` or `touchstart`) that is outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external action.
 - Plus support for standard props...: `className`, `style`
 
 ##### `target : React Element`
