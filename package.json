@@ -2,7 +2,7 @@
   "license": "MIT",
   "scripts": {
     "build-examples": "webpack --colors --config webpack.examples.config.js",
-    "build": "mkdir -p build && rm -r build && mkdir build && babel --out-dir build lib",
+    "build": "rm -rf build && babel --out-dir build lib",
     "dev": "npm start",
     "test": "testem",
     "start": "webpack-dev-server --colors --hot --config webpack.examples.config.js",
