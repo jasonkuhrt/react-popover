@@ -2,6 +2,7 @@
   "license": "MIT",
   "scripts": {
     "build-examples": "webpack --colors --config webpack.examples.config.js",
+    "update-demo": "git checkout gh-pages && git merge master --no-edit && npm run build-examples && git commit -am 'Update demo' && gp && git checkout master",
     "build": "rm -rf build && babel --out-dir build lib",
     "dev": "npm start",
     "test": "testem",
