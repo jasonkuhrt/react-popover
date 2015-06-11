@@ -27,6 +27,11 @@ The `examples` folder contains basic applications of this component. To try them
 
 - `body : Node || Array Node`: The `popover` content. Content is rooted (becomes children of) `.Popover-body` and thus `body` can be a single `node` _or an array of `nodes`_.
 - `isOpen : Boolean`: Determines Whether or not the popover is rendered.
+- `preferPlace : String | Null`: Sets a *preference* of where to position the Popover. Only useful to specify placement in case of multiple available fits. Defaults to `null`. Valid values are:
+-- `above | right | bottom | left` Prefer an explicit side.
+-- `row | column` Prefer an orientation.
+-- `start | end` Prefer an order.
+-- `null` No preference, automatic resolution. This is the default.
 - `onOuterAction : Function` : A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
 - Plus support for standard props...: `className`, `style`
 
