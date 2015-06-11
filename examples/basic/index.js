@@ -19,7 +19,8 @@ let Demo = React.createClass({
   getInitialState: function() {
     return {
       popoverIsOpen: false,
-      preferPlace: null
+      preferPlace: null,
+      place: null
     }
   },
   togglePopover(toState) {
@@ -31,6 +32,10 @@ let Demo = React.createClass({
   changePreferPlace(event) {
     let preferPlace = event.target.value === 'null' ? null : event.target.value
     this.setState({ preferPlace })
+  },
+  changePlace(event) {
+    let place = event.target.value === 'null' ? null : event.target.value
+    this.setState({ place })
   },
   render() {
     debug('render')
@@ -55,6 +60,7 @@ let Demo = React.createClass({
     let popoverProps = {
       isOpen: this.state.popoverIsOpen,
       preferPlace: this.state.preferPlace,
+      place: this.state.place,
       onOuterAction: this.togglePopover.bind(null, false),
       body: [
         E.h1({}, 'Popover Title'),
@@ -67,7 +73,12 @@ let Demo = React.createClass({
         E.label({ htmlFor: 'preferPlace' }, 'preferPlace '),
         E.select({ id: 'preferPlace', onChange: this.changePreferPlace },
           createPreferPlaceOptions(Layout)
+        ),
+        E.label({ htmlFor: 'place' }, 'place '),
+        E.select({ id: 'place', onChange: this.changePlace },
+          createPreferPlaceOptions(Layout)
         )
+
       )
     )
 
@@ -78,7 +89,6 @@ let Demo = React.createClass({
     return app
   }
 })
-
 
 
 let createOption = (type) => (

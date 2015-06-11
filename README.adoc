@@ -32,12 +32,15 @@ The `popover` content. Content is rooted (becomes children of) `.Popover-body` a
 Determines Whether or not the popover is rendered.
 
 ##### `props.preferPlace : String | Null`
-Sets a *preference* of where to position the Popover. Only useful to specify placement in case of multiple available fits. Defaults to `null`. Valid values are:
+Sets a ***preference*** of where to position the Popover. Only useful to specify placement in case of multiple available fits. Defaults to `null`. Valid values are:
 
 * `above | right | bottom | left` Prefer an explicit side.
 * `row | column` Prefer an orientation.
 * `start | end` Prefer an order.
 * `null` No preference, automatic resolution. This is the default.
+
+##### `props.place : String | Null`
+Like `preferPlace` except that the given place is a ***requirement***. The resolver becomes scoped or disabled. It is scoped if the `place` is an `orientation` or `order` but disabled if it is a `side`. For example `place: "row"` scopes the resolver to `above` or `below` placement but `place: "above"` removes any need for the resolver.
 
 ##### `props.onOuterAction : Function`
 A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
