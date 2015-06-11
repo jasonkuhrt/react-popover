@@ -80,9 +80,15 @@ let Demo = React.createClass({
 })
 
 
-let createOption = (type) => {
-  return E.option({ key: type, value: type }, type)
-}
+
+let createOption = (type) => (
+  E.option({
+      key: type,
+      value: type,
+      children: type
+    }
+  )
+)
 
 let createPreferPlaceOptions = R.compose(
   R.prepend([E.option({ key: 'null', value: null }, 'null')]),
