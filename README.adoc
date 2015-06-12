@@ -46,6 +46,10 @@ Like `preferPlace` except that the given place is a ***requirement***. The resol
 A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
 * Plus support for standard props...: `className`, `style`
 
+##### `props.refreshIntervalMs : Number | Falsey`
+The polling speed (AKA time between each poll) in milliseconds for checking if a layout refresh is required. This polling is required because it is the only robust way to track the position of a target in the DOM. Defaults to `200`. Set to a falsey value to disable.
+
+
 ##### `target : React Element`
 
 - The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
