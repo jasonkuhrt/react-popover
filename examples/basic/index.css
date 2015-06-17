@@ -5,18 +5,32 @@ html {
 /* Styles that help visualize the Popover `target` for this demo. */
 .Target {
   -webkit-user-select: none;
-  padding: 0.5rem;
   position: relative;
-  cursor: move;
   display: inline-block;
-  background: red;
-  color: hsla(0, 0%, 0%, 0.34);
-  text-transform: uppercase;
+  color: hsla(0, 0%, 0%, 0.45);
+  color: white;
   white-space: pre-wrap;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 0.2rem;
+  overflow: hidden;
 }
 
-.Target.is-open {
-  background: hsl(210, 100%, 67%);
+.Target-Move {
+  padding: 1rem;
+  cursor: move;
+  border-bottom: 1px solid white;
+  background: hsl(173, 69%, 48%);
+}
+
+.Target-Toggle {
+  display: block;
+  padding: 1rem;
+  cursor: pointer;
+  background: hsl(346, 62%, 55%);
+}
+.Target.is-open .Target-Toggle {
+  background: hsl(346, 80%, 50%);
 }
 
 

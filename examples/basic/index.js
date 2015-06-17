@@ -1,15 +1,18 @@
 import Debug from 'debug'
 import R from 'ramda'
-import Draggable from 'react-draggable'
-import styles from './index.css'
 import React, { DOM as E } from 'react'
+import Draggable from 'react-draggable'
 import Popover from '../../lib'
+import styles from './index.css'
+import Tappable from 'react-tappable'
 import * as Layout from '../../lib/layout'
 
 
 
 let debug = Debug('demo')
+React.initializeTouchEvents(true)
 Popover = React.createFactory(Popover)
+Tappable = React.createFactory(Tappable)
 Draggable = React.createFactory(Draggable)
 
 
@@ -24,6 +27,7 @@ let Demo = React.createClass({
     }
   },
   togglePopover(toState) {
+    debug('togglePopover')
     toState = typeof toState === 'boolean' ? toState : !this.state.popoverIsOpen
     this.setState({
       popoverIsOpen: toState
@@ -41,20 +45,29 @@ let Demo = React.createClass({
     debug('render')
 
     let targetProps = {
-      className: ['Target', `is-${['open', 'closed'][Number(this.state.popoverIsOpen)]}`].join(' '),
-      onDoubleClick: this.togglePopover
+      className: ['Target', `is-${['closed', 'open'][Number(this.state.popoverIsOpen)]}`].join(' ')
+    }
+
+    let targetToggleProps = {
+      className: 'Target-Toggle',
+      onTap: this.togglePopover
+    }
+
+    let targetMoveProps = {
+      className: 'Target-Move'
     }
 
     let draggableProps = {
-      handle: '.Target'
+      handle: '.Target-Move'
     }
 
     let target = (
-      Draggable(draggableProps,
-        E.div(targetProps,
-          'Drag \nOR\nDouble\nClick'
+        Draggable(draggableProps,
+          E.div(targetProps,
+            E.div(targetMoveProps, 'Move'),
+            Tappable(targetToggleProps, 'Toggle')
+          )
         )
-      )
     )
 
     let popoverProps = {
