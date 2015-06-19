@@ -1,7 +1,7 @@
 # react-popover
 :toc: macro
 
-A specification backed popover for react. link:https://littlebits.github.io/react-popover/build[Live demo].
+A specification backed popover for react. https://littlebits.github.io/react-popover/build[Live demo].
 
 
 toc::[]
@@ -14,9 +14,9 @@ npm install react-popover
 ----
 
 
-## Examples
+## Demo
 
-The `examples` folder contains basic applications of this component. To try them locally run `npm start`.
+There is a demo that you can see https://littlebits.github.io/react-popover/build[here]. To run it locally do `npm start`.
 
 
 ## API
