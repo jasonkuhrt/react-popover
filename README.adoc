@@ -1,16 +1,18 @@
-# react-popover
 :toc: macro
+:toc-title:
+:toclevels: 99
 
+# react-popover
 A specification backed popover for react. https://littlebits.github.io/react-popover/build[Live demo].
 
-
 toc::[]
+
 
 
 ## Installation
 
 ----
-npm install react-popover
+npm install --save react-popover
 ----
 
 
@@ -21,35 +23,48 @@ There is a demo that you can see https://littlebits.github.io/react-popover/buil
 
 ## API
 
-##### `export default` `Popover(props, target)`
+### `export default` `Popover(props, target)`
 
-##### `props : {...}`
+#### `props :: {...}`
 
-##### `props.body : Node | Array Node`
+---
+
+##### `body :: Node | Array Node`
 The `popover` content. Content is rooted (becomes children of) `.Popover-body` and thus `body` can be a single `node` _or an array of `nodes`_.
 
-##### `props.isOpen : Boolean`
+---
+
+##### `isOpen :: Boolean`
 Determines Whether or not the popover is rendered.
 
-##### `props.preferPlace : String | Null`
+---
+
+##### `preferPlace :: Enum String | Null`
 Sets a ***preference*** of where to position the Popover. Only useful to specify placement in case of multiple available fits. Defaults to `null`. Valid values are:
 
-* `above | right | below | left` Prefer an explicit side.
-* `row | column` Prefer an orientation.
-* `start | end` Prefer an order.
-* `null` No preference, automatic resolution. This is the default.
+`above | right | below | left` :: Prefer an explicit side.
+`row | column` :: Prefer an orientation.
+`start | end` :: Prefer an order.
+`null` :: No preference, automatic resolution. This is the default.
 
-##### `props.place : String | Null`
+---
+
+##### `place :: String | Null`
 Like `preferPlace` except that the given place is a ***requirement***. The resolver becomes scoped or disabled. It is scoped if the `place` is an `orientation` or `order` but disabled if it is a `side`. For example `place: "row"` scopes the resolver to `above` or `below` placement but `place: "above"` removes any need for the resolver.
 
-##### `props.onOuterAction : Function`
+---
+
+##### `onOuterAction :: Function`
 A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
 * Plus support for standard props...: `className`, `style`
 
-##### `props.refreshIntervalMs : Number | Falsey`
+---
+
+##### `refreshIntervalMs :: Number | Falsey`
 The polling speed (AKA time between each poll) in milliseconds for checking if a layout refresh is required. This polling is required because it is the only robust way to track the position of a target in the DOM. Defaults to `200`. Set to a falsey value to disable.
 
+---
 
-##### `target : React Element`
+#### `target :: React Element`
 
 - The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
