@@ -34,7 +34,7 @@ Determines Whether or not the popover is rendered.
 ##### `props.preferPlace : String | Null`
 Sets a ***preference*** of where to position the Popover. Only useful to specify placement in case of multiple available fits. Defaults to `null`. Valid values are:
 
-* `above | right | bottom | left` Prefer an explicit side.
+* `above | right | below | left` Prefer an explicit side.
 * `row | column` Prefer an orientation.
 * `start | end` Prefer an order.
 * `null` No preference, automatic resolution. This is the default.
