@@ -8,7 +8,7 @@
     "test": "testem",
     "start": "webpack-dev-server --colors --hot --config webpack.examples.config.js",
     "prepublish": "npm run build",
-    "postversion":"git push && git push --tags && npm publish"
+    "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
     "css-vendor": "^0.2.3",
@@ -23,7 +23,7 @@
   "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
   "name": "react-popover",
   "homepage": "https://github.com/littlebits/react-popover",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "main": "build/index.js",
   "description": "A specification backed popover for react",
   "devDependencies": {
