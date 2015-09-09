@@ -18,7 +18,7 @@ npm install --save react-popover
 
 ## Demo
 
-There is a demo that you can see https://littlebits.github.io/react-popover/build[here]. To run it locally do `npm start`.
+There is a demo that you can see https://littlebits.github.io/react-popover/build[here]. To run it locally do `npm start`. If you do not see logs in the console refresh the browser once (https://github.com/littlebits/react-popover/issues/35).
 
 
 ## API
