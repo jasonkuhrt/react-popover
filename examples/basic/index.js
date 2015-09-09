@@ -9,11 +9,13 @@ import * as Layout from '../../lib/layout'
 
 
 
-React.initializeTouchEvents(true)
 let debug = Debug('demo')
 let Popover = React.createFactory(PopoverClass)
 let Tappable = React.createFactory(TappableClass)
 let Draggable = React.createFactory(DraggableClass)
+
+React.initializeTouchEvents(true)
+Debug.enable('react-popover,demo')
 
 let createOption = (type) => (
   E.option({
