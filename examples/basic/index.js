@@ -1,21 +1,36 @@
+import './index.css'
 import Debug from 'debug'
 import R from 'ramda'
 import React, { DOM as E } from 'react'
-import Draggable from 'react-draggable'
-import Popover from '../../lib'
-import styles from './index.css'
-import Tappable from 'react-tappable'
+import DraggableClass from 'react-draggable'
+import PopoverClass from '../../lib'
+import TappableClass from 'react-tappable'
 import * as Layout from '../../lib/layout'
 
 
 
-let debug = Debug('demo')
 React.initializeTouchEvents(true)
-Popover = React.createFactory(Popover)
-Tappable = React.createFactory(Tappable)
-Draggable = React.createFactory(Draggable)
+let debug = Debug('demo')
+let Popover = React.createFactory(PopoverClass)
+let Tappable = React.createFactory(TappableClass)
+let Draggable = React.createFactory(DraggableClass)
 
+let createOption = (type) => (
+  E.option({
+      key: type,
+      value: type,
+      children: type
+    }
+  )
+)
 
+let createPreferPlaceOptions = R.compose(
+  R.prepend([E.option({ key: 'null', value: null }, 'null')]),
+  R.map(createOption),
+  R.flatten,
+  R.map(R.path(['values'])),
+  R.path(['types'])
+)
 
 let Demo = React.createClass({
   name: 'demo',
@@ -45,7 +60,10 @@ let Demo = React.createClass({
     debug('render')
 
     let targetProps = {
-      className: ['Target', `is-${['closed', 'open'][Number(this.state.popoverIsOpen)]}`].join(' ')
+      className: [
+        'Target',
+        `is-${[ 'closed', 'open' ][Number(this.state.popoverIsOpen)]}`
+      ].join(' ')
     }
 
     let targetToggleProps = {
@@ -102,24 +120,6 @@ let Demo = React.createClass({
     return app
   }
 })
-
-
-let createOption = (type) => (
-  E.option({
-      key: type,
-      value: type,
-      children: type
-    }
-  )
-)
-
-let createPreferPlaceOptions = R.compose(
-  R.prepend([E.option({ key: 'null', value: null }, 'null')]),
-  R.map(createOption),
-  R.flatten,
-  R.map(R.path(['values'])),
-  R.path(['types'])
-)
 
 
 
