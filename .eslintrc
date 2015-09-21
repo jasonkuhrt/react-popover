@@ -1,1 +1,3 @@
-extends: littlebits
+parser: babel-eslint
+extends:
+  - littlebits
