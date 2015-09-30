@@ -23,7 +23,7 @@
   "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
   "name": "react-popover-fork",
   "homepage": "https://github.com/clayne11/react-popover",
-  "version": "0.3.8",
+  "version": "0.3.9",
   "main": "build/index.js",
   "description": "A specification backed popover for react",
   "devDependencies": {
