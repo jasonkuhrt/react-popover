@@ -11,7 +11,7 @@
     "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
-    "css-vendor": "^0.2.3",
+    "css-vendor": "^0.2.5",
     "debug": "^2.1.3",
     "lodash.throttle": "^3.0.3",
     "object.assign": "^4.0.1"
