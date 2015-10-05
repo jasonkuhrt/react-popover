@@ -37,9 +37,16 @@ html {
 
 /* Styles that give the Popover a look-and-feel. */
 
+.popover {
+  display:-ms-inline-flexbox;
+  -ms-flex-direction: column;
+}
+
 .Popover-body {
   display: inline-flex;
+  display: -ms-inline-flexbox;
   flex-direction: column;
+  -ms-flex-direction: column;
   padding: 4rem;
   background: hsl(0, 0%, 27%);
   color: white;
