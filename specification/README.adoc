@@ -37,7 +37,7 @@
 .. A `zone` preference MAY be given so that if multiple `zone` areas can wholly fit the `popover` one can be chosen over others even if it is of a lesser area.
 
 . The `popover` MUST have a **tip** that is connected to the `body` and points to the centre **registration point** of the `target`'s `docking edge`.
-  
+
 .. The `tip` should automatically position itself on the `body`'s `docking edge`.
 
 .. The `tip` should bias toward centre-alignment of itself on the `cross-axis` up to such a point that it does not exceed the `body bounds`.
