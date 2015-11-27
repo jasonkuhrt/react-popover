@@ -12,7 +12,7 @@ export default {
   },
   output: {
     path: outputDir,
-    filename: `[name].js`,
+    filename: `index.js`,
   },
   module: {
     loaders: [
@@ -21,7 +21,4 @@ export default {
     ],
   },
   devtool: `source-map`,
-  devServer: {
-    contentBase: outputDir,
-  },
 }

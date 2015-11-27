@@ -2,6 +2,7 @@ import './index.css'
 import Debug from 'debug'
 import R from 'ramda'
 import React, { DOM as E } from 'react'
+import ReactDOM from 'react-dom'
 import DraggableClass from 'react-draggable'
 import PopoverClass from '../../lib'
 import TappableClass from 'react-tappable'
@@ -14,7 +15,6 @@ let Popover = React.createFactory(PopoverClass)
 let Tappable = React.createFactory(TappableClass)
 let Draggable = React.createFactory(DraggableClass)
 
-React.initializeTouchEvents(true)
 Debug.enable('react-popover,demo')
 
 let createOption = (type) => (
@@ -126,4 +126,5 @@ let Demo = React.createClass({
 
 
 window.React = React
+window.ReactDOM = ReactDOM
 window.Main = Demo
