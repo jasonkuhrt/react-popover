@@ -10,23 +10,22 @@ import * as Layout from '../../lib/layout'
 
 
 
-let debug = Debug('demo')
-let Popover = React.createFactory(PopoverClass)
-let Tappable = React.createFactory(TappableClass)
-let Draggable = React.createFactory(DraggableClass)
+const debug = Debug('demo')
+const Popover = React.createFactory(PopoverClass)
+const Tappable = React.createFactory(TappableClass)
+const Draggable = React.createFactory(DraggableClass)
 
 Debug.enable('react-popover,demo')
 
-let createOption = (type) => (
+const createOption = (type) => (
   E.option({
-      key: type,
-      value: type,
-      children: type
-    }
-  )
+    key: type,
+    value: type,
+    children: type
+  })
 )
 
-let createPreferPlaceOptions = R.compose(
+const createPreferPlaceOptions = R.compose(
   R.prepend([E.option({ key: 'null', value: null }, 'null')]),
   R.map(createOption),
   R.flatten,
@@ -34,54 +33,56 @@ let createPreferPlaceOptions = R.compose(
   R.path(['types'])
 )
 
-let Demo = React.createClass({
+const Demo = React.createClass({
   name: 'demo',
-  getInitialState: function() {
+  getInitialState () {
     return {
       popoverIsOpen: false,
       preferPlace: null,
       place: null
     }
   },
-  togglePopover(toState) {
+  togglePopover (toState) {
     debug('togglePopover')
-    toState = typeof toState === 'boolean' ? toState : !this.state.popoverIsOpen
+    const popoverIsOpen = typeof toState === 'boolean'
+      ? toState
+      : !this.state.popoverIsOpen
     this.setState({
-      popoverIsOpen: toState
+      popoverIsOpen
     })
   },
-  changePreferPlace(event) {
-    let preferPlace = event.target.value === 'null' ? null : event.target.value
+  changePreferPlace (event) {
+    const preferPlace = event.target.value === 'null' ? null : event.target.value
     this.setState({ preferPlace })
   },
-  changePlace(event) {
-    let place = event.target.value === 'null' ? null : event.target.value
+  changePlace (event) {
+    const place = event.target.value === 'null' ? null : event.target.value
     this.setState({ place })
   },
-  render() {
+  render () {
     debug('render')
 
-    let targetProps = {
+    const targetProps = {
       className: [
         'Target',
         `is-${[ 'closed', 'open' ][Number(this.state.popoverIsOpen)]}`
       ].join(' ')
     }
 
-    let targetToggleProps = {
+    const targetToggleProps = {
       className: 'Target-Toggle',
       onTap: this.togglePopover
     }
 
-    let targetMoveProps = {
+    const targetMoveProps = {
       className: 'Target-Move'
     }
 
-    let draggableProps = {
+    const draggableProps = {
       handle: '.Target-Move'
     }
 
-    let target = (
+    const target = (
         Draggable(draggableProps,
           E.div(targetProps,
             E.div(targetMoveProps, 'Move'),
@@ -90,7 +91,7 @@ let Demo = React.createClass({
         )
     )
 
-    let popoverProps = {
+    const popoverProps = {
       isOpen: this.state.popoverIsOpen,
       preferPlace: this.state.preferPlace,
       place: this.state.place,
@@ -101,7 +102,7 @@ let Demo = React.createClass({
       ]
     }
 
-    let controls = (
+    const controls = (
       E.form({},
         E.label({ htmlFor: 'preferPlace' }, 'preferPlace '),
         E.select({ id: 'preferPlace', onChange: this.changePreferPlace },
@@ -115,9 +116,9 @@ let Demo = React.createClass({
       )
     )
 
-    let popover = Popover(popoverProps, target)
+    const popover = Popover(popoverProps, target)
 
-    let app = E.div({}, controls, E.br(), popover)
+    const app = E.div({}, controls, E.br(), popover)
 
     return app
   }
