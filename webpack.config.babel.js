@@ -17,8 +17,8 @@ export default {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loaders: ['babel']},
-      { test: /\.css$/, exclude: /node_modules/, loaders: [ `style`, `css` ]},
+      { test: /\.js$/, exclude: /node_modules/, loaders: [`babel`]},
+      { test: /\.css$/, exclude: /node_modules/, loaders: [ `style`, `css`, `cssnext` ]},
     ],
   },
   devtool: `source-map`,

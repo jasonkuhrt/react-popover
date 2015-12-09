@@ -1,46 +1,11 @@
+@import ../base;
+
+
 
 /* Boiler Plate */
 
-html {
-  font-family: monospace;
-  font-size: 16px;
-  height: 100%;
-  background: hsl(0, 0%, 95%);
-}
-
-body {
-  height: 100%;
-  padding: 0;
-  margin: 0;
-  display: flex;
-}
-
-#main {
-  flex: 1;
-  display: flex;
-}
-
 #app {
-  flex: 1;
-  display: flex;
   flex-direction: row;
-}
-
-
-
-/* Popover */
-
-.Popover-body {
-  display: inline-flex;
-  flex-direction: column;
-  padding: 2rem 4rem;
-  background: hsl(0, 0%, 27%);
-  color: white;
-  border-radius: 0.3rem;
-}
-
-.Popover-tipShape {
-  fill: hsl(0, 0%, 27%)
 }
 
 

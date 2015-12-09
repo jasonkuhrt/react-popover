@@ -6,7 +6,6 @@ import PopoverClass from '../../lib'
 
 
 
-const debug = console.log.bind(console)
 const Popover = React.createFactory(PopoverClass)
 
 

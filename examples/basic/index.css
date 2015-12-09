@@ -1,8 +1,30 @@
+@import ../base;
+
+
+
+/* Boilerplate */
+
 html {
-  font-family: Helvetica, Arial, Sans-Serif;
   height: 200rem;
 }
-/* Styles that help visualize the Popover `target` for this demo. */
+
+#app {
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+/* Popover */
+
+.Popover-body {
+  padding: 4rem;
+}
+
+
+
+/* Target */
+
 .Target {
   -webkit-user-select: none;
   position: relative;
@@ -35,17 +57,17 @@ html {
 
 
 
-/* Styles that give the Popover a look-and-feel. */
+/* Demo Controls */
 
-.Popover-body {
-  display: inline-flex;
-  flex-direction: column;
-  padding: 4rem;
-  background: hsl(0, 0%, 27%);
-  color: white;
-  border-radius: 0.3rem;
+form {
+  margin-top: 2rem;
+  margin-bottom: calc(50vh - 6rem);
 }
 
-.Popover-tipShape {
-  fill: hsl(0, 0%, 27%)
+input {
+  margin-left: 1rem;
+}
+
+label:not(:first-child) {
+  margin-left: 2rem;
 }

@@ -1,0 +1,42 @@
+
+/* Boilerplate */
+
+html {
+  font-family: monospace;
+  font-size: 16px;
+  height: 100%;
+  background: hsl(0, 0%, 95%);
+}
+
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+#main {
+  display: flex;
+  flex: 1;
+}
+
+#app {
+  display: flex;
+  flex: 1;
+}
+
+
+/* Popover */
+
+.Popover-body {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 2rem 4rem;
+  background: hsl(0, 0%, 27%);
+  color: white;
+  border-radius: 0.3rem;
+}
+
+.Popover-tipShape {
+  fill: hsl(0, 0%, 27%)
+}
