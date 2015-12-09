@@ -10,6 +10,7 @@ const outputDir = path(outputDirName)
 export default {
   entry: {
     playground: `./examples/playground/main.js`,
+    jsx: `./examples/jsx/main.js`,
     multipleTriggers: `./examples/multiple-triggers/main.js`,
   },
   output: {

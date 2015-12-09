@@ -1,0 +1,45 @@
+@import ../base;
+
+
+
+/* Boilerplate */
+
+#app {
+  justify-content: center;
+  align-items: center;
+}
+
+
+
+/* Popover */
+
+.Popover-body {
+  padding: 8rem;
+}
+
+
+
+/* Target */
+
+.target {
+  cursor: pointer;
+  user-select: none;
+}
+
+.target:not(.isOpen) {
+  opacity: 0.5;
+}
+
+.target.isOpen {
+  color: hsla(354, 91%, 60%, 1);
+}
+
+
+
+.Taps {
+  margin-right: 3rem;
+}
+
+.Tap {
+  display: inline-block;
+}
