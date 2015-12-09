@@ -4,7 +4,8 @@ import Path from 'path'
 
 
 const path = Path.join.bind(null, __dirname)
-const outputDir = path(`build`)
+const outputDirName = `build`
+const outputDir = path(outputDirName)
 
 export default {
   entry: {
