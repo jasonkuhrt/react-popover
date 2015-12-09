@@ -1,4 +1,4 @@
-import './index.css'
+import './main.css'
 import Debug from 'debug'
 import R from 'ramda'
 import React, { DOM as E } from 'react'

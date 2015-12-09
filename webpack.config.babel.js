@@ -8,7 +8,7 @@ const outputDir = path(`build`)
 
 export default {
   entry: {
-    basic: `./examples/basic/index.js`,
+    playground: `./examples/playground/main.js`,
     multipleTriggers: `./examples/multiple-triggers/main.js`,
   },
   output: {

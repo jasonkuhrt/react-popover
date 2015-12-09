@@ -20,7 +20,7 @@ npm install --save react-popover
 
 ## Demos
 
-* link:https://littlebits.github.io/react-popover/build/basic.html[Playground]
+* link:https://littlebits.github.io/react-popover/build/playground.html[Playground]
 * link:https://littlebits.github.io/react-popover/build/multipleTriggers.html[Multiple Triggers]
 
 To run demos locally execute `npm start`. If you do not see logs in the console refresh the browser once (https://github.com/littlebits/react-popover/issues/35).
