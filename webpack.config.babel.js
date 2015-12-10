@@ -11,7 +11,7 @@ export default {
   entry: {
     playground: `./examples/playground/main.js`,
     jsx: `./examples/jsx/main.js`,
-    multipleTriggers: `./examples/multiple-triggers/main.js`,
+    rows: `./examples/rows/main.js`,
   },
   output: {
     path: outputDir,
