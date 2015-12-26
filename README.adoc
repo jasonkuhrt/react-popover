@@ -36,6 +36,28 @@ To run demos locally execute `npm start`. If you do not see logs in the console 
 
 ---
 
+##### `animateEnter :: Function | Null`
+A callback function executed when the popover enters the open state.
+
+---
+
+##### `animateEnterStop :: Function | Null`
+A callback function executed when the popover was previously in the open state and is currently entering the closed state. A canonical use-case is to clean up any state left over from `animateEnter`.
+
+Note that unlike `animateExitStop`, the function is called when closing regardless of whether or not the popover is still animating its entrance.
+
+---
+
+##### `animateExit :: Function | Null`
+A callback function executed when the popover enters the closed state. The function should accept a `callback` argument that is called when the popover has finished animating out to correctly maintain state.
+
+---
+
+##### `animateExitStop :: Function | Null`
+A callback function executed when the popover was previously closing (and not yet closed) and is will begin entering the open state. A canonical use-case is to clean up any state left over from `animateExit`.
+
+---
+
 ##### `body :: Node | Array Node`
 The `popover` content. Content is rooted (becomes children of) `.Popover-body` and thus `body` can be a single `node` _or an array of `nodes`_.
 
