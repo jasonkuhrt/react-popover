@@ -35,26 +35,29 @@ To run demos locally execute `npm start`. If you do not see logs in the console 
 #### `props :: {...}`
 
 ---
+##### `animationHandlers :: Object | Null`
 
-##### `animateEnter :: Function | Null`
-A callback function executed when the popover enters the open state.
+An object containing handlers for enter and exit animations. If `animationHandlers` is not passed in, the default animation entrance and exit will be used.
+
+###### `enter :: Function`
+A callback function executed when the popover enters the open state. The function should accept a `popover` argument that is a reference to the current `Popover` instance.
 
 ---
 
-##### `animateEnterStop :: Function | Null`
-A callback function executed when the popover was previously in the open state and is currently entering the closed state. A canonical use-case is to clean up any state left over from `animateEnter`.
+###### `enterStop :: Function`
+A callback function executed when the popover was previously in the open state and is currently entering the closed state. A canonical use-case is to clean up any state left over from `animateEnter`. The function should accept a `popover` argument that is a reference to the current `Popover` instance.
 
 Note that unlike `animateExitStop`, the function is called when closing regardless of whether or not the popover is still animating its entrance.
 
 ---
 
-##### `animateExit :: Function | Null`
-A callback function executed when the popover enters the closed state. The function should accept a `callback` argument that is called when the popover has finished animating out to correctly maintain state.
+###### `exit :: Function`
+A callback function executed when the popover enters the closed state. The function should accept a `popover` argument that is a reference to the current `Popover` instance, and a `callback` argument that is called when the popover has finished animating out to correctly maintain state.
 
 ---
 
-##### `animateExitStop :: Function | Null`
-A callback function executed when the popover was previously closing (and not yet closed) and is will begin entering the open state. A canonical use-case is to clean up any state left over from `animateExit`.
+###### `exitStop :: Function`
+A callback function executed when the popover was previously closing (and not yet closed) and is will begin entering the open state. A canonical use-case is to clean up any state left over from `animateExit`. The function should accept a `popover` argument that is a reference to the current `Popover` instance.
 
 ---
 
