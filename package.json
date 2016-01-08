@@ -25,7 +25,7 @@
   "name": "react-popover",
   "homepage": "https://github.com/littlebits/react-popover",
   "version": "0.4.4",
-  "main": "build/index.js",
+  "main": "lib/index.js",
   "description": "A specification backed popover for react",
   "devDependencies": {
     "babel-cli": "^6.3.15",
