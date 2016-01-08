@@ -70,14 +70,15 @@ A callback function executed every time the user does an action (`mousedown` or 
 ##### `refreshIntervalMs :: Number | Falsey`
 The polling speed (AKA time between each poll) in milliseconds for checking if a layout refresh is required. This polling is required because it is the only robust way to track the position of a target in the DOM. Defaults to `200`. Set to a falsey value to disable.
 
+--- 
+
+##### Standard
+
+* Properties like `className` and `style`.
+
+
 ---
 
 #### `target :: React Element`
 
 - The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
-
---- 
-
-#### Standard
-
-* Properties like `className` and `style`.
