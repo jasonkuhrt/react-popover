@@ -61,9 +61,9 @@ Like `preferPlace` except that the given place is a ***requirement***. The resol
 
 ---
 
-##### `onOuterAction :: Function`
+##### `onOuterAction :: (Event) -> Void`
 A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
-* Plus support for standard props...: `className`, `style`
+
 
 ---
 
@@ -75,3 +75,9 @@ The polling speed (AKA time between each poll) in milliseconds for checking if a
 #### `target :: React Element`
 
 - The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
+
+--- 
+
+#### Standard
+
+* Properties like `className` and `style`.
