@@ -9,6 +9,7 @@
     "test": "testem",
     "start": "webpack-dev-server --hot",
     "prepublish": "npm run build",
+    "preinstall": "npm install && npm run build",
     "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
@@ -25,7 +26,7 @@
   "name": "react-popover",
   "homepage": "https://github.com/littlebits/react-popover",
   "version": "0.4.4",
-  "main": "lib/index.js",
+  "main": "build/index.js",
   "description": "A specification backed popover for react",
   "devDependencies": {
     "babel-cli": "^6.3.15",
