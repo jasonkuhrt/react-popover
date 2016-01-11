@@ -9,6 +9,7 @@
     "test": "testem",
     "start": "webpack-dev-server --hot",
     "prepublish": "npm run build",
+    "postinstall": "npm run build",
     "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
