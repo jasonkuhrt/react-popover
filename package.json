@@ -41,8 +41,7 @@
     "coffee-script": "^1.9.1",
     "css-loader": "^0.17.0",
     "cssnext-loader": "^1.0.1",
-    "eslint-config-littlebits": "^0.2.1",
-    "eslint-plugin-react": "^3.11.3",
+    "eslint-config-littlebits": "^0.3.0",
     "ramda": "^0.18.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
@@ -60,13 +59,7 @@
   "eslintConfig": {
     "extends": [
       "littlebits"
-    ],
-    "plugins": [
-      "react"
-    ],
-    "ecmaFeatures": {
-      "jsx": true
-    }
+    ]
   },
   "babel": {
     "presets": [
