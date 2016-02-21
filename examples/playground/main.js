@@ -34,7 +34,7 @@ const createPreferPlaceOptions = R.compose(
 )
 
 const Demo = React.createClass({
-  name: 'demo',
+  displayName: 'demo',
   getInitialState () {
     return {
       popoverIsOpen: false,
