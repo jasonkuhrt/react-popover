@@ -96,6 +96,7 @@ const Demo = React.createClass({
       preferPlace: this.state.preferPlace,
       place: this.state.place,
       onOuterAction: this.togglePopover.bind(null, false),
+      tipSize: 0,
       body: [
         E.h1({}, 'Popover Title'),
         E.div({}, 'Popover contents.')
