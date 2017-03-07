@@ -6,12 +6,14 @@
     "deploy-demos": "git checkout gh-pages && git merge master --no-edit && npm run build-examples && git add -A && git commit -m 'Update demos' && git push && git checkout master",
     "build": "npm run clean && babel --out-dir build lib",
     "dev": "npm start",
-    "test": "testem",
+    "test": "jest",
+    "test-dev": "jest --watch",
     "start": "webpack-dev-server --hot",
     "prepublish": "npm run build",
     "postversion": "git push && git push --tags && npm publish"
   },
   "dependencies": {
+    "babel-jest": "^19.0.0",
     "css-vendor": "^0.3.1",
     "debug": "^2.1.3",
     "lodash.throttle": "^3.0.3"
@@ -37,11 +39,12 @@
     "bootstrap-webpack-plugin": "^0.3.0",
     "chai": "^3.2.0",
     "classnames": "^2.2.1",
-    "coffee-loader": "^0.7.2",
-    "coffee-script": "^1.9.1",
     "css-loader": "^0.17.0",
     "cssnext-loader": "^1.0.1",
-    "eslint-config-littlebits": "^0.3.0",
+    "eslint": "^3.17.1",
+    "eslint-config-littlebits": "^0.6.2",
+    "jest": "^19.0.2",
+    "jest-cli": "^19.0.2",
     "ramda": "^0.18.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
@@ -49,7 +52,6 @@
     "react-hot-loader": "^1.2.4",
     "react-tappable": "^0.7.1",
     "style-loader": "^0.12.3",
-    "testem": "^0.9.6",
     "webpack": "^1.12.1",
     "webpack-dev-server": "^1.10.1"
   },
@@ -59,7 +61,10 @@
   "eslintConfig": {
     "extends": [
       "littlebits"
-    ]
+    ],
+    "env": {
+      "jest": true
+    }
   },
   "babel": {
     "presets": [
