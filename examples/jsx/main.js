@@ -1,9 +1,9 @@
-import './main.css'
-import F from 'ramda'
-import React from 'react'
-import ReactDOM from 'react-dom'
-import Popover from '../../lib'
-import classNames from 'classnames'
+import "./main.css"
+import F from "ramda"
+import React from "react"
+import ReactDOM from "react-dom"
+import Popover from "../../lib"
+import classNames from "classnames"
 
 
 
@@ -22,19 +22,14 @@ const Main = React.createClass({
   toggle () {
     this.setState({ isOpen: !this.state.isOpen })
   },
-  render () {
-    return (
-      <div id='app'>{ this.renderPopover() }</div>
-    )
-  },
   renderPopover () {
     const {
       isOpen,
     } = this.state
     return (
-      <Popover isOpen={isOpen} body='Boo!'>
+      <Popover isOpen={isOpen} body="Boo!">
         <div
-          className={ classNames('target', { isOpen }) }
+          className={ classNames("target", { isOpen }) }
           onClick={this.toggle}>
           { this.renderPerson(isOpen) }
         </div>
@@ -44,9 +39,9 @@ const Main = React.createClass({
   renderPerson (isScared) {
     return (
       isScared
-        ? ';o'
-        : [ <span key='taps' className='Taps'>{ this.renderTaps() }</span>,
-            <span key='person'>{ `Who's there?` }</span> ]
+        ? ";o"
+        : [ <span key="taps" className="Taps">{ this.renderTaps() }</span>,
+          <span key="person">{ "Who's there?" }</span> ]
     )
   },
   renderTaps () {
@@ -55,10 +50,15 @@ const Main = React.createClass({
         const style = {
           transform: `rotate(${randomIntegerBetween(-90, 90)}deg)`
         }
-        return <em key={i} className='Tap' style={style}>Tap</em>
+        return <em key={i} className="Tap" style={style}>Tap</em>
       })
     )
-  }
+  },
+  render () {
+    return (
+      <div id="app">{ this.renderPopover() }</div>
+    )
+  },
 })
 
 

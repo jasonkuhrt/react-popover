@@ -1,8 +1,8 @@
-import './main.css'
-import F from 'ramda'
-import React, { DOM as E } from 'react'
-import ReactDOM from 'react-dom'
-import PopoverClass from '../../lib'
+import "./main.css"
+import F from "ramda"
+import React, { DOM as E, PropTypes as T } from "react"
+import ReactDOM from "react-dom"
+import PopoverClass from "../../lib"
 
 
 
@@ -11,7 +11,10 @@ const Popover = React.createFactory(PopoverClass)
 
 
 const Row = React.createFactory(React.createClass({
-  displayName: 'row',
+  displayName: "row",
+  propTypes: {
+    children: T.number,
+  },
   getInitialState () {
     return {
       isOpen: false,
@@ -25,10 +28,10 @@ const Row = React.createFactory(React.createClass({
     return (
       Popover({
         isOpen,
-        body: '!',
+        body: "!",
         children: (
           E.div({
-            className: 'Row',
+            className: "Row",
             onMouseOver: () => this.toggle(true),
             onMouseOut: () => this.toggle(false),
             children: this.props.children,
@@ -45,7 +48,7 @@ const Main = React.createClass({
   render () {
     return (
       E.div({
-        id: 'app',
+        id: "app",
         children: (
           F.range(0,51).map((i) => Row({}, i))
         )
