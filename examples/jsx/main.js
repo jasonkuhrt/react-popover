@@ -1,6 +1,6 @@
 import "./main.css"
 import F from "ramda"
-import React from "react"
+import React, { PropTypes as T } from "react"
 import ReactDOM from "react-dom"
 import Popover from "../../lib"
 import classNames from "classnames"
@@ -11,7 +11,72 @@ const randomIntegerBetween = (from, to) => (
   Math.round((Math.random() * (to - from)) + from)
 )
 
+class ContextProvider extends React.Component {
+  static propTypes = {
+    children: T.any,
+  }
+  static childContextTypes = {
+    foo: T.string,
+  }
+  getChildContext () {
+    return ({
+      foo: "bar",
+    })
+  }
+  render () {
+    return (
+      <span>
+        {this.props.children}
+      </span>
+    )
+  }
+}
 
+class ContextProviderB extends React.Component {
+  static propTypes = {
+    children: T.any,
+  }
+  static childContextTypes = {
+    bar: T.string,
+  }
+  getChildContext () {
+    return ({
+      bar: "qux",
+    })
+  }
+  render () {
+    return (
+      <span>
+        {this.props.children}
+      </span>
+    )
+  }
+}
+
+class Boo extends React.Component {
+  static contextTypes = {
+    foo: T.string,
+    bar: T.string,
+  }
+  render () {
+    console.log(this.context)
+    return (
+      <span>Foo is: {this.context.foo}. Bar is: {this.context.bar}.</span>
+    )
+  }
+}
+
+// class Works extends React.Component {
+//   static contextTypes = {
+//     foo: T.string,
+//     bar: T.string,
+//   }
+//   render () {
+//     return (
+//       <span>Foo is: {this.context.foo}. Bar is: {this.context.bar}.</span>
+//     )
+//   }
+// }
 
 const Main = React.createClass({
   getInitialState () {
@@ -20,20 +85,24 @@ const Main = React.createClass({
     }
   },
   toggle () {
-    this.setState({ isOpen: !this.state.isOpen })
+    this.setState({
+      isOpen: !this.state.isOpen
+    })
   },
   renderPopover () {
     const {
       isOpen,
     } = this.state
     return (
-      <Popover isOpen={isOpen} body="Boo!">
-        <div
-          className={ classNames("target", { isOpen }) }
-          onClick={this.toggle}>
-          { this.renderPerson(isOpen) }
-        </div>
-      </Popover>
+      <ContextProviderB>
+        <Popover isOpen={isOpen} body={<ContextProvider><Boo /></ContextProvider>}>
+          <div
+            className={ classNames("target", { isOpen }) }
+            onClick={this.toggle}>
+            { this.renderPerson(isOpen) }
+          </div>
+        </Popover>
+      </ContextProviderB>
     )
   },
   renderPerson (isScared) {
