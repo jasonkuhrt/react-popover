@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Pass context through to layer 1`] = `"<div><span data-reactroot=\\"\\">value-from-context</span></div>"`;
