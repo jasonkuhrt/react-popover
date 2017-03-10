@@ -1,19 +1,22 @@
 import React, { PropTypes as T } from "react"
-// import { renderToString } from "react-dom/server"
-import Popover from "../lib"
-import renderer from "react-test-renderer"
+import Renderer from "react-test-renderer"
+import portalMixin from "../lib/react-layer-mixin"
+
 
 
 class ContextProvider extends React.Component {
   static propTypes = {
-    children: T.any,
+    children: T.node,
+  }
+  static defaultProps = {
+    children: null,
   }
   static childContextTypes = {
-    foo: T.string,
+    x: T.string,
   }
   getChildContext () {
     return ({
-      foo: "bar",
+      x: "value-from-context",
     })
   }
   render () {
@@ -25,44 +28,45 @@ class ContextProvider extends React.Component {
 
 
 
-class FooComponent extends React.Component {
+class ContextDependent extends React.Component {
   static contextTypes = {
-    foo: T.string,
+    x: T.string,
   }
   render () {
     return (
-      <div>{this.context.foo}</div>
+      <span>{this.context.x}</span>
     )
   }
 }
 
-class BarComponent extends React.Component {
-  static contextTypes = {
-    foo: T.string,
-  }
-  render () {
+const Portal = React.createClass({
+  propTypes: {
+    children: T.node
+  },
+  mixins: [portalMixin()],
+  renderLayer () {
     return (
-      <Popover
-      isOpen={true}
-      body={<FooComponent />}
-      >
-        <div>{this.context.foo}</div>
-      </Popover>
+      this.props.children
     )
+  },
+  render () {
+    return null
   }
-}
+})
 
 
+
+beforeEach(() => {
+  document.body.innerHTML = ""
+})
 
 it("Pass context through to layer", () => {
-  const tree = renderer.create(
+  Renderer.create(
     <ContextProvider>
-      <BarComponent />
+      <Portal>
+        <ContextDependent />
+      </Portal>
     </ContextProvider>
-  ).toJSON()
-  // Create A, a context provider
-  // Create B, a Popover instance, inside A
-  // B should be able to access context provided by A
-  expect(tree)
-  .toMatchSnapshot()
+  )
+  expect(document.body.innerHTML).toMatchSnapshot()
 })
