@@ -77,8 +77,5 @@
       "react",
       "stage-1"
     ]
-  },
-  "release": {
-    "debug": true
   }
 }
