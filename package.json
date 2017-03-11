@@ -1,5 +1,6 @@
 {
   "license": "MIT",
+  "version": "semantic-release",
   "scripts": {
     "clean": "rm -rf build",
     "build-examples": "npm run clean && webpack",
@@ -26,7 +27,6 @@
   "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
   "name": "react-popover",
   "homepage": "https://github.com/littlebits/react-popover",
-  "version": "0.4.5",
   "main": "build/index.js",
   "description": "A specification backed popover for react",
   "devDependencies": {
