@@ -4,7 +4,8 @@
 
 # react-popover
 
-A specification backed popover for react. <<demos, See demos>>.
+image:https://travis-ci.org/littlebits/react-popover.svg?branch=master["Build Status", link="https://travis-ci.org/littlebits/react-popover"]
+
 
 toc::[]
 
@@ -70,7 +71,7 @@ A callback function executed every time the user does an action (`mousedown` or 
 ##### `refreshIntervalMs :: Number | Falsey`
 The polling speed (AKA time between each poll) in milliseconds for checking if a layout refresh is required. This polling is required because it is the only robust way to track the position of a target in the DOM. Defaults to `200`. Set to a falsey value to disable.
 
---- 
+---
 
 ##### Standard
 
