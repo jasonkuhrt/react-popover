@@ -10,9 +10,7 @@
     "test": "jest",
     "test-dev": "jest --watch",
     "start": "webpack-dev-server --hot",
-    "prepublish": "npm run build",
-    "postversion": "git push && git push --tags && npm publish",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "postversion": "npm run build && git push && git push --tags && npm publish && release"
   },
   "dependencies": {
     "babel-jest": "^19.0.0",
@@ -54,10 +52,10 @@
     "react-hot-loader": "^1.2.4",
     "react-tappable": "^0.7.1",
     "react-test-renderer": "^15.4.2",
+    "release": "^1.1.7",
     "style-loader": "^0.12.3",
     "webpack": "^1.12.1",
-    "webpack-dev-server": "^1.10.1",
-    "semantic-release": "^6.3.2"
+    "webpack-dev-server": "^1.10.1"
   },
   "bugs": {
     "url": "https://github.com/littlebits/react-popover/issues"
