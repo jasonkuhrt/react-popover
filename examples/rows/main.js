@@ -1,6 +1,7 @@
 import "./main.css"
 import F from "ramda"
-import React, { DOM as E, PropTypes as T } from "react"
+import React, { DOM as E } from "react"
+import { PropTypes as T } from "prop-types"
 import ReactDOM from "react-dom"
 import PopoverClass from "../../lib"
 
