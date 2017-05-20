@@ -2,6 +2,7 @@ import "./main.css"
 import F from "ramda"
 import React from "react"
 import ReactDOM from "react-dom"
+import createReactClass from "create-react-class"
 import Popover from "../../lib"
 import classNames from "classnames"
 
@@ -13,7 +14,7 @@ const randomIntegerBetween = (from, to) => (
 
 
 
-const Main = React.createClass({
+const Main = createReactClass({
   getInitialState () {
     return {
       isOpen: false,

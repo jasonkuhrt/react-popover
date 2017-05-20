@@ -2,6 +2,7 @@ import "./main.css"
 import Debug from "debug"
 import R from "ramda"
 import React, { DOM as E } from "react"
+import createReactClass from "create-react-class"
 import ReactDOM from "react-dom"
 import DraggableClass from "react-draggable"
 import PopoverClass from "../../lib"
@@ -33,7 +34,7 @@ const createPreferPlaceOptions = R.compose(
   R.path(["types"])
 )
 
-const Demo = React.createClass({
+const Demo = createReactClass({
   displayName: "demo",
   getInitialState () {
     return {
