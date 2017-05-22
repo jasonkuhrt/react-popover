@@ -33,15 +33,15 @@ const createPreferPlaceOptions = R.compose(
   R.path(["types"])
 )
 
-const Demo = React.createClass({
-  displayName: "demo",
-  getInitialState () {
-    return {
+class Demo extends React.Component {
+  constructor () {
+    super(props)
+    this.state = {
       popoverIsOpen: false,
       preferPlace: null,
       place: null
-    }
-  },
+    };
+  }
   togglePopover (toState) {
     debug("togglePopover")
     const popoverIsOpen = typeof toState === "boolean"
@@ -50,15 +50,15 @@ const Demo = React.createClass({
     this.setState({
       popoverIsOpen
     })
-  },
+  }
   changePreferPlace (event) {
     const preferPlace = event.target.value === "null" ? null : event.target.value
     this.setState({ preferPlace })
-  },
+  }
   changePlace (event) {
     const place = event.target.value === "null" ? null : event.target.value
     this.setState({ place })
-  },
+  }
   render () {
     debug("render")
 
@@ -122,7 +122,7 @@ const Demo = React.createClass({
 
     return app
   }
-})
+}
 
 
 

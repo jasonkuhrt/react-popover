@@ -1,7 +1,6 @@
 import React from "react"
 import { PropTypes as T } from "prop-types"
 import Renderer from "react-test-renderer"
-import portalMixin from "../lib/react-layer-mixin"
 
 
 
@@ -40,20 +39,19 @@ class ContextDependent extends React.Component {
   }
 }
 
-const Portal = React.createClass({
-  propTypes: {
-    children: T.node
-  },
-  mixins: [portalMixin()],
+class Portal extends React.Component {
+  static propTypes = {
+    children: T.node,
+  }
   renderLayer () {
     return (
       this.props.children
     )
-  },
+  }
   render () {
     return null
   }
-})
+}
 
 
 
