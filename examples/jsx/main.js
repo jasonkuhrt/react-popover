@@ -13,15 +13,16 @@ const randomIntegerBetween = (from, to) => (
 
 
 
-const Main = React.createClass({
-  getInitialState () {
-    return {
+class Main extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
       isOpen: false,
     }
-  },
+  }
   toggle () {
     this.setState({ isOpen: !this.state.isOpen })
-  },
+  }
   renderPopover () {
     const {
       isOpen,
@@ -35,7 +36,7 @@ const Main = React.createClass({
         </div>
       </Popover>
     )
-  },
+  }
   renderPerson (isScared) {
     return (
       isScared
@@ -43,7 +44,7 @@ const Main = React.createClass({
         : [ <span key="taps" className="Taps">{ this.renderTaps() }</span>,
           <span key="person">{ "Who's there?" }</span> ]
     )
-  },
+  }
   renderTaps () {
     return (
       F.range(0, randomIntegerBetween(1, 6)).map((i) => {
@@ -53,13 +54,13 @@ const Main = React.createClass({
         return <em key={i} className="Tap" style={style}>Tap</em>
       })
     )
-  },
+  }
   render () {
     return (
       <div id="app">{ this.renderPopover() }</div>
     )
-  },
-})
+  }
+}
 
 
 
