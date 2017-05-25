@@ -1,8 +1,6 @@
 import Bootstrap from "bootstrap-webpack-plugin"
 import Path from "path"
 
-
-
 const path = Path.join.bind(null, __dirname)
 const outputDirName = "build"
 const outputDir = path(outputDirName)
