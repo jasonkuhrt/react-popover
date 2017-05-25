@@ -28,4 +28,3 @@ node_modules
 dev-build
 .tern-port
 npm-debug.log*
-build/
