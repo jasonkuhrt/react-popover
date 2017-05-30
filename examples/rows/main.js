@@ -46,7 +46,7 @@ const Row = React.createFactory(createReactClass({
 
 
 
-const Main = React.createClass({
+const Main = createReactClass({
   render () {
     return (
       E.div({
