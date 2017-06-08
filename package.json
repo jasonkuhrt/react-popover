@@ -1,6 +1,6 @@
 {
   "license": "MIT",
-  "version": "0.4.11",
+  "version": "0.4.12",
   "scripts": {
     "clean": "rm -rf build",
     "build-examples": "npm run clean && webpack",
