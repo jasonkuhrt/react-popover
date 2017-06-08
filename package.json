@@ -3,14 +3,14 @@
   "version": "0.4.13",
   "scripts": {
     "clean": "rm -rf build",
-    "build-examples": "npm run clean && webpack",
-    "deploy-demos": "git checkout gh-pages && git merge master --no-edit && npm run build-examples && git add -A && git commit -m 'Update demos' && git push && git checkout master",
-    "build": "npm run clean && babel --out-dir build lib",
-    "dev": "npm start",
+    "build-examples": "yarn run clean && webpack",
+    "deploy-demos": "git checkout gh-pages && git merge master --no-edit && yarn run build-examples && git add -A && git commit -m 'Update demos' && git push && git checkout master",
+    "build": "yarn run clean && babel --out-dir build lib",
+    "dev": "yarn start",
     "test": "jest",
     "test-dev": "jest --watch",
     "start": "webpack-dev-server --hot",
-    "postversion": "npm run build && git push && git push --tags && npm publish && release"
+    "postversion": "yarn run build && git push && git push --tags && yarn publish && release"
   },
   "dependencies": {
     "create-react-class": "^15.5.3",
