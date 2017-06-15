@@ -107,7 +107,7 @@ var Popover = (0, _createReactClass2.default)({
     style: _propTypes.PropTypes.object,
     tipSize: _propTypes.PropTypes.number,
     onOuterAction: _propTypes.PropTypes.func,
-    frame: _propTypes.PropTypes.element
+    frame: _propTypes.PropTypes.oneOfType([_propTypes.PropTypes.object, _propTypes.PropTypes.element])
   },
   mixins: [(0, _reactLayerMixin2.default)()],
   getDefaultProps: function getDefaultProps() {
