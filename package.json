@@ -17,7 +17,8 @@
     "css-vendor": "^0.3.1",
     "debug": "^2.6.8",
     "lodash.throttle": "^3.0.3",
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.5.10",
+    "react-dom-factories": "^1.0.0"
   },
   "repository": {
     "type": "git",
