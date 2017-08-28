@@ -5,7 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = undefined;
 
-var _react = require("react");
+var _reactDomFactories = require("react-dom-factories");
+
+var _reactDomFactories2 = _interopRequireDefault(_reactDomFactories);
 
 var _createReactClass = require("create-react-class");
 
@@ -28,7 +30,7 @@ var Tip = (0, _createReactClass2.default)({
       width: isPortrait ? crossLength : mainLength,
       height: isPortrait ? mainLength : crossLength
     };
-    var triangle = _react.DOM.svg(props, _react.DOM.polygon({
+    var triangle = _reactDomFactories2.default.svg(props, _reactDomFactories2.default.polygon({
       className: "Popover-tipShape",
       points: points
     }));

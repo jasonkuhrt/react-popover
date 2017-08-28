@@ -5,7 +5,7 @@
     "clean": "rm -rf build",
     "build-examples": "yarn run clean && webpack",
     "deploy-demos": "git checkout gh-pages && git merge master --no-edit && yarn run build-examples && git add -A && git commit -m 'Update demos' && git push && git checkout master",
-    "build": "yarn run clean && babel --out-dir build lib",
+    "build": "babel --out-dir build lib",
     "dev": "yarn start",
     "test": "jest",
     "test-dev": "jest --watch",
@@ -17,7 +17,8 @@
     "css-vendor": "^0.3.1",
     "debug": "^2.6.8",
     "lodash.throttle": "^3.0.3",
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.5.10",
+    "react-dom-factories": "^1.0.1"
   },
   "repository": {
     "type": "git",

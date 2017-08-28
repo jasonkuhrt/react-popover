@@ -4,6 +4,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _react = require("react");
 
+var _reactDomFactories = require("react-dom-factories");
+
+var _reactDomFactories2 = _interopRequireDefault(_reactDomFactories);
+
 var _propTypes = require("prop-types");
 
 var _createReactClass = require("create-react-class");
@@ -78,11 +82,10 @@ var faces = {
   right: "left",
   below: "up",
   left: "right"
-};
 
-/* Flow mappings. Each map maps the flow domain to another domain. */
+  /* Flow mappings. Each map maps the flow domain to another domain. */
 
-var flowToTipTranslations = {
+};var flowToTipTranslations = {
   row: "translateY",
   column: "translateX"
 };
@@ -106,8 +109,7 @@ var Popover = (0, _createReactClass2.default)({
     refreshIntervalMs: _propTypes.PropTypes.oneOfType([_propTypes.PropTypes.number, _propTypes.PropTypes.bool]),
     style: _propTypes.PropTypes.object,
     tipSize: _propTypes.PropTypes.number,
-    onOuterAction: _propTypes.PropTypes.func,
-    frame: _propTypes.PropTypes.oneOfType([_propTypes.PropTypes.object, _propTypes.PropTypes.element])
+    onOuterAction: _propTypes.PropTypes.func
   },
   mixins: [(0, _reactLayerMixin2.default)()],
   getDefaultProps: function getDefaultProps() {
@@ -120,8 +122,7 @@ var Popover = (0, _createReactClass2.default)({
       onOuterAction: function noOperation() {},
       enterExitTransitionDurationMs: 500,
       children: null,
-      refreshIntervalMs: 200,
-      frame: null
+      refreshIntervalMs: 200
     };
   },
   getInitialState: function getInitialState() {
@@ -129,7 +130,8 @@ var Popover = (0, _createReactClass2.default)({
       standing: "above",
       exited: !this.props.isOpen, // for animation-dependent rendering, should popover close/open?
       exiting: false, // for tracking in-progress animations
-      toggle: this.props.isOpen || false };
+      toggle: this.props.isOpen || false // for business logic tracking, should popover close/open?
+    };
   },
   componentDidMount: function componentDidMount() {
     this.targetEl = (0, _reactDom.findDOMNode)(this);
@@ -163,22 +165,21 @@ var Popover = (0, _createReactClass2.default)({
     var pickerSettings = {
       preferPlace: this.props.preferPlace,
       place: this.props.place
-    };
 
-    /* This is a kludge that solves a general problem very specifically for Popover.
-    The problem is subtle. When Popover positioning changes such that it resolves at
-    a different orientation, its Size will change because the Tip will toggle between
-    extending Height or Width. The general problem of course is that calculating
-    zone positioning based on current size is non-trivial if the Size can change once
-    resolved to a different zone. Infinite recursion can be triggered as we noted here:
-    https://github.com/littlebits/react-popover/issues/18. As an example of how this
-    could happen in another way: Imagine the user changes the CSS styling of the popover
-    based on whether it was `row` or `column` flow. TODO: Find a solution to generally
-    solve this problem so that the user is free to change the Popover styles in any
-    way at any time for any arbitrary trigger. There may be value in investigating the
-    http://overconstrained.io community for its general layout system via the
-    constraint-solver Cassowary. */
-    if (this.zone) this.size[this.zone.flow === "row" ? "h" : "w"] += this.props.tipSize;
+      /* This is a kludge that solves a general problem very specifically for Popover.
+      The problem is subtle. When Popover positioning changes such that it resolves at
+      a different orientation, its Size will change because the Tip will toggle between
+      extending Height or Width. The general problem of course is that calculating
+      zone positioning based on current size is non-trivial if the Size can change once
+      resolved to a different zone. Infinite recursion can be triggered as we noted here:
+      https://github.com/littlebits/react-popover/issues/18. As an example of how this
+      could happen in another way: Imagine the user changes the CSS styling of the popover
+      based on whether it was `row` or `column` flow. TODO: Find a solution to generally
+      solve this problem so that the user is free to change the Popover styles in any
+      way at any time for any arbitrary trigger. There may be value in investigating the
+      http://overconstrained.io community for its general layout system via the
+      constraint-solver Cassowary. */
+    };if (this.zone) this.size[this.zone.flow === "row" ? "h" : "w"] += this.props.tipSize;
     var zone = _layout2.default.pickZone(pickerSettings, this.frameBounds, this.targetBounds, this.size);
     if (this.zone) this.size[this.zone.flow === "row" ? "h" : "w"] -= this.props.tipSize;
 
@@ -387,7 +388,7 @@ var Popover = (0, _createReactClass2.default)({
     be a nice feature in the future to allow other frames to be used
     such as local elements that further constrain the popover`s world. */
 
-    this.frameEl = !!this.props.frame ? this.props.frame : _platform.window;
+    this.frameEl = _platform.window;
     this.hasTracked = true;
 
     /* Set a general interval for checking if target position changed. There is no way
@@ -479,16 +480,15 @@ var Popover = (0, _createReactClass2.default)({
     var tipProps = {
       direction: faces[this.state.standing],
       size: this.props.tipSize
-    };
 
-    /* If we pass array of nodes to component children React will complain that each
-    item should have a key prop. This is not a valid requirement in our case. Users
-    should be able to give an array of elements applied as if they were just normal
-    children of the body component (note solution is to spread array items as args). */
+      /* If we pass array of nodes to component children React will complain that each
+      item should have a key prop. This is not a valid requirement in our case. Users
+      should be able to give an array of elements applied as if they were just normal
+      children of the body component (note solution is to spread array items as args). */
 
-    var popoverBody = (0, _utils.arrayify)(this.props.body);
+    };var popoverBody = (0, _utils.arrayify)(this.props.body);
 
-    return _react.DOM.div(popoverProps, _react.DOM.div.apply(_react.DOM, [{ className: "Popover-body" }].concat(_toConsumableArray(popoverBody))), (0, _react.createElement)(_tip2.default, tipProps));
+    return _reactDomFactories2.default.div(popoverProps, _reactDomFactories2.default.div.apply(_reactDomFactories2.default, [{ className: "Popover-body" }].concat(_toConsumableArray(popoverBody))), (0, _react.createElement)(_tip2.default, tipProps));
   },
   render: function render() {
     return this.props.children;

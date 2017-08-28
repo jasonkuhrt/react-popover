@@ -4,7 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _react = require("react");
+var _reactDomFactories = require("react-dom-factories");
+
+var _reactDomFactories2 = _interopRequireDefault(_reactDomFactories);
 
 var _reactDom = require("react-dom");
 
@@ -52,7 +54,7 @@ var ReactLayerMixin = function ReactLayerMixin() {
       var layerReactEl = this.renderLayer();
       if (!layerReactEl) {
         this.layerReactComponent = null;
-        _reactDom2.default.unstable_renderSubtreeIntoContainer(this, _react.DOM.noscript(), this.layerContainerNode);
+        _reactDom2.default.unstable_renderSubtreeIntoContainer(this, _reactDomFactories2.default.noscript(), this.layerContainerNode);
       } else {
         this.layerReactComponent = _reactDom2.default.unstable_renderSubtreeIntoContainer(this, layerReactEl, this.layerContainerNode);
       }
