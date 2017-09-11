@@ -93,4 +93,9 @@ Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 
 - The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
 
+---
+
+#### `appendTarget :: DOM selector (String)`
+
+- The DOM selector where this popover will be appended to. Default to 'body'.
 
