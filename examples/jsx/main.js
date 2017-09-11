@@ -28,7 +28,7 @@ const Main = createReactClass({
       isOpen,
     } = this.state
     return (
-      <Popover isOpen={isOpen} body="Boo!">
+      <Popover appendTarget="#app" isOpen={isOpen} body="Boo!">
         <div
           className={ classNames("target", { isOpen }) }
           onClick={this.toggle}>
