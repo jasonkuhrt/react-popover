@@ -1,6 +1,6 @@
 {
   "license": "MIT",
-  "version": "0.4.16",
+  "version": "0.4.17",
   "scripts": {
     "clean": "rm -rf build",
     "build-examples": "yarn run clean && webpack",
