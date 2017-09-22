@@ -10,7 +10,8 @@
     "test": "jest",
     "test-dev": "jest --watch",
     "start": "webpack-dev-server --hot",
-    "postversion": "yarn run build && git push && git push --tags && npm publish && release"
+    "postversion": "yarn run build && git push && git push --tags && npm publish && release",
+    "postinstall" : "npm run build"
   },
   "dependencies": {
     "create-react-class": "^15.5.3",
