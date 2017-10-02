@@ -15,10 +15,11 @@ body {
   display: flex;
 }
 
-#main {
+#root {
   display: flex;
   flex: 1;
 }
+
 
 #app {
   display: flex;
