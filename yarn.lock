@@ -2142,7 +2142,7 @@ clap@^1.0.9:
   dependencies:
     chalk "^1.1.3"
 
-classnames@^2.2.0, classnames@^2.2.5:
+classnames@^2.2.5:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
@@ -6733,11 +6733,12 @@ react-dom@^15.4.2:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-draggable@^1.1.1:
-  version "1.3.7"
-  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-1.3.7.tgz#729bde4bd1e717c395b228c775e837695d50c2b2"
+react-draggable@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/react-draggable/-/react-draggable-3.0.3.tgz#a6f9b3a7171981b76dadecf238316925cb9eacf4"
   dependencies:
-    classnames "^2.2.0"
+    classnames "^2.2.5"
+    prop-types "^15.5.10"
 
 react-hot-api@^0.4.5:
   version "0.4.7"
@@ -6830,9 +6831,9 @@ react-style-proptype@^3.0.0:
   dependencies:
     prop-types "^15.5.4"
 
-react-tappable@^0.7.1:
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/react-tappable/-/react-tappable-0.7.2.tgz#4fccbe1251194db0f64f5c9a6fb3b28d8fdbefec"
+react-tappable@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-tappable/-/react-tappable-1.0.2.tgz#bda67f4e3f0e74bf416a4ec8a5885888482e27d4"
 
 react-test-renderer@^15.4.2:
   version "15.6.2"
