@@ -9,8 +9,8 @@ import Playground from "./playground/main"
 // import { Button, Welcome } from "@storybook/react/demo";
 
 storiesOf("Popover", module)
-  .add("Rows", () => <Rows />)
   .add("Playground", () => <Playground />)
+  .add("Rows", () => <Rows />)
 
 // storiesOf("Welcome", module).add("to Storybook", () => <Welcome showApp={linkTo("Button")} />);
 //
