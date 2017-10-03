@@ -5,7 +5,6 @@ import R from "ramda"
 import React from "react"
 import Draggable from "react-draggable"
 import Popover from "../../lib"
-import Tappable from "react-tappable"
 import * as Layout from "../../lib/layout"
 
 const debug = Debug("demo")
@@ -63,7 +62,7 @@ class Main extends React.Component {
 
     const targetToggleProps = {
       className: "Target-Toggle",
-      onTap: (e) => this.togglePopover(e)
+      onClick: (e) => this.togglePopover(e)
     }
 
     const targetMoveProps = {
@@ -78,7 +77,7 @@ class Main extends React.Component {
       <Draggable {...draggableProps}>
         <div {...targetProps}>
           <div {...targetMoveProps}>Move</div>
-          <Tappable {...targetToggleProps}>Toggle</Tappable>
+          <div {...targetToggleProps}>Toggle</div>
         </div>
       </Draggable>
     )

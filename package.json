@@ -42,7 +42,6 @@
     "babel-preset-stage-1": "^6.3.13",
     "bluebird": "^3.0.5",
     "chai": "^3.2.0",
-    "cssnext-loader": "^1.0.1",
     "eslint": "^3.17.1",
     "eslint-config-littlebits": "^0.6.2",
     "jest": "21.2.1",
@@ -52,8 +51,6 @@
     "react": "16",
     "react-dom": "16",
     "react-draggable": "3.0.3",
-    "react-hot-loader": "^1.2.4",
-    "react-tappable": "1.0.2",
     "react-test-renderer": "16",
     "release": "^1.1.7"
   },
