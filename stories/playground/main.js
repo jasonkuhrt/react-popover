@@ -87,10 +87,10 @@ class Main extends React.Component {
       isOpen: this.state.popoverIsOpen,
       preferPlace: this.state.preferPlace,
       place: this.state.place,
-      onOuterAction: this.togglePopover.bind(null, false),
+      onOuterAction: this.togglePopover.bind(this, false),
       body: [
-        <h1>Popover Title</h1>,
-        <div>Popover contents</div>
+        <h1 key="a">Popover Title</h1>,
+        <div key="b">Popover contents</div>
       ]
     }
 
