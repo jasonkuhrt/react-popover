@@ -91,6 +91,6 @@ Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 
 ---
 
-#### `appendTarget :: DOMNode`
+#### `appendTarget :: DOMElement`
 
-- The DOM node which this popover will be appended to. Defaults to 'document.body'.
+- The DOM element which the https://reactjs.org/docs/portals.html[portal] will mount into. In effect the popover will become an appended child of this DOM element. Defaults to 'document.body'.
