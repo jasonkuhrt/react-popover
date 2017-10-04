@@ -44,7 +44,7 @@
     "react-dom": "^16.0.0",
     "react-draggable": "3.0.3",
     "react-test-renderer": "16",
-    "release": "^1.1.7"
+    "release": "^2.5.2"
   },
   "bugs": {
     "url": "https://github.com/littlebits/react-popover/issues"
