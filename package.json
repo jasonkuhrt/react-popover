@@ -4,11 +4,8 @@
   "scripts": {
     "clean": "rm -rf build",
     "deploy-storybook": "storybook-to-ghpages",
-    "deploy-demos": "git checkout gh-pages && git merge master --no-edit && yarn run build-examples && git add -A && git commit -m 'Update demos' && git push && git checkout master",
     "build": "yarn run clean && babel --out-dir build lib",
     "dev": "start-storybook -p 6006",
-    "test": "jest",
-    "test-dev": "jest --watch",
     "postversion": "yarn run build && git push && git push --tags && npm publish && release",
     "build-storybook": "build-storybook"
   },
