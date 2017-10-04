@@ -30,7 +30,7 @@ Look at the link:https://littlebits.github.io/react-popover[stories in our story
 ---
 
 ##### `body :: Node | Array Node`
-The `popover` content. Content is rooted (becomes children of) `.Popover-body` and thus `body` can be a single `node` _or an array of `nodes`_.
+The `popover` content.
 
 ---
 
@@ -81,12 +81,12 @@ Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 
 ---
 
-#### `target :: React Element`
+#### `target :: ReactElement`
 
 - The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
 
 ---
 
-#### `appendTarget :: DOM selector (String)`
+#### `appendTarget :: DOMNode`
 
-- The DOM selector where this popover will be appended to. Default to 'body'.
+- The DOM node which this popover will be appended to. Defaults to 'document.body'.
