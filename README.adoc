@@ -13,7 +13,7 @@ toc::[]
 
 ## React Versions Support
 
-`react-popover` `>= 0.5.0` supports React 16 while `react-popover` `< 0.5.0` works with at least React `15.x.x` and likely down a couple versions. It is no longer actively maintained.
+`react-popover` `>= 0.5.0` supports React 16 while `react-popover` `< 0.5.0` works with React `15.x.x` and likely lower. There is no plan to support older versions of this library with back-ported patches and PRs for that purpose are not welcome since it increases maintenance for the authors.
 
 ## Installation
 
