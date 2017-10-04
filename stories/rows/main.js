@@ -36,7 +36,7 @@ const Main = () =>
   <div
     id="app"
     children={
-      F.range(0, 51).map(i => <Row children={i} />)
+      F.range(0, 51).map((i) => <Row key={i} children={i} />)
     }
   />
 
