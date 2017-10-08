@@ -1,6 +1,6 @@
 {
   "license": "MIT",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "scripts": {
     "clean": "rm -rf build",
     "deploy-storybook": "storybook-to-ghpages",
