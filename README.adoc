@@ -4,29 +4,26 @@
 
 # react-popover
 
-A specification backed popover for react. <<demos, See demos>>.
+image:https://travis-ci.org/littlebits/react-popover.svg?branch=master["Build Status", link="https://travis-ci.org/littlebits/react-popover"]
+
 
 toc::[]
 
 
 
+## React Versions Support
+
+`react-popover` `>= 0.5.0` supports React 16 while `react-popover` `< 0.5.0` works with React `15.x.x` and likely lower. There is no plan to support older versions of this library with back-ported patches and PRs for that purpose are not welcome since it increases maintenance for the authors.
+
 ## Installation
 
 ```
-npm install --save react-popover
+yarn add react-popover
 ```
 
+## Examples
 
-
-## Demos
-
-* link:https://littlebits.github.io/react-popover/build/playground.html[Playground]
-* link:https://littlebits.github.io/react-popover/build/rows.html[Rows]
-* link:https://littlebits.github.io/react-popover/build/jsx.html[Using JSX]
-
-To run demos locally execute `npm start`. If you do not see logs in the console refresh the browser once (https://github.com/littlebits/react-popover/issues/35).
-
-
+Look at the link:https://littlebits.github.io/react-popover[stories in our storybook].
 
 ## API
 
@@ -37,7 +34,7 @@ To run demos locally execute `npm start`. If you do not see logs in the console 
 ---
 
 ##### `body :: Node | Array Node`
-The `popover` content. Content is rooted (becomes children of) `.Popover-body` and thus `body` can be a single `node` _or an array of `nodes`_.
+The `popover` content.
 
 ---
 
@@ -64,13 +61,22 @@ Like `preferPlace` except that the given place is a ***requirement***. The resol
 ##### `onOuterAction :: (Event) -> Void`
 A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
 
-
 ---
 
 ##### `refreshIntervalMs :: Number | Falsey`
 The polling speed (AKA time between each poll) in milliseconds for checking if a layout refresh is required. This polling is required because it is the only robust way to track the position of a target in the DOM. Defaults to `200`. Set to a falsey value to disable.
 
---- 
+---
+
+#### `enterExitTransitionDurationMs :: Number | Falsey`
+The amount of time in milliseconds that it takes to complete the enter and exit animation. Defaults to '500'.
+
+---
+
+#### `tipSize :: Number`
+Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
+
+---
 
 ##### Standard
 
@@ -79,6 +85,12 @@ The polling speed (AKA time between each poll) in milliseconds for checking if a
 
 ---
 
-#### `target :: React Element`
+#### `target :: ReactElement`
 
 - The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
+
+---
+
+#### `appendTarget :: DOMElement`
+
+- The DOM element which the https://reactjs.org/docs/portals.html[portal] will mount into. In effect the popover will become an appended child of this DOM element. Defaults to 'document.body'.

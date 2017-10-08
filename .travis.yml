@@ -1,0 +1,16 @@
+language: node_js
+cache:
+  yarn: true
+  directories:
+    - node_modules
+notifications:
+  email: false
+node_js:
+  - '7'
+before_script:
+  - npm prune
+script:
+  - npm test
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/
