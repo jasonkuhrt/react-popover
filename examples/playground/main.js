@@ -23,7 +23,8 @@ const createOption = (type) => (
     key: type,
     value: type,
     children: type
-  }))
+  })
+)
 
 const createPreferPlaceOptions = R.compose(
   R.prepend([E.option({ key: "null", value: null }, "null")]),
