@@ -99,3 +99,8 @@ Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 
 - The DOM selector where this popover will be appended to. Default to 'body'.
 
+---
+
+#### `Tip :: React Component`
+
+- The React Component to use when rendering the tip of the popover. Default to built-in `Tip`.
