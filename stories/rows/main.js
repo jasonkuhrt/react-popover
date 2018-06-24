@@ -4,17 +4,15 @@ import Popover from "../../source";
 import "../base.css";
 import "./main.css";
 
-
-
 class Row extends React.Component {
   state = {
-    isOpen: false,
+    isOpen: false
+  };
+  toggle(toState = null) {
+    this.setState({ isOpen: toState === null ? !this.state.isOpen : toState });
   }
-  toggle (toState = null) {
-    this.setState({ isOpen: toState === null ? !this.state.isOpen : toState })
-  }
-  render () {
-    const { isOpen } = this.state
+  render() {
+    const { isOpen } = this.state;
     return (
       <Popover
         isOpen={isOpen}
@@ -28,16 +26,15 @@ class Row extends React.Component {
           />
         }
       />
-    )
+    );
   }
 }
 
-const Main = () =>
+const Main = () => (
   <div
     id="app"
-    children={
-      F.range(0, 51).map((i) => <Row key={i} children={i} />)
-    }
+    children={F.range(0, 51).map(i => <Row key={i} children={i} />)}
   />
+);
 
-export default Main
+export default Main;
