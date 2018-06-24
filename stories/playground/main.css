@@ -1,4 +1,3 @@
-
 /* Boilerplate */
 
 html {
@@ -10,15 +9,11 @@ html {
   align-items: center;
 }
 
-
-
 /* Popover */
 
 .Popover-body {
   padding: 4rem;
 }
-
-
 
 /* Target */
 
@@ -51,8 +46,6 @@ html {
 .Target.is-open .Target-Toggle {
   background: hsl(346, 80%, 50%);
 }
-
-
 
 /* Demo Controls */
 

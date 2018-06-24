@@ -1,14 +1,14 @@
-import React from "react"
-import T from "prop-types"
-import ReactDOM from "react-dom"
+import * as cssVendor from "css-vendor"
 import Debug from "debug"
 import throttle from "lodash.throttle"
-import * as cssVendor from "css-vendor"
-import resizeEvent from "./on-resize"
+import T from "prop-types"
+import React from "react"
+import ReactDOM from "react-dom"
 import Layout from "./layout"
+import resizeEvent from "./on-resize"
 import Platform from "./platform"
-import Utils from "./utils"
 import Tip from "./tip"
+import Utils from "./utils"
 
 const log = Debug("react-popover")
 
@@ -112,7 +112,7 @@ class Popover extends React.Component {
     if (didOpen) this.enter()
     else if (didClose) this.exit()
   }
-  componentWillUnmount () {
+  componentWillUnmount() {
     /* If the Popover is unmounted while animating,
     clear the animation so no setState occured */
     this.animateExitStop()
@@ -274,9 +274,9 @@ class Popover extends React.Component {
         pos.crossLength - dockingEdgeBufferLength - this.props.tipSize * 2
     }
 
-    this.tipEl.style.transform = `${flowToTipTranslations[
-      zone.flow
-    ]}(${tipCrossPos}px)`
+    this.tipEl.style.transform = `${
+      flowToTipTranslations[zone.flow]
+    }(${tipCrossPos}px)`
     this.tipEl.style[jsprefix("Transform")] = this.tipEl.style.transform
   }
   checkTargetReposition = () => {
@@ -326,9 +326,9 @@ class Popover extends React.Component {
     this.exitingAnimationTimer2 = setTimeout(() => {
       setTimeout(() => {
         if (this.containerEl) {
-          this.containerEl.style.transform = `${flowToPopoverTranslations[
-            this.zone.flow
-          ]}(${this.zone.order * 50}px)`
+          this.containerEl.style.transform = `${
+            flowToPopoverTranslations[this.zone.flow]
+          }(${this.zone.order * 50}px)`
           this.containerEl.style.opacity = "0"
         }
       }, 0)
@@ -341,9 +341,9 @@ class Popover extends React.Component {
   animateEnter() {
     /* Prepare `entering` style so that we can then animate it toward `entered`. */
 
-    this.containerEl.style.transform = `${flowToPopoverTranslations[
-      this.zone.flow
-    ]}(${this.zone.order * 50}px)`
+    this.containerEl.style.transform = `${
+      flowToPopoverTranslations[this.zone.flow]
+    }(${this.zone.order * 50}px)`
     this.containerEl.style[
       jsprefix("Transform")
     ] = this.containerEl.style.transform
@@ -361,8 +361,9 @@ class Popover extends React.Component {
       )} 150ms ease-in`
     }
     this.containerEl.style.transitionProperty = "top, left, opacity, transform"
-    this.containerEl.style.transitionDuration = `${this.props
-      .enterExitTransitionDurationMs}ms`
+    this.containerEl.style.transitionDuration = `${
+      this.props.enterExitTransitionDurationMs
+    }ms`
     this.containerEl.style.transitionTimingFunction =
       "cubic-bezier(0.230, 1.000, 0.320, 1.000)"
     this.containerEl.style.opacity = "1"

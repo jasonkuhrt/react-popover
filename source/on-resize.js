@@ -1,15 +1,16 @@
 /* eslint no-param-reassign: 0 */
 
-import { window, isServer } from "./platform"
+import { isServer, window } from "./platform"
 import { noop } from "./utils"
-
 
 const requestAnimationFrame = isServer
   ? noop
   : window.requestAnimationFrame ||
     window.mozRequestAnimationFrame ||
     window.webkitRequestAnimationFrame ||
-    ((fn) => { window.setTimeout(fn, 20) })
+    (fn => {
+      window.setTimeout(fn, 20)
+    })
 
 const cancelAnimationFrame = isServer
   ? noop
@@ -22,19 +23,18 @@ const isIE = isServer ? false : navigator.userAgent.match(/Trident/)
 
 const namespace = "__resizeDetector__"
 
-
-
-const uninitialize = (el) => {
+const uninitialize = el => {
   el[namespace].destroy()
   el[namespace] = undefined
 }
 
-
-
 const createElementHack = () => {
   const el = document.createElement("object")
   el.className = "resize-sensor"
-  el.setAttribute("style", "display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;")
+  el.setAttribute(
+    "style",
+    "display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;",
+  )
   el.setAttribute("class", "resize-sensor")
   el.setAttribute("tabindex", "-1")
   el.type = "text/html"
@@ -42,19 +42,18 @@ const createElementHack = () => {
   return el
 }
 
-
-
-const initialize = (el) => {
-
-  const detector = el[namespace] = {}
+const initialize = el => {
+  const detector = (el[namespace] = {})
   detector.listeners = []
 
-  const onResize = (e) => {
+  const onResize = e => {
     /* Keep in mind e.target could be el OR objEl. In this current implementation we don't seem to need to know this but its important
     to not forget e.g. in some future refactoring scenario. */
     if (detector.resizeRAF) cancelAnimationFrame(detector.resizeRAF)
     detector.resizeRAF = requestAnimationFrame(() => {
-      detector.listeners.forEach((fn) => { fn(e) })
+      detector.listeners.forEach(fn => {
+        fn(e)
+      })
     })
   }
 
@@ -71,7 +70,7 @@ const initialize = (el) => {
       el.style.position = "relative"
     }
     const objEl = createElementHack()
-    objEl.onload = function (/* event */) {
+    objEl.onload = function(/* event */) {
       this.contentDocument.defaultView.addEventListener("resize", onResize)
     }
     detector.destroy = () => {
@@ -79,7 +78,7 @@ const initialize = (el) => {
       if (el.contains(objEl)) {
         // Event handlers will be automatically removed.
         // http://stackoverflow.com/questions/12528049/if-a-dom-element-is-removed-are-its-listeners-also-removed-from-memory
-        el.removeChild(objEl);
+        el.removeChild(objEl)
       }
     }
 
@@ -87,10 +86,7 @@ const initialize = (el) => {
   }
 }
 
-
-
 const on = (el, fn) => {
-
   /* Window object natively publishes resize events. We handle it as a
   special case here so that users do not have to think about two APIs. */
 
@@ -105,8 +101,6 @@ const on = (el, fn) => {
   el[namespace].listeners.push(fn)
 }
 
-
-
 const off = (el, fn) => {
   if (el === window) {
     window.removeEventListener("resize", fn)
@@ -119,17 +113,10 @@ const off = (el, fn) => {
   if (!detector.listeners.length) uninitialize(el)
 }
 
-
-
 export default {
   on,
   off,
   addEventListener: on,
   removeEventListener: off,
 }
-export {
-  on,
-  off,
-  on as addEventListener,
-  off as removeEventListener,
-}
+export { on, off, on as addEventListener, off as removeEventListener }

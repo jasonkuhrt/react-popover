@@ -1,10 +1,7 @@
-
 const isServer = typeof window === "undefined"
 const isClient = !isServer
 const WINDOW = isClient ? window : null
 const DOCUMENT = isClient ? document : null
-
-
 
 export default {
   isServer,
@@ -12,9 +9,4 @@ export default {
   window: WINDOW,
   document: DOCUMENT,
 }
-export {
-  isServer,
-  isClient,
-  WINDOW as window,
-  DOCUMENT as document,
-}
+export { isServer, isClient, WINDOW as window, DOCUMENT as document }

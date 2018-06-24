@@ -1,19 +1,17 @@
-import F from "ramda";
-import React from "react";
-import Popover from "../../source";
-import "../base.css";
-import "./main.css";
-
-
+import F from "ramda"
+import React from "react"
+import Popover from "../../source"
+import "../base.css"
+import "./main.css"
 
 class Row extends React.Component {
   state = {
     isOpen: false,
   }
-  toggle (toState = null) {
+  toggle(toState = null) {
     this.setState({ isOpen: toState === null ? !this.state.isOpen : toState })
   }
-  render () {
+  render() {
     const { isOpen } = this.state
     return (
       <Popover
@@ -32,12 +30,11 @@ class Row extends React.Component {
   }
 }
 
-const Main = () =>
+const Main = () => (
   <div
     id="app"
-    children={
-      F.range(0, 51).map((i) => <Row key={i} children={i} />)
-    }
+    children={F.range(0, 51).map(i => <Row key={i} children={i} />)}
   />
+)
 
 export default Main

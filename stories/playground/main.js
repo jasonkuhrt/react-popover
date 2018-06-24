@@ -1,76 +1,70 @@
-import Debug from "debug";
-import R from "ramda";
-import React from "react";
-import Draggable from "react-draggable";
-import Popover from "../../source";
-import * as Layout from "../../source/layout";
-import "../base.css";
-import "./main.css";
+import Debug from "debug"
+import R from "ramda"
+import React from "react"
+import Draggable from "react-draggable"
+import Popover from "../../source"
+import * as Layout from "../../source/layout"
+import "../base.css"
+import "./main.css"
 
 const debug = Debug("demo")
 
 Debug.enable("react-popover,demo")
 
-const Option = (type) => (
-  <option
-    key={type}
-    value={type}
-    children={type}
-  />
-)
+const Option = type => <option key={type} value={type} children={type} />
 
 const createPreferPlaceOptions = R.compose(
   R.prepend([<option key="null" value={null} children="null" />]),
   R.map(Option),
   R.flatten,
   R.map(R.path(["values"])),
-  R.path(["types"])
+  R.path(["types"]),
 )
 
 class Main extends React.Component {
   state = {
     popoverIsOpen: false,
     preferPlace: null,
-    place: null
+    place: null,
   }
-  togglePopover (toState) {
+  togglePopover(toState) {
     debug("togglePopover")
-    const popoverIsOpen = typeof toState === "boolean"
-      ? toState
-      : !this.state.popoverIsOpen
+    const popoverIsOpen =
+      typeof toState === "boolean" ? toState : !this.state.popoverIsOpen
     this.setState({
-      popoverIsOpen
+      popoverIsOpen,
     })
   }
-  changePreferPlace (event) {
-    const preferPlace = event.target.value === "null" ? null : event.target.value
+  changePreferPlace(event) {
+    const preferPlace =
+      event.target.value === "null" ? null : event.target.value
     this.setState({ preferPlace })
   }
-  changePlace (event) {
+  changePlace(event) {
     const place = event.target.value === "null" ? null : event.target.value
     this.setState({ place })
   }
-  render () {
+  render() {
     debug("render")
 
     const targetProps = {
       className: [
         "Target",
-        `is-${[ "closed", "open" ][Number(this.state.popoverIsOpen)]}`
-      ].join(" ")
+        `is-${["closed", "open"][Number(this.state.popoverIsOpen)]}`,
+      ].join(" "),
     }
 
     const targetToggleProps = {
       className: "Target-Toggle",
-      onClick: (e) => this.togglePopover(e)
+      onClick: e => this.togglePopover(e),
     }
 
     const targetMoveProps = {
-      className: "Target-Move"
+      className: "Target-Move",
     }
 
     const draggableProps = {
-      handle: ".Target-Move"
+      handle: ".Target-Move",
     }
 
     const target = (
@@ -89,18 +83,18 @@ class Main extends React.Component {
       onOuterAction: () => this.togglePopover(false),
       body: [
         <h1 key="a">Popover Title</h1>,
-        <div key="b">Popover contents</div>
-      ]
+        <div key="b">Popover contents</div>,
+      ],
     }
 
     const controls = (
       <form>
         <label htmlFor="preferPlace">preferPlace </label>
-        <select id="preferPlace" onChange={(e) => this.changePreferPlace(e)}>
+        <select id="preferPlace" onChange={e => this.changePreferPlace(e)}>
           {createPreferPlaceOptions(Layout)}
         </select>
         <label htmlFor="place">place </label>
-        <select id="place" onChange={(e) => this.changePlace(e)}>
+        <select id="place" onChange={e => this.changePlace(e)}>
           {createPreferPlaceOptions(Layout)}
         </select>
       </form>
