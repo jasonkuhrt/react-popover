@@ -1,11 +1,11 @@
-import "../base.css"
-import "./main.css"
-import Debug from "debug"
-import R from "ramda"
-import React from "react"
-import Draggable from "react-draggable"
-import Popover from "../../lib"
-import * as Layout from "../../lib/layout"
+import Debug from "debug";
+import R from "ramda";
+import React from "react";
+import Draggable from "react-draggable";
+import Popover from "../../source";
+import * as Layout from "../../source/layout";
+import "../base.css";
+import "./main.css";
 
 const debug = Debug("demo")
 

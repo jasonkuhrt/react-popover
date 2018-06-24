@@ -1,8 +1,8 @@
-import "../base.css"
-import "./main.css"
-import F from "ramda"
-import React from "react"
-import Popover from "../../lib"
+import F from "ramda";
+import React from "react";
+import Popover from "../../source";
+import "../base.css";
+import "./main.css";
 
 
 
