@@ -42,8 +42,8 @@
     "prettier": "^1.13.5",
     "pretty-quick": "^1.6.0",
     "ramda": "^0.18.0",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
     "react-draggable": "3.0.3",
     "react-test-renderer": "16",
     "release": "^4.0.0"

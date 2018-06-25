@@ -7,6 +7,10 @@ import * as Layout from "../../source/layout"
 import "../base.css"
 import "./main.css"
 
+const SomethingPure = () => {
+  return <div>something pure</div>
+}
+
 const debug = Debug("demo")
 
 Debug.enable("react-popover,demo")
