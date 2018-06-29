@@ -236,19 +236,22 @@ class Popover extends React.Component {
     of the container. When tip changes orientation position due to changes from/to `row`/`column`
     width`/`height` will be impacted. Our layout monitoring will catch these cases and automatically
     recalculate layout. */
-
-    this.containerEl.style.flexFlow = zone.flow
-    this.containerEl.style[
-      jsprefix("FlexFlow")
-    ] = this.containerEl.style.flexFlow
+    if (this.containerEl) {
+      this.containerEl.style.flexFlow = zone.flow
+      this.containerEl.style[
+        jsprefix("FlexFlow")
+      ] = this.containerEl.style.flexFlow
+    }
     this.bodyEl.style.order = zone.order
     this.bodyEl.style[jsprefix("Order")] = this.bodyEl.style.order
 
     /* Apply Absolute Positioning. */
 
     log("pos", pos)
-    this.containerEl.style.top = `${pos.y}px`
-    this.containerEl.style.left = `${pos.x}px`
+    if (this.containerEl) {
+      this.containerEl.style.top = `${pos.y}px`
+      this.containerEl.style.left = `${pos.x}px`
+    }
 
     /* Calculate Tip Position */
 
