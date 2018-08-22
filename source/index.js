@@ -2,8 +2,6 @@
 // import Debug from "debug"
 // import throttle from "lodash.throttle"
 // import T from "prop-types"
-// import Layout from "./layout"
-// import resizeEvent from "./on-resize"
 // import Tip from "./tip"
 // import Utils from "./utils"
 import * as Forto from "forto"
