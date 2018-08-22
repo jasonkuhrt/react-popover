@@ -1,4 +1,5 @@
 import Debug from "debug"
+import * as Forto from "forto"
 import R from "ramda"
 import React from "react"
 import Draggable from "react-draggable"
@@ -6,6 +7,8 @@ import Popover from "../../source"
 import * as Layout from "../../source/layout"
 import "../base.css"
 import "./main.css"
+
+window.Forto = Forto
 
 const SomethingPure = () => {
   return <div>something pure</div>
@@ -89,6 +92,7 @@ class Main extends React.Component {
         <h1 key="a">Popover Title</h1>,
         <div key="b">Popover contents</div>,
       ],
+      appendTarget: document.querySelector("#root"),
     }
 
     const controls = (

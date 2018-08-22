@@ -13,6 +13,7 @@ import Platform from "./platform"
 
 class Popover extends React.Component {
   static defaultProps = {
+    // TODO This will not work out well, body gets wiped
     appendTarget: Platform.isClient ? Platform.document.body : null,
   }
 
@@ -33,8 +34,8 @@ class Popover extends React.Component {
         // tip: null,
         popover: this.popoverRef.current,
       }
-      const layouts = Forto.Dom.observeWithPolling({}, arrangement)
-      this.layoutsSubscription = layouts.subscribe(newLayout => {
+      const layoutChangesStream = Forto.DOM.observeWithPolling({}, arrangement)
+      this.layoutsSubscription = layoutChangesStream.subscribe(newLayout => {
         arrangement.popover.style.top = `${newLayout.popover.y}px`
         arrangement.popover.style.left = `${newLayout.popover.x}px`
       })
