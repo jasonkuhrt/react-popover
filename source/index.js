@@ -9,6 +9,15 @@ import React from "react"
 import ReactDOM from "react-dom"
 import Platform from "./platform"
 
+const startLayoutEngine = arrangement => {
+  const applyNewLayout = arrangement => newLayout => {
+    arrangement.popover.style.top = `${newLayout.popover.y}px`
+    arrangement.popover.style.left = `${newLayout.popover.x}px`
+  }
+  const layoutChangesStream = Forto.DOM.observeWithPolling({}, arrangement)
+  return layoutChangesStream.subscribe(applyNewLayout(arrangement))
+}
+
 class Popover extends React.Component {
   static defaultProps = {
     // TODO This will not work out well, body gets wiped
@@ -19,11 +28,7 @@ class Popover extends React.Component {
     super(props)
     this.popoverRef = React.createRef()
   }
-  componentDidMount() {
-    if (this.props.isOpen) {
-      this.toggleForto()
-    }
-  }
+
   toggleForto(isEnabled) {
     if (isEnabled) {
       const arrangement = {
@@ -32,20 +37,24 @@ class Popover extends React.Component {
         // tip: null,
         popover: this.popoverRef.current,
       }
-      const layoutChangesStream = Forto.DOM.observeWithPolling({}, arrangement)
-      this.layoutsSubscription = layoutChangesStream.subscribe(newLayout => {
-        arrangement.popover.style.top = `${newLayout.popover.y}px`
-        arrangement.popover.style.left = `${newLayout.popover.x}px`
-      })
+      this.layoutChangesSubscription = startLayoutEngine(arrangement)
     } else {
-      this.layoutsSubscription.unsubscribe()
+      this.layoutChangesSubscription.unsubscribe()
     }
   }
+
+  componentDidMount() {
+    if (this.props.isOpen) {
+      this.toggleForto()
+    }
+  }
+
   componentDidUpdate(previousProps) {
     if (this.props.isOpen !== previousProps.isOpen) {
       this.toggleForto(this.props.isOpen)
     }
   }
+
   render() {
     const popover = !this.props.isOpen ? null : (
       <div
