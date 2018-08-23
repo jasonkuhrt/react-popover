@@ -4,7 +4,6 @@ import R from "ramda"
 import React from "react"
 import Draggable from "react-draggable"
 import Popover from "../../source"
-import * as Layout from "../../source/layout"
 import "../base.css"
 import "./main.css"
 
@@ -23,9 +22,13 @@ const Option = type => <option key={type} value={type} children={type} />
 const createPreferPlaceOptions = R.compose(
   R.prepend([<option key="null" value={null} children="null" />]),
   R.map(Option),
-  R.flatten,
-  R.map(R.path(["values"])),
-  R.path(["types"]),
+  Forto => {
+    return [
+      ...R.values(Forto.Settings.Order),
+      ...R.values(Forto.Settings.Ori.Side),
+      ...R.values(Forto.Settings.Ori.Ori),
+    ]
+  },
 )
 
 class Main extends React.Component {
@@ -99,11 +102,11 @@ class Main extends React.Component {
       <form>
         <label htmlFor="preferPlace">preferPlace </label>
         <select id="preferPlace" onChange={e => this.changePreferPlace(e)}>
-          {createPreferPlaceOptions(Layout)}
+          {createPreferPlaceOptions(Forto)}
         </select>
         <label htmlFor="place">place </label>
         <select id="place" onChange={e => this.changePlace(e)}>
-          {createPreferPlaceOptions(Layout)}
+          {createPreferPlaceOptions(Forto)}
         </select>
       </form>
     )
