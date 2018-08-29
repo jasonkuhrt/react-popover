@@ -35,6 +35,12 @@ class Main extends React.Component {
       popoverIsOpen,
     })
   }
+  closePopoverWhenEscaping(event) {
+    debug("closePopoverWhenEscaping")
+    if (event.key === "Escape") {
+      this.togglePopover(false)
+    }
+  }
   changePreferPlace(event) {
     const preferPlace =
       event.target.value === "null" ? null : event.target.value
@@ -56,7 +62,12 @@ class Main extends React.Component {
 
     const targetToggleProps = {
       className: "Target-Toggle",
+      tabIndex: "0",
+      "aria-describedby": "Popover-body",
       onClick: e => this.togglePopover(e),
+      onKeyDown: e => this.closePopoverWhenEscaping(e),
+      onFocus: e => this.togglePopover(true),
+      onBlur: e => this.togglePopover(false),
     }
 
     const targetMoveProps = {
