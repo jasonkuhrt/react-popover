@@ -131,4 +131,4 @@ closePopoverWhenEscaping = event => {
 </Popover>
 ```
 
-Additional information on keyboard accessibility can be found on the [webAIM website](https://webaim.org/techniques/keyboard/)
+Additional information on keyboard accessibility can be found on the https://webaim.org/techniques/keyboard/[webAIM website]
