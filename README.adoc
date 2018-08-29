@@ -97,7 +97,7 @@ Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 
 ## Accessibility
 
-react-popover tries to ensure the popover will be accessible for screen reader technology, however if the content is complex or the parent element of the popover content is not visibly rendered you may have to supply the popover the `aria-describedby` attribute with the `Popover-body` manually:
+react-popover tries to ensure the popover will be accessible for screen reader technology, however if the content is complex or multiple children elements are passed in you will have to supply the popover the `aria-describedby` attribute with the `Popover-body` manually:
 ```js
 <Popover isOpen={isOpen} body="This is where you would explain stuff">
   <MyComplexComponent

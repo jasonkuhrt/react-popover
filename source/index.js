@@ -486,13 +486,22 @@ class Popover extends React.Component {
   getContainerNodeRef = containerEl => {
     Object.assign(this, { containerEl })
   }
+  childrenWithOptionalAccessibilityProps(popoverBodyId) {
+    const { children } = this.props
+
+    if (React.Children.count(children) === 1) {
+      return React.cloneElement(this.props.children, {
+        "aria-describedby": popoverBodyId,
+      })
+    } else {
+      return children
+    }
+  }
+
   render() {
     const { className = "", style = {}, tipSize } = this.props
     const { standing } = this.state
     const popoverBodyId = "Popover-body"
-    const childWithAccessibility = React.cloneElement(this.props.children, {
-      "aria-describedby": popoverBodyId,
-    })
 
     const popoverProps = {
       className: `Popover Popover-${standing} ${className}`,
@@ -511,7 +520,7 @@ class Popover extends React.Component {
       </div>
     )
     return [
-      childWithAccessibility,
+      this.childrenWithOptionalAccessibilityProps(popoverBodyId),
       Platform.isClient &&
         ReactDOM.createPortal(popover, this.props.appendTarget),
     ]
