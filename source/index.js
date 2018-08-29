@@ -489,6 +489,10 @@ class Popover extends React.Component {
   render() {
     const { className = "", style = {}, tipSize } = this.props
     const { standing } = this.state
+    const popoverBodyId = "Popover-body"
+    const childWithAccessibility = React.cloneElement(this.props.children, {
+      "aria-describedby": popoverBodyId,
+    })
 
     const popoverProps = {
       className: `Popover Popover-${standing} ${className}`,
@@ -497,12 +501,17 @@ class Popover extends React.Component {
 
     const popover = this.state.exited ? null : (
       <div ref={this.getContainerNodeRef} {...popoverProps}>
-        <div className="Popover-body" children={this.props.body} />
+        <div
+          className="Popover-body"
+          id={popoverBodyId}
+          children={this.props.body}
+          role="tooltip"
+        />
         <Tip direction={faces[standing]} size={tipSize} />
       </div>
     )
     return [
-      this.props.children,
+      childWithAccessibility,
       Platform.isClient &&
         ReactDOM.createPortal(popover, this.props.appendTarget),
     ]
