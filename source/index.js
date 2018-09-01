@@ -50,13 +50,6 @@ class Popover extends React.Component {
   toggleForto(isEnabled) {
     if (isEnabled) {
       // TODO Remove
-      // console.log(
-      //   this.popoverRef.current && this.popoverRef.current.querySelector("svg"),
-      // )
-      // console.log(
-      //   this.popoverRef.current &&
-      //     this.popoverRef.current.querySelector(".Popover-body"),
-      // )
       const arrangement = {
         target: ReactDOM.findDOMNode(this),
         frame: window,
@@ -67,42 +60,17 @@ class Popover extends React.Component {
       const layoutChangesStream = Forto.DOM.observeWithPolling({}, arrangement)
       this.layoutChangesSubscription = layoutChangesStream.subscribe(
         newLayout => {
-          // TODO remove
-          console.log("arrangement", arrangement)
+          const px = n => `${n}px`
 
           // TODO Add forto setting to return absolute instead of relative tip positioning.
           // Or just always provide both. Also adjust popover layout to fit in tip, hmm
           // not already done?
-          arrangement.popover.style.top = `${newLayout.popover.y +
-            this.props.tipSize *
-              (newLayout.zone.side === "Bottom"
-                ? 1
-                : newLayout.zone.side === "Top"
-                  ? -1
-                  : 0)}px`
-          arrangement.popover.style.left = `${newLayout.popover.x +
-            this.props.tipSize *
-              (newLayout.zone.side === "Right"
-                ? 1
-                : newLayout.zone.side === "Left"
-                  ? -1
-                  : 0)}px`
-          arrangement.tip.style.top = `${newLayout.tip.y +
-            +(newLayout.zone.side === "Bottom"
-              ? newLayout.popover.y
-              : newLayout.zone.side === "Top"
-                ? newLayout.popover.y +
-                  arrangement.popover.getBoundingClientRect().height -
-                  arrangement.tip.getBoundingClientRect().height
-                : 0)}px`
-          arrangement.tip.style.left = `${newLayout.tip.x +
-            (newLayout.zone.side === "Right"
-              ? newLayout.popover.x
-              : newLayout.zone.side === "Left"
-                ? newLayout.popover.x +
-                  arrangement.popover.getBoundingClientRect().width -
-                  arrangement.tip.getBoundingClientRect().width
-                : 0)}px`
+          arrangement.popover.style.top = px(newLayout.popover.y)
+          arrangement.popover.style.left = px(newLayout.popover.x)
+          arrangement.tip.style.top = px(newLayout.tip.y)
+          arrangement.tip.style.left = px(newLayout.tip.x)
+          console.log("newLayout.popover.y", newLayout.popover.y)
+          console.log("newLayout.tip.y", newLayout.tip.y)
 
           // TODO Refactor. Maybe one function instead of two to make calculations
           const tipDim = calcTipWidthHeight(
@@ -138,7 +106,6 @@ class Popover extends React.Component {
 
   render() {
     if (this.props.isOpen) {
-      console.log("layout", this.state.layout)
     }
     const popover = !this.props.isOpen ? null : (
       <div ref={this.popoverRef}>
