@@ -31,3 +31,4 @@ npm-debug.log*
 build/
 
 .idea
+storybook-static/
