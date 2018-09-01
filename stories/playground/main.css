@@ -21,30 +21,31 @@ html {
   -webkit-user-select: none;
   position: relative;
   display: inline-block;
-  color: hsla(0, 0%, 0%, 0.45);
-  color: white;
   white-space: pre-wrap;
   text-align: center;
   text-transform: uppercase;
-  border-radius: 0.2rem;
   overflow: hidden;
+}
+
+.Target-Move,
+.Target-Toggle {
+  border: 1px solid hsla(0, 0%, 0%, 50%);
+}
+
+.Target > *:active {
+  border-color: hsla(0, 0%, 0%, 100%);
 }
 
 .Target-Move {
   padding: 1rem;
   cursor: move;
-  border-bottom: 1px solid white;
-  background: hsl(173, 69%, 48%);
+  border-bottom-width: 0px;
 }
 
 .Target-Toggle {
   display: block;
   padding: 1rem;
   cursor: pointer;
-  background: hsl(346, 62%, 55%);
-}
-.Target.is-open .Target-Toggle {
-  background: hsl(346, 80%, 50%);
 }
 
 /* Demo Controls */
