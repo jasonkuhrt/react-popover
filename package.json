@@ -10,7 +10,6 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "css-vendor": "^0.3.1",
     "prop-types": "^15.5.10"
   },
   "repository": {
