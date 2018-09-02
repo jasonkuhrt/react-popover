@@ -29,8 +29,6 @@ class Popover extends React.Component {
     onOuterAction: T.func,
     // enterExitTransitionDurationMs: T.number, TODO
     // offset: T.number, TODO
-    // className: T.string,
-    // style: T.object,
   }
   static defaultProps = {
     tipSize: 7,
