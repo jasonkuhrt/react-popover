@@ -1,6 +1,4 @@
 // import * as cssVendor from "css-vendor"
-// import Debug from "debug"
-// import throttle from "lodash.throttle"
 // import T from "prop-types"
 import * as Forto from "forto"
 import React from "react"

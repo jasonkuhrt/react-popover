@@ -1,4 +1,3 @@
-import Debug from "debug"
 import * as Forto from "forto"
 import R from "ramda"
 import React from "react"
@@ -8,14 +7,6 @@ import "../base.css"
 import "./main.css"
 
 window.Forto = Forto
-
-const SomethingPure = () => {
-  return <div>something pure</div>
-}
-
-const debug = Debug("demo")
-
-Debug.enable("react-popover,demo")
 
 const Option = type => <option key={type} value={type} children={type} />
 
@@ -38,7 +29,6 @@ class Main extends React.Component {
     place: null,
   }
   togglePopover(toState) {
-    debug("togglePopover")
     const popoverIsOpen =
       typeof toState === "boolean" ? toState : !this.state.popoverIsOpen
     this.setState({
@@ -55,8 +45,6 @@ class Main extends React.Component {
     this.setState({ place })
   }
   render() {
-    debug("render")
-
     const targetProps = {
       className: [
         "Target",
