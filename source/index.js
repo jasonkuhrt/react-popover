@@ -8,7 +8,6 @@ import { px } from "./utils"
 
 class Popover extends React.Component {
   static defaultProps = {
-    // TODO This will not work out well, body gets wiped
     appendTarget: Platform.isClient ? Platform.document.body : null,
     tipSize: 7,
   }
