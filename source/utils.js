@@ -1,3 +1,5 @@
 const px = n => `${n}px`
 
-export { px }
+const noop = () => {}
+
+export { px, noop }
