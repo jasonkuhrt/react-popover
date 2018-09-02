@@ -17,43 +17,52 @@ class Popover extends React.Component {
   constructor(props) {
     super(props)
     this.popoverRef = React.createRef()
-    this.tipRef = React.createRef()
     this.state = {}
   }
 
   toggleForto(isEnabled) {
     if (isEnabled) {
-      const arrangement = {
-        target: ReactDOM.findDOMNode(this),
-        frame: window,
-        tip: this.popoverRef.current.querySelector("svg"),
-        popover: this.popoverRef.current.querySelector(".Popover-body"),
-      }
-
-      const updateArrangement = newLayout => {
-        arrangement.popover.style.top = px(newLayout.popover.y)
-        arrangement.popover.style.left = px(newLayout.popover.x)
-        arrangement.tip.style.top = px(newLayout.tip.y)
-        arrangement.tip.style.left = px(newLayout.tip.x)
-        Tip.updateElementShape(
-          arrangement.tip,
-          Tip.calcShape(this.props.tipSize, newLayout.zone.side),
-        )
-      }
-
-      const layoutChangesStream = Forto.DOM.observeWithPolling({}, arrangement)
-      this.layoutChangesSubscription = layoutChangesStream.subscribe(
-        updateArrangement,
-      )
+      this.enableForto()
     } else {
+      this.disableForto()
+    }
+  }
+
+  enableForto() {
+    const arrangement = {
+      target: ReactDOM.findDOMNode(this),
+      frame: window,
+      tip: this.popoverRef.current.querySelector("svg"),
+      popover: this.popoverRef.current.querySelector(".Popover-body"),
+    }
+
+    const updateArrangement = newLayout => {
+      arrangement.popover.style.top = px(newLayout.popover.y)
+      arrangement.popover.style.left = px(newLayout.popover.x)
+      arrangement.tip.style.top = px(newLayout.tip.y)
+      arrangement.tip.style.left = px(newLayout.tip.x)
+      Tip.updateElementShape(
+        arrangement.tip,
+        Tip.calcShape(this.props.tipSize, newLayout.zone.side),
+      )
+    }
+
+    const layoutChangesStream = Forto.DOM.observeWithPolling({}, arrangement)
+    this.layoutChangesSubscription = layoutChangesStream.subscribe(
+      updateArrangement,
+    )
+  }
+
+  disableForto() {
+    // disable may occur without there having been a subscription; For example,
+    // it may occur on component mount.
+    if (this.layoutChangesSubscription) {
       this.layoutChangesSubscription.unsubscribe()
     }
   }
 
   componentDidMount() {
-    if (this.props.isOpen) {
-      this.toggleForto()
-    }
+    this.toggleForto(this.props.isOpen)
   }
 
   componentDidUpdate(previousProps) {
@@ -63,8 +72,6 @@ class Popover extends React.Component {
   }
 
   render() {
-    if (this.props.isOpen) {
-    }
     const popover = !this.props.isOpen ? null : (
       <div ref={this.popoverRef}>
         <div
