@@ -1,12 +1,15 @@
 // import T from "prop-types"
 import * as Forto from "forto"
-import React from "react"
-import ReactDOM from "react-dom"
-import Platform from "./platform"
+import * as React from "react"
+import * as ReactDOM from "react-dom"
+import * as Platform from "./platform"
 import * as Tip from "./tip"
 import { px } from "./utils"
 
+// TODO Animation
+
 class Popover extends React.Component {
+  // TODO reinstate the prop-types contract
   static defaultProps = {
     appendTarget: Platform.isClient ? Platform.document.body : null,
     tipSize: 7,
