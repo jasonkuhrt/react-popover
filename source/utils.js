@@ -11,10 +11,13 @@ const noop = () => undefined
 
 const clientOnly = f => (isClient ? f : noop)
 
+const px = n => `${n}px`
+
 export default {
   find,
   equalRecords,
   noop,
   clientOnly,
+  px,
 }
-export { find, equalRecords, noop, clientOnly }
+export { find, equalRecords, noop, clientOnly, px }
