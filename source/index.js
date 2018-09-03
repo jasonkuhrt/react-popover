@@ -1,4 +1,5 @@
 import * as Forto from "forto"
+import * as Pop from "popmotion"
 import * as T from "prop-types"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
@@ -58,17 +59,51 @@ class Popover extends React.Component {
   }
 
   enableForto() {
-    // TODO do and isClient check?
-
+    // TODO isClient check?
+    let prevLayout = {
+      popover: {
+        x: 0,
+        y: 0,
+      },
+      tip: {
+        x: 0,
+        y: 0,
+      },
+    }
     const updateArrangement = newLayout => {
-      arrangement.popover.style.top = px(newLayout.popover.y)
-      arrangement.popover.style.left = px(newLayout.popover.x)
-      arrangement.tip.style.top = px(newLayout.tip.y)
-      arrangement.tip.style.left = px(newLayout.tip.x)
+      Pop.tween({
+        from: prevLayout.popover.y,
+        to: newLayout.popover.y,
+        duration: 300,
+      }).start(v => {
+        arrangement.popover.style.top = px(v)
+      })
+      Pop.tween({
+        from: prevLayout.popover.x,
+        to: newLayout.popover.x,
+        duration: 300,
+      }).start(v => {
+        arrangement.popover.style.left = px(v)
+      })
+      Pop.tween({
+        from: prevLayout.tip.y,
+        to: newLayout.tip.y,
+        duration: 300,
+      }).start(v => {
+        arrangement.tip.style.top = px(v)
+      })
+      Pop.tween({
+        from: prevLayout.tip.x,
+        to: newLayout.tip.x,
+        duration: 300,
+      }).start(v => {
+        arrangement.tip.style.left = px(v)
+      })
       Tip.updateElementShape(
         arrangement.tip,
         Tip.calcShape(this.props.tipSize, newLayout.zone.side),
       )
+      prevLayout = newLayout
     }
 
     const arrangement = {
