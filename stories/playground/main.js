@@ -26,6 +26,7 @@ class Main extends React.Component {
     popoverIsOpen: false,
     preferPlace: null,
     place: null,
+    unmountOnExit: true,
   }
   togglePopover(toState) {
     debug("togglePopover")
@@ -43,6 +44,10 @@ class Main extends React.Component {
   changePlace(event) {
     const place = event.target.value === "null" ? null : event.target.value
     this.setState({ place })
+  }
+  changeUnmountOnExit(event) {
+    const unmountOnExit = event.target.value === "true"
+    this.setState({ unmountOnExit })
   }
   render() {
     debug("render")
@@ -80,6 +85,7 @@ class Main extends React.Component {
       isOpen: this.state.popoverIsOpen,
       preferPlace: this.state.preferPlace,
       place: this.state.place,
+      unmountOnExit: this.state.unmountOnExit,
       onOuterAction: () => this.togglePopover(false),
       body: [
         <h1 key="a">Popover Title</h1>,
@@ -96,6 +102,11 @@ class Main extends React.Component {
         <label htmlFor="place">place </label>
         <select id="place" onChange={e => this.changePlace(e)}>
           {createPreferPlaceOptions(Layout)}
+        </select>
+        <label htmlFor="unmount">unmountOnExit </label>
+        <select id="unmount" onChange={e => this.changeUnmountOnExit(e)}>
+          <option value="true">true</option>
+          <option value="false">false</option>
         </select>
       </form>
     )

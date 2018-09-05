@@ -61,6 +61,7 @@ class Popover extends React.Component {
     refreshIntervalMs: T.oneOfType([T.number, T.bool]),
     style: T.object,
     tipSize: T.number,
+    unmountOnExit: T.bool,
     onOuterAction: T.func,
   }
   static defaultProps = {
@@ -73,6 +74,7 @@ class Popover extends React.Component {
     enterExitTransitionDurationMs: 500,
     children: null,
     refreshIntervalMs: 200,
+    unmountOnExit: true,
     appendTarget: Platform.isClient ? Platform.document.body : null,
   }
   constructor(props) {
@@ -492,15 +494,20 @@ class Popover extends React.Component {
 
     const popoverProps = {
       className: `Popover Popover-${standing} ${className}`,
-      style: { ...coreStyle, ...style },
+      style: {
+        ...coreStyle,
+        display: this.props.isOpen || this.state.exiting ? "flex" : "none",
+        ...style,
+      },
     }
 
-    const popover = this.state.exited ? null : (
-      <div ref={this.getContainerNodeRef} {...popoverProps}>
-        <div className="Popover-body" children={this.props.body} />
-        <Tip direction={faces[standing]} size={tipSize} />
-      </div>
-    )
+    const popover =
+      this.state.exited && this.props.unmountOnExit ? null : (
+        <div ref={this.getContainerNodeRef} {...popoverProps}>
+          <div className="Popover-body" children={this.props.body} />
+          <Tip direction={faces[standing]} size={tipSize} />
+        </div>
+      )
     return [
       this.props.children,
       Platform.isClient &&

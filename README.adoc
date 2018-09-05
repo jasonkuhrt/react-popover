@@ -78,6 +78,11 @@ Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 
 ---
 
+#### `unmountOnExit :: Boolean`
+Defines whether to unmount the popover component when hidden. Defaults to 'true'.
+
+---
+
 ##### Standard
 
 * Properties like `className` and `style`.
