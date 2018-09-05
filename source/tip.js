@@ -1,5 +1,6 @@
 import * as React from "react"
 
+// TODO refactor comments
 const calcPoints = (size, direction) => {
   const mainLength = size
   const crossLength = size * 2
@@ -33,7 +34,7 @@ const updateElementShape = (tip, tipShape) => {
 }
 
 const Component = () => (
-  <svg className="Popover-tip" style={{ position: "absolute" }}>
+  <svg className="Popover-tip" style={{ display: "block" }}>
     <polygon className="Popover-tipShape" />
   </svg>
 )

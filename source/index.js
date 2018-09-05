@@ -1,11 +1,37 @@
 import * as Forto from "forto"
-import * as Pop from "popmotion"
 import * as T from "prop-types"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
+import posed from "react-pose"
 import * as Platform from "./platform"
 import * as Tip from "./tip"
 import { noop, px } from "./utils"
+
+const PopoverContainer = posed.div({
+  open: {
+    opacity: 1,
+    x: props => props.x,
+    y: props => props.y,
+  },
+  closed: {
+    opacity: 0,
+    x: props => props.x,
+    y: props => props.y,
+  },
+})
+
+const TipComponent = posed.div({
+  open: {
+    left: props => {
+      return props.x2
+    },
+    top: props => props.y2,
+  },
+  closed: {
+    left: props => props.x2,
+    top: props => props.y2,
+  },
+})
 
 // TODO Animation
 
@@ -28,7 +54,6 @@ class Popover extends React.Component {
     refreshIntervalMs: T.oneOfType([T.number, T.bool]),
     tipSize: T.number,
     onOuterAction: T.func,
-    // enterExitTransitionDurationMs: T.number, TODO
     // offset: T.number, TODO
   }
   static defaultProps = {
@@ -44,10 +69,16 @@ class Popover extends React.Component {
     appendTarget: Platform.isClient ? Platform.document.body : null,
   }
 
+  state = {
+    layout: {
+      popover: { x: 0, y: 0 },
+      tip: { x: 0, y: 0 },
+    },
+  }
+
   constructor(props) {
     super(props)
     this.popoverRef = React.createRef()
-    this.state = {}
   }
 
   toggleForto(isEnabled) {
@@ -60,50 +91,14 @@ class Popover extends React.Component {
 
   enableForto() {
     // TODO isClient check?
-    let prevLayout = {
-      popover: {
-        x: 0,
-        y: 0,
-      },
-      tip: {
-        x: 0,
-        y: 0,
-      },
-    }
     const updateArrangement = newLayout => {
-      Pop.tween({
-        from: prevLayout.popover.y,
-        to: newLayout.popover.y,
-        duration: 300,
-      }).start(v => {
-        arrangement.popover.style.top = px(v)
-      })
-      Pop.tween({
-        from: prevLayout.popover.x,
-        to: newLayout.popover.x,
-        duration: 300,
-      }).start(v => {
-        arrangement.popover.style.left = px(v)
-      })
-      Pop.tween({
-        from: prevLayout.tip.y,
-        to: newLayout.tip.y,
-        duration: 300,
-      }).start(v => {
-        arrangement.tip.style.top = px(v)
-      })
-      Pop.tween({
-        from: prevLayout.tip.x,
-        to: newLayout.tip.x,
-        duration: 300,
-      }).start(v => {
-        arrangement.tip.style.left = px(v)
-      })
       Tip.updateElementShape(
         arrangement.tip,
         Tip.calcShape(this.props.tipSize, newLayout.zone.side),
       )
-      prevLayout = newLayout
+      this.setState({
+        layout: newLayout,
+      })
     }
 
     const arrangement = {
@@ -176,20 +171,34 @@ class Popover extends React.Component {
   }
 
   render() {
-    const popover = !this.props.isOpen ? null : (
-      <div ref={this.popoverRef}>
-        <div
-          className="Popover-body"
-          children={this.props.body}
-          style={{ position: "absolute" }}
-        />
-        <Tip.Component />
-      </div>
+    const { isOpen, body, appendTarget } = this.props
+    const { layout } = this.state
+    const popover = (
+      <PopoverContainer
+        innerRef={currentRef => (this.popoverRef.current = currentRef)}
+        pose={isOpen ? "open" : "closed"}
+        poseKey={isOpen ? Math.random() : null}
+        x={px(layout.popover.x)}
+        y={px(layout.popover.y)}
+        style={{ position: "absolute" }}
+      >
+        <div className="Popover-body" children={body} />
+        <TipComponent
+          className="Popover-tip"
+          pose={isOpen ? "open" : "closed"}
+          poseKey={isOpen ? Math.random() : null}
+          style={{
+            position: "absolute",
+          }}
+          // TODO Report bug that occurs if these are called x / y
+          x2={px(layout.tip.x)}
+          y2={px(layout.tip.y)}
+        >
+          <Tip.Component />
+        </TipComponent>
+      </PopoverContainer>
     )
-    return [
-      this.props.children,
-      ReactDOM.createPortal(popover, this.props.appendTarget),
-    ]
+    return [this.props.children, ReactDOM.createPortal(popover, appendTarget)]
   }
 }
 

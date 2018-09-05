@@ -2,6 +2,16 @@
 # yarn lockfile v1
 
 
+"@emotion/is-prop-valid@^0.6.5":
+  version "0.6.7"
+  resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.6.7.tgz#1767d39c29ba786b7afc3d8d727a2896995f01eb"
+  dependencies:
+    "@emotion/memoize" "^0.6.5"
+
+"@emotion/memoize@^0.6.5":
+  version "0.6.5"
+  resolved "https://registry.yarnpkg.com/@emotion/memoize/-/memoize-0.6.5.tgz#f868c314b889e7c3d84868a1d1cc323fbb40ca86"
+
 "@octokit/rest@15.2.6":
   version "15.2.6"
   resolved "https://registry.yarnpkg.com/@octokit/rest/-/rest-15.2.6.tgz#16226f58fbf0ba88f631848fb622dfe0ad410c0c"
@@ -231,6 +241,14 @@
     react-modal "^3.3.2"
     react-split-pane "^0.1.77"
     react-treebeard "^2.1.0"
+
+"@types/invariant@^2.2.29":
+  version "2.2.29"
+  resolved "https://registry.yarnpkg.com/@types/invariant/-/invariant-2.2.29.tgz#aa845204cd0a289f65d47e0de63a6a815e30cc66"
+
+"@types/node@^10.0.5":
+  version "10.9.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.9.4.tgz#0f4cb2dc7c1de6096055357f70179043c33e9897"
 
 abbrev@1:
   version "1.1.1"
@@ -5732,7 +5750,17 @@ pluralize@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-1.2.1.tgz#d1a21483fd22bb41e58a12fa3421823140897c45"
 
-popmotion@^8.3.8:
+popmotion-pose@^3.2.1:
+  version "3.2.4"
+  resolved "https://registry.yarnpkg.com/popmotion-pose/-/popmotion-pose-3.2.4.tgz#80b3e81420cd2fa9bf917582963ae11f8d90b402"
+  dependencies:
+    hey-listen "^1.0.5"
+    popmotion "^8.3.7"
+    pose-core "^1.0.0"
+    style-value-types "^3.0.6"
+    tslib "^1.9.1"
+
+popmotion@^8.3.7:
   version "8.3.8"
   resolved "https://registry.yarnpkg.com/popmotion/-/popmotion-8.3.8.tgz#af2b9ba00d4be089461043b60ea82c1709352a27"
   dependencies:
@@ -5741,6 +5769,15 @@ popmotion@^8.3.8:
     hey-listen "^1.0.5"
     style-value-types "^3.0.6"
     stylefire "^2.0.7"
+    tslib "^1.9.1"
+
+pose-core@^1.0.0:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/pose-core/-/pose-core-1.0.3.tgz#5b12ad84261bda84fa391b2feb5d26cab44d441c"
+  dependencies:
+    "@types/invariant" "^2.2.29"
+    "@types/node" "^10.0.5"
+    hey-listen "^1.0.5"
     tslib "^1.9.1"
 
 posix-character-classes@^0.1.0:
@@ -6378,6 +6415,15 @@ react-modal@^3.3.2:
     prop-types "^15.5.10"
     react-lifecycles-compat "^3.0.0"
     warning "^3.0.0"
+
+react-pose@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/react-pose/-/react-pose-3.2.1.tgz#a9f322fdb4b37e0b013996bd577a7ffc47a9746e"
+  dependencies:
+    "@emotion/is-prop-valid" "^0.6.5"
+    hey-listen "^1.0.5"
+    popmotion-pose "^3.2.1"
+    tslib "^1.9.1"
 
 react-split-pane@^0.1.77:
   version "0.1.77"

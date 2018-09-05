@@ -10,8 +10,8 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "popmotion": "^8.3.8",
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.5.10",
+    "react-pose": "^3.2.1"
   },
   "repository": {
     "type": "git",
