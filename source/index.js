@@ -7,8 +7,6 @@ import * as Platform from "./platform"
 import * as Tip from "./tip"
 import { noop, px } from "./utils"
 
-// TODO Animation
-
 const PopoverContainer = posed.div({
   open: {
     opacity: 1,
@@ -24,7 +22,9 @@ const PopoverContainer = posed.div({
 
 const TipComponent = posed.div({
   open: {
-    left: props => props.x2,
+    left: props => {
+      return props.x2
+    },
     top: props => props.y2,
   },
   closed: {
@@ -33,7 +33,42 @@ const TipComponent = posed.div({
   },
 })
 
-class _Popover extends React.Component {
+// TODO Animation
+
+class Popover extends React.Component {
+  static propTypes = {
+    body: T.node.isRequired,
+    children: T.element.isRequired,
+    appendTarget: T.object,
+    isOpen: T.bool,
+    place: T.oneOf([
+      ...Object.values(Forto.Settings.Order),
+      ...Object.values(Forto.Settings.Ori.Side),
+      ...Object.values(Forto.Settings.Ori.Ori),
+    ]),
+    preferPlace: T.oneOf([
+      ...Object.values(Forto.Settings.Order),
+      ...Object.values(Forto.Settings.Ori.Side),
+      ...Object.values(Forto.Settings.Ori.Ori),
+    ]),
+    refreshIntervalMs: T.oneOfType([T.number, T.bool]),
+    tipSize: T.number,
+    onOuterAction: T.func,
+    // offset: T.number, TODO
+  }
+  static defaultProps = {
+    tipSize: 7,
+    preferPlace: null,
+    place: null,
+    // offset: 4,
+    isOpen: false,
+    onOuterAction: noop,
+    enterExitTransitionDurationMs: 500,
+    children: null,
+    refreshIntervalMs: 200,
+    appendTarget: Platform.isClient ? Platform.document.body : null,
+  }
+
   state = {
     layout: {
       popover: { x: 0, y: 0 },
@@ -67,7 +102,7 @@ class _Popover extends React.Component {
     }
 
     const arrangement = {
-      target: this.props.target,
+      target: ReactDOM.findDOMNode(this),
       frame: window,
       tip: this.popoverRef.current.querySelector("svg"),
       popover: this.popoverRef.current.querySelector(".Popover-body"),
@@ -113,7 +148,13 @@ class _Popover extends React.Component {
   }
 
   componentDidMount() {
-    this.toggleForto(true)
+    this.toggleForto(this.props.isOpen)
+  }
+
+  componentDidUpdate(previousProps) {
+    if (this.props.isOpen !== previousProps.isOpen) {
+      this.toggleForto(this.props.isOpen)
+    }
   }
 
   componentWillUnmount() {
@@ -130,13 +171,13 @@ class _Popover extends React.Component {
   }
 
   render() {
-    const { body } = this.props
+    const { isOpen, body, appendTarget } = this.props
     const { layout } = this.state
-    return (
+    const popover = (
       <PopoverContainer
         innerRef={currentRef => (this.popoverRef.current = currentRef)}
-        pose={"open"}
-        poseKey={Math.random()}
+        pose={isOpen ? "open" : "closed"}
+        poseKey={isOpen ? Math.random() : null}
         x={px(layout.popover.x)}
         y={px(layout.popover.y)}
         style={{ position: "absolute" }}
@@ -144,8 +185,8 @@ class _Popover extends React.Component {
         <div className="Popover-body" children={body} />
         <TipComponent
           className="Popover-tip"
-          pose={"open"}
-          poseKey={Math.random()}
+          pose={isOpen ? "open" : "closed"}
+          poseKey={isOpen ? Math.random() : null}
           style={{
             position: "absolute",
           }}
@@ -157,56 +198,6 @@ class _Popover extends React.Component {
         </TipComponent>
       </PopoverContainer>
     )
-  }
-}
-
-class Popover extends React.Component {
-  state = {}
-  static propTypes = {
-    body: T.node.isRequired,
-    children: T.element.isRequired,
-    appendTarget: T.object,
-    isOpen: T.bool,
-    place: T.oneOf([
-      ...Object.values(Forto.Settings.Order),
-      ...Object.values(Forto.Settings.Ori.Side),
-      ...Object.values(Forto.Settings.Ori.Ori),
-    ]),
-    preferPlace: T.oneOf([
-      ...Object.values(Forto.Settings.Order),
-      ...Object.values(Forto.Settings.Ori.Side),
-      ...Object.values(Forto.Settings.Ori.Ori),
-    ]),
-    refreshIntervalMs: T.oneOfType([T.number, T.bool]),
-    tipSize: T.number,
-    onOuterAction: T.func,
-    // offset: T.number, TODO
-  }
-  static defaultProps = {
-    tipSize: 7,
-    preferPlace: null,
-    place: null,
-    // offset: 4,
-    isOpen: false,
-    onOuterAction: noop,
-    // enterExitTransitionDurationMs: 500,
-    children: null,
-    refreshIntervalMs: 200,
-    appendTarget: Platform.isClient ? Platform.document.body : null,
-  }
-
-  constructor(props) {
-    super(props)
-  }
-  componentDidMount() {
-    this.setState({ target: ReactDOM.findDOMNode(this) })
-  }
-
-  render() {
-    const { isOpen, appendTarget, ...popoverProps } = this.props
-    const { target } = this.state
-    const popover =
-      isOpen && target ? <_Popover target={target} {...popoverProps} /> : null
     return [this.props.children, ReactDOM.createPortal(popover, appendTarget)]
   }
 }
