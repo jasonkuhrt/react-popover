@@ -8,7 +8,7 @@ class Row extends React.Component {
   state = {
     isOpen: false,
   }
-  toggle(toState = null) {
+  toggle(toState: null | boolean = null) {
     this.setState({ isOpen: toState === null ? !this.state.isOpen : toState })
   }
   render() {
@@ -33,7 +33,9 @@ class Row extends React.Component {
 const Main = () => (
   <div
     id="app"
-    children={F.range(0, 51).map(i => <Row key={i} children={i} />)}
+    children={F.range(0, 51).map(i => (
+      <Row key={i} children={i} />
+    ))}
   />
 )
 

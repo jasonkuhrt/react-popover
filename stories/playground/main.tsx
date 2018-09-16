@@ -1,46 +1,44 @@
 import * as Forto from "forto"
-import R from "ramda"
+import * as R from "ramda"
 import React from "react"
 import Draggable from "react-draggable"
 import Popover from "../../source"
 import "../base.css"
 import "./main.css"
 
-window.Forto = Forto
+const Option = (type: string) => (
+  <option key={type} value={type} children={type} />
+)
 
-const Option = type => <option key={type} value={type} children={type} />
-
-const createPreferPlaceOptions = R.compose(
-  R.prepend([<option key="null" value={null} children="null" />]),
-  R.map(Option),
-  Forto => {
-    return [
+const createPreferPlaceOptions = () => {
+  return [<option key="null" value={undefined} children="null" />].concat(
+    [
       ...R.values(Forto.Settings.Order),
       ...R.values(Forto.Settings.Ori.Side),
       ...R.values(Forto.Settings.Ori.Ori),
-    ]
-  },
-)
+    ].map(Option),
+  )
+}
 
 class Main extends React.Component {
   state = {
     popoverIsOpen: false,
-    preferPlace: null,
-    place: null,
+    preferPlace: undefined,
+    place: undefined,
   }
-  togglePopover(toState) {
+  togglePopover(toState?: boolean) {
     const popoverIsOpen =
       typeof toState === "boolean" ? toState : !this.state.popoverIsOpen
     this.setState({
       popoverIsOpen,
     })
   }
-  changePreferPlace(event) {
+  changePreferPlace(event: any) {
     const preferPlace =
       event.target.value === "null" ? null : event.target.value
     this.setState({ preferPlace })
   }
-  changePlace(event) {
+  changePlace(event: any) {
     const place = event.target.value === "null" ? null : event.target.value
     this.setState({ place })
   }
@@ -54,7 +52,7 @@ class Main extends React.Component {
 
     const targetToggleProps = {
       className: "Target-Toggle",
-      onClick: e => this.togglePopover(e),
+      onClick: () => this.togglePopover(),
     }
 
     const targetMoveProps = {
@@ -83,18 +81,18 @@ class Main extends React.Component {
         <h1 key="a">Popover Title</h1>,
         <div key="b">Popover contents</div>,
       ],
-      appendTarget: document.querySelector("#root"),
+      appendTarget: document.querySelector("#root")!,
     }
 
     const controls = (
       <form>
         <label htmlFor="preferPlace">preferPlace </label>
         <select id="preferPlace" onChange={e => this.changePreferPlace(e)}>
-          {createPreferPlaceOptions(Forto)}
+          {createPreferPlaceOptions()}
         </select>
         <label htmlFor="place">place </label>
         <select id="place" onChange={e => this.changePlace(e)}>
-          {createPreferPlaceOptions(Forto)}
+          {createPreferPlaceOptions()}
         </select>
       </form>
     )

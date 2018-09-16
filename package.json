@@ -5,7 +5,7 @@
     "clean": "rm -rf build",
     "deploy-storybook": "storybook-to-ghpages",
     "build": "yarn run clean && babel --out-dir build source",
-    "dev": "start-storybook -p 6006",
+    "dev": "start-storybook -p 6006 -c .storybook",
     "postversion": "yarn run build && git push && git push --tags && npm publish && release",
     "build-storybook": "build-storybook"
   },
@@ -22,48 +22,31 @@
   "main": "index.js",
   "description": "A popover for react",
   "devDependencies": {
-    "@storybook/addon-actions": "^3.2.11",
-    "@storybook/addon-links": "^3.2.10",
-    "@storybook/react": "^3.2.11",
+    "@babel/core": "^7",
+    "@storybook/react": "^4.0.0-alpha",
     "@storybook/storybook-deployer": "^2.0.0",
+    "@types/ramda": "^0.25.38",
     "@types/react": "^16.4.14",
     "@types/react-dom": "^16.0.7",
-    "babel-cli": "^6.3.15",
-    "babel-core": "^6.3.15",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
-    "babel-preset-stage-1": "^6.3.13",
-    "eslint-config-littlebits": "^0.6.2",
+    "@types/storybook__react": "^3.0.9",
+    "awesome-typescript-loader": "^5.2.1",
+    "babel-loader": "^8",
     "husky": "^0.14.3",
     "prettier": "^1.14.2",
     "pretty-quick": "^1.6.0",
-    "ramda": "^0.18.0",
+    "ramda": "^0.25.0",
     "react": "^16.4.1",
+    "react-docgen-typescript-webpack-plugin": "^1.1.0",
     "react-dom": "^16.4.1",
     "react-draggable": "3.0.3",
     "react-test-renderer": "16",
     "release": "^4.0.0",
+    "storybook-addon-jsx": "^5.4.0",
     "ts-node": "^7.0.1",
     "typescript": "^3.0.3"
   },
   "bugs": {
     "url": "https://github.com/littlebits/react-popover/issues"
-  },
-  "eslintConfig": {
-    "parser": "babel-eslint",
-    "extends": [
-      "littlebits"
-    ],
-    "env": {
-      "jest": true
-    }
-  },
-  "babel": {
-    "presets": [
-      "es2015",
-      "react",
-      "stage-1"
-    ]
   },
   "husky": {
     "hooks": {

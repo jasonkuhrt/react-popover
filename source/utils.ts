@@ -1,4 +1,4 @@
-const px = n => {
+const px = (n: number) => {
   return `${n}px`
 }
 

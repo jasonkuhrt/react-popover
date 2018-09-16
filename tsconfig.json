@@ -4,7 +4,7 @@
     "noImplicitReturns": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "target": "esnext",
+    "target": "es5",
     "module": "commonjs",
     "outDir": "./build",
     "declaration": true,
@@ -12,9 +12,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "importHelpers": true,
-    "jsx": "react"
+    "jsx": "react",
+    "rootDirs": ["src", "stories"],
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "src",
+    "allowSyntheticDefaultImports": true,
+    "lib": ["es5", "es6", "es7", "es2017", "dom"]
   },
-  "include": [
-    "./source/**/*.ts*"
-  ]
+  "include": ["source/**/*", "stories/**/*"],
+  "exclude": ["node_modules", "build", "scripts"]
 }
