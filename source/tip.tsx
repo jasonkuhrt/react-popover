@@ -1,7 +1,15 @@
 import * as React from "react"
 
+type Direction = "Bottom" | "Top" | "Right" | "Left"
+
+type Shape = {
+  points: string
+  width: number
+  height: number
+}
+
 // TODO refactor comments
-const calcPoints = (size, direction) => {
+const calcPoints = (size: number, direction: Direction): string => {
   const mainLength = size
   const crossLength = size * 2
   const points =
@@ -16,7 +24,7 @@ const calcPoints = (size, direction) => {
   return points
 }
 
-const calcShape = (size, side) => {
+const calcShape = (size: number, side: Direction) => {
   const isPortrait = side === "Top" || side === "Bottom"
   const mainLength = size
   const crossLength = size * 2
@@ -27,10 +35,11 @@ const calcShape = (size, side) => {
   }
 }
 
-const updateElementShape = (tip, tipShape) => {
-  tip.setAttribute("width", tipShape.width)
-  tip.setAttribute("height", tipShape.height)
-  tip.querySelector(".Popover-tipShape").setAttribute("points", tipShape.points)
+const updateElementShape = (tip: Element, tipShape: Shape) => {
+  tip.setAttribute("width", String(tipShape.width))
+  tip.setAttribute("height", String(tipShape.height))
+  const tipShapeEl = tip.querySelector(".Popover-tipShape") as Element
+  tipShapeEl.setAttribute("points", tipShape.points)
 }
 
 const Component = () => (
