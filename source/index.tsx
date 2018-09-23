@@ -1,10 +1,13 @@
 import * as Forto from "forto"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import posed from "react-pose"
+import posed, { PoseGroup } from "react-pose"
 import * as Platform from "./platform"
 import * as Tip from "./tip"
 import { noop, px } from "./utils"
+
+// const pxAdd = (x: string, n: number): string => px(parseInt(x, 10) + n)
+const pxSub = (x: string, n: number): string => px(parseInt(x, 10) - n)
 
 interface Subscription {
   closed: boolean
@@ -12,15 +15,47 @@ interface Subscription {
 }
 
 const PopoverContainer = posed.div({
-  open: {
-    opacity: 1,
+  initialMeasure: {
     x: (props: any) => props.x,
     y: (props: any) => props.y,
-  },
-  closed: {
     opacity: 0,
+  },
+  open: {
     x: (props: any) => props.x,
     y: (props: any) => props.y,
+    opacity: 1,
+  },
+  preEnter: {
+    x: (props: any) => {
+      const xPrime = pxSub(props.x, 100)
+      console.log("preEnter.x", props.x)
+      console.log("preEnter.xPrime", xPrime)
+      return xPrime
+    },
+    y: (props: any) => {
+      // const yPrime = pxSub(props.y, 100)
+      console.log("preEnter.y", props.y)
+      // console.log("preEnter.yPrime", yPrime)
+      // return yPrime
+      return props.y
+    },
+  },
+  enter: {
+    x: (props: any) => {
+      console.log("enter.x", props.x)
+      return props.x
+    },
+    y: (props: any) => {
+      console.log("enter.y", props.y)
+    },
+    opacity: 1,
+  },
+  exit: {
+    x: (props: any) => {
+      console.log("exit.x", parseInt(props.x, 10) - 100)
+      return px(parseInt(props.x, 10) - 100)
+    },
+    opacity: 0,
   },
 })
 
@@ -142,6 +177,7 @@ class Popover extends React.Component<Props, State> {
     // it may occur on component mount.
     if (this.layoutChangesSubscription) {
       this.layoutChangesSubscription.unsubscribe()
+      this.layoutChangesSubscription = null
     }
     Platform.document!.removeEventListener(
       "mousedown",
@@ -151,6 +187,11 @@ class Popover extends React.Component<Props, State> {
       "touchstart",
       this.checkForOuterAction,
     )
+    this.setState({
+      layout: null,
+      arrangement: null,
+    })
+    this.popoverElement = null
   }
 
   componentDidMount() {
@@ -187,11 +228,12 @@ class Popover extends React.Component<Props, State> {
     const popover = (
       <PopoverContainer
         innerRef={currentRef => (this.popoverElement = currentRef)}
-        pose={isOpen ? "open" : "closed"}
-        poseKey={isOpen ? Math.random() : null}
+        pose={layout ? "open" : "initialMeasure"}
+        poseKey={Math.random()}
         x={px(layout ? layout.popover.x : 0)}
         y={px(layout ? layout.popover.y : 0)}
         style={{ position: "absolute" }}
+        key="foobar"
       >
         <div className="Popover-body" children={body} />
         <TipComponent
@@ -207,7 +249,13 @@ class Popover extends React.Component<Props, State> {
         </TipComponent>
       </PopoverContainer>
     )
-    return [this.props.children, ReactDOM.createPortal(popover, appendTarget)]
+    const animatedPopover = (
+      <PoseGroup preEnterPose="preEnter">{isOpen ? [popover] : []}</PoseGroup>
+    )
+    return [
+      this.props.children,
+      ReactDOM.createPortal(animatedPopover, appendTarget),
+    ]
   }
 }
 
