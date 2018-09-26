@@ -42,8 +42,11 @@ const updateElementShape = (tip: Element, tipShape: Shape) => {
   tipShapeEl.setAttribute("points", tipShape.points)
 }
 
-const Component = () => (
-  <svg className="Popover-tip" style={{ display: "block" }}>
+const Component = ({}) => (
+  <svg
+    className="Popover-tip"
+    style={{ position: "absolute", display: "block", left: 0, top: 0 }}
+  >
     <polygon className="Popover-tipShape" />
   </svg>
 )

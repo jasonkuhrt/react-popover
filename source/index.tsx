@@ -3,6 +3,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import * as Platform from "./platform"
 import * as Tip from "./tip"
+import * as Pop from "popmotion"
 import { noop } from "./utils"
 
 interface Subscription {
@@ -69,6 +70,11 @@ class Popover extends React.Component<Props, State> {
         arrangement.tip!,
         Tip.calcShape(this.props.tipSize, newLayout.zone.side),
       )
+      const popoverStyle = Pop.styler(this.popoverElement!, {})
+      const tipStyle = Pop.styler(arrangement.tip, {})
+      popoverStyle.set(newLayout.popover)
+      tipStyle.set(newLayout.tip!)
+
       this.setState({
         layout: newLayout,
       })
@@ -77,7 +83,7 @@ class Popover extends React.Component<Props, State> {
     const arrangement = {
       target: ReactDOM.findDOMNode(this) as Element,
       frame: window,
-      tip: this.popoverElement!.querySelector("svg")!,
+      tip: this.popoverElement!.querySelector(".Popover-tip")!,
       popover: this.popoverElement!.querySelector(".Popover-body")!,
     }
 
@@ -169,9 +175,7 @@ class Popover extends React.Component<Props, State> {
         style={{ position: "absolute" }}
       >
         <div className="Popover-body" children={body} />
-        <div className="Popover-tip" style={{ position: "absolute" }}>
-          <Tip.Component />
-        </div>
+        <Tip.Component />
       </div>
     )
     return [this.props.children, ReactDOM.createPortal(popover, appendTarget)]
