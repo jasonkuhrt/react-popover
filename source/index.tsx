@@ -70,9 +70,16 @@ class Popover extends React.Component<Props, State> {
         arrangement.tip!,
         Tip.calcShape(this.props.tipSize, newLayout.zone.side),
       )
-      const popoverStyle = Pop.styler(this.popoverElement!, {})
-      const tipStyle = Pop.styler(arrangement.tip, {})
-      popoverStyle.set(newLayout.popover)
+
+      Pop.spring({
+        from: popoverXY.get(),
+        to: { x: newLayout.popover.x, y: newLayout.popover.y },
+        velocity: popoverXY.getVelocity(),
+        stiffness: 450,
+        damping: 35,
+        mass: 1.5,
+      }).start(popoverXY)
+
       tipStyle.set(newLayout.tip!)
 
       this.setState({
@@ -86,6 +93,11 @@ class Popover extends React.Component<Props, State> {
       tip: this.popoverElement!.querySelector(".Popover-tip")!,
       popover: this.popoverElement!.querySelector(".Popover-body")!,
     }
+    const popoverStyle = Pop.styler(this.popoverElement!, {})
+    const tipStyle = Pop.styler(arrangement.tip, {})
+    const popoverXY = Pop.value({ x: 0, y: 0 })
+
+    popoverXY.subscribe(popoverStyle.set)
 
     // TODO Refactor once Forto has better entrypoint API
     // TODO Suggest to Forto to accept singular in addition to list
