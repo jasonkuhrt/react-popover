@@ -10,7 +10,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
-    "react-pose": "^3.2.1"
+    "popmotion": "^8.4.0"
   },
   "repository": {
     "type": "git",

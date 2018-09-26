@@ -1,76 +1,14 @@
 import * as Forto from "forto"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import posed, { PoseGroup } from "react-pose"
 import * as Platform from "./platform"
 import * as Tip from "./tip"
-import { noop, px } from "./utils"
-
-// const pxAdd = (x: string, n: number): string => px(parseInt(x, 10) + n)
-const pxSub = (x: string, n: number): string => px(parseInt(x, 10) - n)
+import { noop } from "./utils"
 
 interface Subscription {
   closed: boolean
   unsubscribe(): void
 }
-
-const PopoverContainer = posed.div({
-  initialMeasure: {
-    x: (props: any) => props.x,
-    y: (props: any) => props.y,
-    opacity: 0,
-  },
-  open: {
-    x: (props: any) => props.x,
-    y: (props: any) => props.y,
-    opacity: 1,
-  },
-  preEnter: {
-    x: (props: any) => {
-      const xPrime = pxSub(props.x, 100)
-      console.log("preEnter.x", props.x)
-      console.log("preEnter.xPrime", xPrime)
-      return xPrime
-    },
-    y: (props: any) => {
-      // const yPrime = pxSub(props.y, 100)
-      console.log("preEnter.y", props.y)
-      // console.log("preEnter.yPrime", yPrime)
-      // return yPrime
-      return props.y
-    },
-  },
-  enter: {
-    x: (props: any) => {
-      console.log("enter.x", props.x)
-      return props.x
-    },
-    y: (props: any) => {
-      console.log("enter.y", props.y)
-    },
-    opacity: 1,
-  },
-  exit: {
-    x: (props: any) => {
-      console.log("exit.x", parseInt(props.x, 10) - 100)
-      return px(parseInt(props.x, 10) - 100)
-    },
-    opacity: 0,
-  },
-})
-
-const TipComponent = posed.div({
-  open: {
-    left: (props: any) => {
-      return props.x2
-    },
-    top: (props: any) => props.y2,
-  },
-  closed: {
-    left: (props: any) => props.x2,
-    top: (props: any) => props.y2,
-  },
-})
 
 type State = {
   arrangement: null | Forto.DOM.Arrangement
@@ -224,38 +162,19 @@ class Popover extends React.Component<Props, State> {
 
   render() {
     const { isOpen, body, appendTarget } = this.props
-    const { layout } = this.state
-    const popover = (
-      <PopoverContainer
-        innerRef={currentRef => (this.popoverElement = currentRef)}
-        pose={layout ? "open" : "initialMeasure"}
-        poseKey={Math.random()}
-        x={px(layout ? layout.popover.x : 0)}
-        y={px(layout ? layout.popover.y : 0)}
+    // const { layout } = this.state
+    const popover = !isOpen ? null : (
+      <div
+        ref={currentRef => (this.popoverElement = currentRef)}
         style={{ position: "absolute" }}
-        key="foobar"
       >
         <div className="Popover-body" children={body} />
-        <TipComponent
-          className="Popover-tip"
-          pose={isOpen ? "open" : "closed"}
-          poseKey={isOpen ? Math.random() : null}
-          style={{ position: "absolute" }}
-          // TODO Report bug that occurs if these are called x / y
-          x2={px(layout && layout.tip ? layout.tip.x : 0)}
-          y2={px(layout && layout.tip ? layout.tip.y : 0)}
-        >
+        <div className="Popover-tip" style={{ position: "absolute" }}>
           <Tip.Component />
-        </TipComponent>
-      </PopoverContainer>
+        </div>
+      </div>
     )
-    const animatedPopover = (
-      <PoseGroup preEnterPose="preEnter">{isOpen ? [popover] : []}</PoseGroup>
-    )
-    return [
-      this.props.children,
-      ReactDOM.createPortal(animatedPopover, appendTarget),
-    ]
+    return [this.props.children, ReactDOM.createPortal(popover, appendTarget)]
   }
 }
 
