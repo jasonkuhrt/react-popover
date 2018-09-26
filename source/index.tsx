@@ -47,6 +47,7 @@ class Popover extends React.Component<Props, State> {
 
   popoverElement: null | Element = null
   layoutChangesSubscription: null | Subscription = null
+  popoverAnimation: null | any // TODO
 
   constructor(props: Props) {
     super(props)
@@ -71,10 +72,29 @@ class Popover extends React.Component<Props, State> {
         Tip.calcShape(this.props.tipSize, newLayout.zone.side),
       )
 
+      if (!this.state.layout) {
+        // TODO: Create issue with Forto, we need a better DSL :)
+        popoverXY.update({
+          ...(popoverXY.get() as any),
+          [Forto.Ori.crossAxis(Forto.Ori.fromSide(newLayout.zone))]: newLayout
+            .popover[Forto.Ori.crossAxis(Forto.Ori.fromSide(newLayout.zone))],
+          [Forto.Ori.mainAxis(Forto.Ori.fromSide(newLayout.zone))]:
+            newLayout.popover[
+              Forto.Ori.mainAxis(Forto.Ori.fromSide(newLayout.zone))
+            ] +
+            15 *
+              (newLayout.zone.side === Forto.Ori.Side.Top ||
+              newLayout.zone.side === Forto.Ori.Side.Left
+                ? -1
+                : 1),
+        })
+        popoverXY.velocityCheck({ timestamp: 0, delta: 0 })
+      }
+
       Pop.spring({
         from: popoverXY.get(),
-        to: { x: newLayout.popover.x, y: newLayout.popover.y },
-        velocity: popoverXY.getVelocity(),
+        to: { ...newLayout.popover, opacity: 1 },
+        velocity: this.state.layout ? popoverXY.getVelocity() : 0,
         stiffness: 450,
         damping: 35,
         mass: 1.5,
@@ -95,9 +115,10 @@ class Popover extends React.Component<Props, State> {
     }
     const popoverStyle = Pop.styler(this.popoverElement!, {})
     const tipStyle = Pop.styler(arrangement.tip, {})
-    const popoverXY = Pop.value({ x: 0, y: 0 })
+    const popoverXY = Pop.value({ x: 0, y: 5, opacity: 0 })
 
     popoverXY.subscribe(popoverStyle.set)
+    this.popoverAnimation = popoverXY
 
     // TODO Refactor once Forto has better entrypoint API
     // TODO Suggest to Forto to accept singular in addition to list
@@ -148,6 +169,10 @@ class Popover extends React.Component<Props, State> {
       arrangement: null,
     })
     this.popoverElement = null
+    if (this.popoverAnimation) {
+      this.popoverAnimation.stop()
+      this.popoverAnimation = null
+    }
   }
 
   componentDidMount() {
@@ -179,15 +204,16 @@ class Popover extends React.Component<Props, State> {
   }
 
   render() {
+    // TODO Refactor initial tip sizing logic
     const { isOpen, body, appendTarget } = this.props
-    // const { layout } = this.state
+    const tipShape = Tip.calcShape(this.props.tipSize, "Bottom")
     const popover = !isOpen ? null : (
       <div
         ref={currentRef => (this.popoverElement = currentRef)}
         style={{ position: "absolute" }}
       >
         <div className="Popover-body" children={body} />
-        <Tip.Component />
+        <Tip.Component width={tipShape.width} height={tipShape.height} />
       </div>
     )
     return [this.props.children, ReactDOM.createPortal(popover, appendTarget)]
