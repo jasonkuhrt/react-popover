@@ -52,22 +52,14 @@ class FortoPop extends React.Component<Props, {}> {
     const popoverReaction = Pop.value({ x: 0, y: 5, opacity: 0 })
     popoverReaction.subscribe(popoverStyle.set)
 
-    // TODO Refactor once Forto has better entrypoint API
-    // TODO Suggest to Forto to accept singular in addition to list
-    const settings: Forto.Settings.SettingsUnchecked = {
-      elligibleZones: this.props.place ? [this.props.place] : undefined,
-      preferredZones: this.props.preferPlace
-        ? [this.props.preferPlace]
-        : undefined,
-    }
-
-    const layouts = this.props.refreshIntervalMs
-      ? Forto.DOM.observeWithPolling(
-          settings,
-          arrangement,
-          this.props.refreshIntervalMs,
-        )
-      : Forto.DOM.observe(settings, arrangement)
+    const layouts = Forto.DOM.observe(
+      {
+        elligibleZones: this.props.place,
+        preferredZones: this.props.preferPlace,
+        pollIntervalMs: this.props.refreshIntervalMs,
+      },
+      arrangement,
+    )
 
     this.popoverReaction = popoverReaction
     this.layoutsSubscription = layouts.subscribe(
