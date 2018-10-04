@@ -3,6 +3,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import * as Platform from "./platform"
 import FortoPop from "./forto"
+import Transition from "./transition"
 import { noop } from "./utils"
 
 type Props = {
@@ -51,9 +52,17 @@ class Popover extends React.Component<Props, { el: null | Element }> {
     // TODO Refactor initial tip sizing logic
     const { isOpen, children, appendTarget, ...fortoPopProps } = this.props
     // const tipShape = Tip.calcShape(this.props.tipSize, "Bottom")
-    const popover = isOpen ? (
-      <FortoPop {...fortoPopProps} target={this.state.el!} />
-    ) : null
+    const popover = (
+      <Transition>
+        {isOpen ? (
+          <FortoPop
+            {...fortoPopProps}
+            target={this.state.el!}
+            key={Math.random()}
+          />
+        ) : null}
+      </Transition>
+    )
 
     return [children, ReactDOM.createPortal(popover, appendTarget)]
   }

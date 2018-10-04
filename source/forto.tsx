@@ -18,6 +18,8 @@ interface Props {
     | Forto.Settings.Order
     | Forto.Settings.Ori.Side
     | Forto.Settings.Ori.Ori
+  pose?: "exit"
+  onPoseComplete?: Function
 }
 
 class FortoPop extends React.Component<Props, {}> {
@@ -104,6 +106,14 @@ class FortoPop extends React.Component<Props, {}> {
     )
   }
 
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.pose !== this.props.pose && this.props.pose === "exit") {
+      if (this.props.onPoseComplete) {
+        setTimeout(this.props.onPoseComplete, 1000)
+      }
+    }
+  }
+
   componentWillUnmount() {
     if (this.layoutsSubscription) {
       this.layoutsSubscription.unsubscribe()
@@ -115,3 +125,4 @@ class FortoPop extends React.Component<Props, {}> {
 }
 
 export default FortoPop
+export { FortoPop as Component, Props }
