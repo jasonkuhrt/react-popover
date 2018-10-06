@@ -2,6 +2,7 @@ import * as React from "react"
 import * as Forto from "forto"
 import * as Pop from "popmotion"
 import * as Tip from "./tip"
+import * as F from "./utils"
 
 interface Subscription {
   closed: boolean
@@ -19,10 +20,13 @@ interface Props {
     | Forto.Settings.Ori.Side
     | Forto.Settings.Ori.Ori
   pose?: "exit"
-  onPoseComplete?: Function
+  onPoseComplete: Function
 }
 
 class FortoPop extends React.Component<Props, {}> {
+  static defaultProps = {
+    onPoseComplete: F.noop,
+  }
   layout: null | Forto.Calculation = null
   popoverRef = React.createRef<HTMLDivElement>()
   layoutsSubscription: null | Subscription = null
@@ -50,17 +54,16 @@ class FortoPop extends React.Component<Props, {}> {
     const popoverStyle = Pop.styler(this.popoverRef.current!, {})
     const tipStyle = Pop.styler(arrangement.tip, {})
 
-    // TODO Rename identifier since its not just position, but rather includes opacity too.
     const popoverReaction = Pop.value({ x: 0, y: 5, opacity: 0 })
     popoverReaction.subscribe(popoverStyle.set)
 
-    const layouts = Forto.DOM.observe(
+    const layouts = Forto.DOM.observeWithPolling(
       {
         elligibleZones: this.props.place,
         preferredZones: this.props.preferPlace,
-        pollIntervalMs: this.props.refreshIntervalMs,
       },
       arrangement,
+      this.props.refreshIntervalMs || 1000,
     )
 
     this.popoverReaction = popoverReaction
@@ -106,11 +109,50 @@ class FortoPop extends React.Component<Props, {}> {
     )
   }
 
+  // TODO during exit animation it should be possible to interrupt
+  // and bring back the popover. To see it not doing this right now
+  // set a high exit tween duration and spam click toggle.
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.pose !== this.props.pose && this.props.pose === "exit") {
-      if (this.props.onPoseComplete) {
-        setTimeout(this.props.onPoseComplete, 1000)
+    if (
+      this.layout &&
+      this.popoverReaction &&
+      prevProps.pose !== this.props.pose &&
+      this.props.pose === "exit"
+    ) {
+      this.layoutsSubscription!.unsubscribe()
+
+      // TODO When exiting after a recent animation it animates to a
+      // weird XY as if current XY is a lag
+      // TODO better DSL from forto
+      const newXY = {
+        [Forto.Ori.crossAxis(Forto.Ori.fromSide(this.layout.zone))]: this.layout
+          .popover[Forto.Ori.crossAxis(Forto.Ori.fromSide(this.layout.zone))],
+        [Forto.Ori.mainAxis(Forto.Ori.fromSide(this.layout.zone))]:
+          this.layout.popover[
+            Forto.Ori.mainAxis(Forto.Ori.fromSide(this.layout.zone))
+          ] +
+          // TODO this should be same as enter size
+          -20 *
+            // TODO orientation check instead of side check
+            (this.layout.zone.side === Forto.Ori.Side.Top ||
+            this.layout.zone.side === Forto.Ori.Side.Left
+              ? 1
+              : -1),
       }
+
+      Pop.tween({
+        from: this.popoverReaction.get(),
+        to: { ...newXY, opacity: 0 },
+        duration: 2000,
+        // velocity: 0,
+        // stiffness: 450,
+        // damping: 35,
+        // mass: 1.5,
+      }).start({
+        update: (value: { opacity: number }) =>
+          this.popoverReaction!.update(value),
+        complete: this.props.onPoseComplete as any,
+      })
     }
   }
 
