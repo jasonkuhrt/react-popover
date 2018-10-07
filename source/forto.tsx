@@ -76,7 +76,6 @@ class FortoPop extends React.Component<Props, {}> {
         )
 
         if (!this.layout) {
-          this.layout = newLayout
           // TODO: Create issue with Forto, we need a better DSL :)
           popoverReaction.update({
             ...(popoverReaction.get() as any),
@@ -95,10 +94,12 @@ class FortoPop extends React.Component<Props, {}> {
           popoverReaction.velocityCheck({ timestamp: 0, delta: 0 })
         }
 
+        this.layout = newLayout
+
         Pop.spring({
           from: popoverReaction.get(),
           to: { ...newLayout.popover, opacity: 1 },
-          velocity: this.layout ? popoverReaction.getVelocity() : 0,
+          velocity: popoverReaction.getVelocity(),
           stiffness: 450,
           damping: 35,
           mass: 1.5,
@@ -119,6 +120,10 @@ class FortoPop extends React.Component<Props, {}> {
       prevProps.pose !== this.props.pose &&
       this.props.pose === "exit"
     ) {
+      // TODO We need a way to manually schedule a new layout
+      // measurement. Imaginne we are polling, imagine that
+      // exit starts between polls. It will animate to a
+      // stale (aka. incorrect) layout position.
       this.layoutsSubscription!.unsubscribe()
 
       // TODO When exiting after a recent animation it animates to a
@@ -143,11 +148,7 @@ class FortoPop extends React.Component<Props, {}> {
       Pop.tween({
         from: this.popoverReaction.get(),
         to: { ...newXY, opacity: 0 },
-        duration: 2000,
-        // velocity: 0,
-        // stiffness: 450,
-        // damping: 35,
-        // mass: 1.5,
+        duration: 150,
       }).start({
         update: (value: { opacity: number }) =>
           this.popoverReaction!.update(value),
