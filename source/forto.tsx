@@ -31,6 +31,7 @@ class FortoPop extends React.Component<Props, {}> {
   popoverRef = React.createRef<HTMLDivElement>()
   layoutsSubscription: null | Subscription = null
   popoverReaction: null | Pop.ValueReaction = null
+  exiting: any
 
   render() {
     return (
@@ -54,10 +55,13 @@ class FortoPop extends React.Component<Props, {}> {
     const popoverStyle = Pop.styler(this.popoverRef.current!, {})
     const tipStyle = Pop.styler(arrangement.tip, {})
 
-    const popoverReaction = Pop.value({ x: 0, y: 5, opacity: 0 })
-    popoverReaction.subscribe(popoverStyle.set)
+    const popoverReaction = Pop.value(
+      { x: 0, y: 5, opacity: 0 },
+      popoverStyle.set,
+    )
 
     const layouts = Forto.DOM.observeWithPolling(
+      // const layouts = Forto.DOM.observe(
       {
         elligibleZones: this.props.place,
         preferredZones: this.props.preferPlace,
@@ -69,13 +73,10 @@ class FortoPop extends React.Component<Props, {}> {
     this.popoverReaction = popoverReaction
     this.layoutsSubscription = layouts.subscribe(
       (newLayout: Forto.Calculation) => {
-        Tip.updateElementShape(
-          arrangement.tip!,
-          // Tip.calcShape(this.props.tipSize, newLayout.zone.side),
-          Tip.calcShape(8, newLayout.zone.side),
-        )
+        // console.log("newLayout", newLayout)
 
         if (!this.layout) {
+          // console.log("enter for first time")
           // TODO: Create issue with Forto, we need a better DSL :)
           popoverReaction.update({
             ...(popoverReaction.get() as any),
@@ -95,36 +96,57 @@ class FortoPop extends React.Component<Props, {}> {
         }
 
         this.layout = newLayout
+        if (this.props.pose === "exit") return
 
-        Pop.spring({
-          from: popoverReaction.get(),
-          to: { ...newLayout.popover, opacity: 1 },
-          velocity: popoverReaction.getVelocity(),
-          stiffness: 450,
-          damping: 35,
-          mass: 1.5,
-        }).start(popoverReaction)
-
+        Tip.updateElementShape(
+          arrangement.tip!,
+          // Tip.calcShape(this.props.tipSize, newLayout.zone.side),
+          Tip.calcShape(8, newLayout.zone.side),
+        )
         tipStyle.set(newLayout.tip!)
+        this.springToLayout()
       },
     )
   }
 
-  // TODO during exit animation it should be possible to interrupt
-  // and bring back the popover. To see it not doing this right now
-  // set a high exit tween duration and spam click toggle.
+  springToLayout() {
+    // console.log("springToLayout")
+    Pop.spring({
+      from: this.popoverReaction!.get(),
+      to: { ...this.layout!.popover, opacity: 1 },
+      velocity: this.popoverReaction!.getVelocity(),
+      stiffness: 450,
+      damping: 35,
+      mass: 1.5,
+    }).start(this.popoverReaction!)
+  }
+
   componentDidUpdate(prevProps: Props) {
+    // console.log("componentDidUpdate")
     if (
+      this.layout &&
+      this.popoverReaction &&
+      prevProps.pose !== this.props.pose &&
+      this.props.pose === undefined
+    ) {
+      // console.log("interrupt")
+      // TODO https://github.com/Popmotion/popmotion/issues/543
+      this.exiting.stop()
+      this.springToLayout()
+    } else if (
       this.layout &&
       this.popoverReaction &&
       prevProps.pose !== this.props.pose &&
       this.props.pose === "exit"
     ) {
+      // console.log("exit")
       // TODO We need a way to manually schedule a new layout
       // measurement. Imaginne we are polling, imagine that
       // exit starts between polls. It will animate to a
       // stale (aka. incorrect) layout position.
-      this.layoutsSubscription!.unsubscribe()
+
+      // We are using pose exit short circuit now
+      // this.layoutsSubscription!.unsubscribe()
 
       // TODO When exiting after a recent animation it animates to a
       // weird XY as if current XY is a lag
@@ -144,15 +166,19 @@ class FortoPop extends React.Component<Props, {}> {
               ? 1
               : -1),
       }
-
-      Pop.tween({
+      this.exiting = Pop.tween({
         from: this.popoverReaction.get(),
         to: { ...newXY, opacity: 0 },
         duration: 150,
       }).start({
-        update: (value: { opacity: number }) =>
-          this.popoverReaction!.update(value),
-        complete: this.props.onPoseComplete as any,
+        update: (value: { opacity: number }) => {
+          // console.log("exit update")
+          this.popoverReaction!.update(value)
+        },
+        complete: () => {
+          // console.log("exit complete")
+          this.props.onPoseComplete()
+        },
       })
     }
   }

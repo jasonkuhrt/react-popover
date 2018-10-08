@@ -1,62 +1,54 @@
 import * as React from "react"
-import * as F from "./utils"
+// import * as F from "./utils"
 
 /**
  * The Transition component makes it possible to run
  * exit animations before unmount.
  */
 interface State {
-  children: React.ReactNode
-  exiting: React.ReactNode[]
-  onExitAnimationComplete(key: string): void
+  children: null | React.ReactElement<any>
+  onExitAnimationComplete(): void
 }
 
 interface Props {
-  children: React.ReactNode
-}
-
-const asArray = <T extends unknown>(x: T | T[]): T[] => {
-  return Array.isArray(x) ? x : x == undefined ? [] : [x]
+  children: null | React.ReactElement<any>
 }
 
 class Transition extends React.Component<Props, State> {
   static getDerivedStateFromProps(props: Props, state: State) {
-    const [enterings, stayings, exitings] = F.venn(
-      asArray(props.children) as React.ReactElement<unknown>[],
-      state.children as React.ReactElement<unknown>[],
-    )
+    const children =
+      props.children && !state.children
+        ? // continuing it
+          props.children
+        : // exiting it
+          !props.children && state.children
+          ? React.cloneElement(state.children, {
+              pose: "exit",
+              onPoseComplete() {
+                state.onExitAnimationComplete()
+              },
+            })
+          : // entering during exiting aka. exit interuption
+            props.children && state.children
+            ? React.cloneElement(props.children, {
+                pose: undefined,
+              })
+            : // continuing nothing
+              null
 
-    const exitingsAnimating = exitings.map(exiting => {
-      return React.cloneElement(exiting, {
-        pose: "exit",
-        onPoseComplete() {
-          state.onExitAnimationComplete(exiting.key as string)
-        },
-      } as any)
-    })
-
-    return {
-      children: enterings.concat(stayings).concat(exitingsAnimating),
-    }
+    return { children }
   }
 
   state: State = {
-    children: [],
-    exiting: [],
-    onExitAnimationComplete: key => {
-      this.onExitAnimationComplete(key)
+    children: null,
+    onExitAnimationComplete: () => {
+      this.onExitAnimationComplete()
     },
   }
 
-  onExitAnimationComplete(key: string) {
-    const i = (this.state.children as React.ReactElement<unknown>[]).findIndex(
-      child => child.key === key,
-    )
+  onExitAnimationComplete() {
     this.setState({
-      children: [
-        ...(this.state.children as React.ReactNodeArray).slice(0, i),
-        ...(this.state.children as React.ReactNodeArray).slice(i + 1),
-      ],
+      children: null,
     })
   }
 

@@ -55,11 +55,7 @@ class Popover extends React.Component<Props, { el: null | Element }> {
     const popover = (
       <Transition>
         {isOpen ? (
-          <FortoPop
-            {...fortoPopProps}
-            target={this.state.el!}
-            key={Math.random()}
-          />
+          <FortoPop key="foobar" {...fortoPopProps} target={this.state.el!} />
         ) : null}
       </Transition>
     )
