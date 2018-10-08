@@ -55,8 +55,7 @@ class Popover extends React.Component<Props, { el: null | Element }> {
     const popover = (
       <Transition>
         {isOpen ? (
-          // TODO does key matter? Try removing it and seeing.
-          <FortoPop key="foobar" {...fortoPopProps} target={this.state.el!} />
+          <FortoPop {...fortoPopProps} target={this.state.el!} />
         ) : null}
       </Transition>
     )
