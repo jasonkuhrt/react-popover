@@ -9,6 +9,47 @@ interface Subscription {
   unsubscribe(): void
 }
 
+const crossAxis = (zone: Forto.Zone) =>
+  Forto.Ori.crossAxis(Forto.Ori.fromSide(zone))
+
+const mainAxis = (zone: Forto.Zone) =>
+  Forto.Ori.mainAxis(Forto.Ori.fromSide(zone))
+
+const createAxes = (zone: Forto.Zone) => {
+  const ca = crossAxis(zone)
+  const ma = mainAxis(zone)
+  return {
+    cross: {
+      prop: ca,
+      pos: (pos: any) => pos[ca],
+    },
+    main: {
+      prop: ma,
+      pos: (pos: any) => pos[ma],
+    },
+  }
+}
+
+const layoutOrderNum = (zone: Forto.Zone): -1 | 1 => {
+  return zone.side === Forto.Ori.Side.Top || zone.side === Forto.Ori.Side.Left
+    ? -1
+    : 1
+}
+
+const awayFromTarget = (zone: Forto.Zone, n: number) => {
+  return n * layoutOrderNum(zone)
+}
+
+const tipRotationForZone = (zone: Forto.Zone) => {
+  return zone.side === "Bottom"
+    ? 270
+    : zone.side === "Top"
+      ? 90
+      : zone.side === "Right"
+        ? 180
+        : 0
+}
+
 // TODO Support ref, outerAction will need it
 interface Props {
   target: Element
@@ -32,6 +73,7 @@ class FortoPop extends React.Component<Props, {}> {
   layoutsSubscription: null | Subscription = null
   popoverReaction: null | Pop.ValueReaction = null
   exiting: any
+  tipChangingZones: null | Pop.ColdSubscription = null
 
   render() {
     return (
@@ -54,11 +96,11 @@ class FortoPop extends React.Component<Props, {}> {
 
     const popoverStyle = Pop.styler(this.popoverRef.current!, {})
     const tipStyle = Pop.styler(arrangement.tip, {})
-
     const popoverReaction = Pop.value(
       { x: 0, y: 5, opacity: 0 },
       popoverStyle.set,
     )
+    const tipReaction = Pop.value({ x: 0, y: 5 }, tipStyle.set)
 
     const layouts = Forto.DOM.observeWithPolling(
       // const layouts = Forto.DOM.observe(
@@ -73,37 +115,106 @@ class FortoPop extends React.Component<Props, {}> {
     this.popoverReaction = popoverReaction
     this.layoutsSubscription = layouts.subscribe(
       (newLayout: Forto.Calculation) => {
-        // console.log("newLayout", newLayout)
+        console.log("newLayout", newLayout)
 
         if (!this.layout) {
           // console.log("enter for first time")
           // TODO: Create issue with Forto, we need a better DSL :)
+          // }
+          const axes = createAxes(newLayout.zone)
           popoverReaction.update({
             ...(popoverReaction.get() as any),
-            [Forto.Ori.crossAxis(Forto.Ori.fromSide(newLayout.zone))]: newLayout
-              .popover[Forto.Ori.crossAxis(Forto.Ori.fromSide(newLayout.zone))],
-            [Forto.Ori.mainAxis(Forto.Ori.fromSide(newLayout.zone))]:
-              newLayout.popover[
-                Forto.Ori.mainAxis(Forto.Ori.fromSide(newLayout.zone))
-              ] +
-              15 *
-                (newLayout.zone.side === Forto.Ori.Side.Top ||
-                newLayout.zone.side === Forto.Ori.Side.Left
-                  ? -1
-                  : 1),
+            [axes.cross.prop]: axes.cross.pos(newLayout.popover),
+            [axes.main.prop]:
+              axes.main.pos(newLayout.popover) +
+              awayFromTarget(newLayout.zone, 15),
           })
           popoverReaction.velocityCheck({ timestamp: 0, delta: 0 })
+        }
+
+        // Handle Tip
+        if (!this.layout) {
+          Tip.updateElementShape(
+            arrangement.tip!,
+            // Tip.calcShape(this.props.tipSize, newLayout.zone.side),
+            Tip.calcShape(8, newLayout.zone.side),
+          )
+          Pop.spring({
+            from: tipReaction!.get(),
+            to: newLayout!.tip!,
+            velocity: tipReaction!.getVelocity(),
+            stiffness: 450,
+            damping: 35,
+            mass: 1.5,
+          }).start(tipReaction)
+        } else {
+          // TODO
+          // The problem here is that layout measurements will be made in accordance with tip
+          // before it is rotated, then once rotated, will overshoot new natural layout. The
+          // rotation does trigger change detection however then we need to integrate that
+          // detection in this existing running animationn.
+          const zoneChange = this.layout.zone.side !== newLayout.zone.side
+          if (zoneChange) {
+            console.log("do tip zone-change animation")
+            const axesBefore = createAxes(this.layout.zone)
+            const axesAfter = createAxes(newLayout.zone)
+            this.tipChangingZones = Pop.timeline([
+              {
+                track: "pos",
+                from: this.layout.tip!,
+                to: {
+                  [axesBefore.cross.prop]: axesBefore.cross.pos(
+                    this.layout.tip,
+                  ),
+                  [axesBefore.main.prop]:
+                    axesBefore.main.pos(this.layout.tip) +
+                    awayFromTarget(this.layout.zone, 8),
+                },
+                duration: 350,
+              },
+              {
+                track: "pos",
+                to: {
+                  rotate: tipRotationForZone(newLayout.zone),
+                  [axesAfter.cross.prop]: axesAfter.cross.pos(newLayout.tip),
+                  [axesAfter.main.prop]:
+                    axesAfter.main.pos(newLayout.tip) +
+                    awayFromTarget(newLayout.zone, 8),
+                },
+                duration: 0,
+              },
+              {
+                track: "pos",
+                to: {
+                  ...newLayout.tip!,
+                  rotate: tipRotationForZone(newLayout.zone),
+                },
+                duration: 350,
+              },
+            ]).start({
+              update: (tl: any) => {
+                tipReaction.update(tl.pos)
+              },
+            })
+          } else if (
+            this.tipChangingZones &&
+            this.tipChangingZones.getProgress!() === 1
+          ) {
+            // tipStyle.set(newLayout.tip!)
+            Pop.spring({
+              from: tipReaction!.get(),
+              to: this.layout!.tip!,
+              velocity: tipReaction!.getVelocity(),
+              stiffness: 450,
+              damping: 35,
+              mass: 1.5,
+            }).start(tipReaction)
+          }
         }
 
         this.layout = newLayout
         if (this.props.pose === "exit") return
 
-        Tip.updateElementShape(
-          arrangement.tip!,
-          // Tip.calcShape(this.props.tipSize, newLayout.zone.side),
-          Tip.calcShape(8, newLayout.zone.side),
-        )
-        tipStyle.set(newLayout.tip!)
         this.springToLayout()
       },
     )
@@ -151,20 +262,13 @@ class FortoPop extends React.Component<Props, {}> {
       // TODO When exiting after a recent animation it animates to a
       // weird XY as if current XY is a lag
       // TODO better DSL from forto
+      const axes = createAxes(this.layout.zone)
       const newXY = {
-        [Forto.Ori.crossAxis(Forto.Ori.fromSide(this.layout.zone))]: this.layout
-          .popover[Forto.Ori.crossAxis(Forto.Ori.fromSide(this.layout.zone))],
-        [Forto.Ori.mainAxis(Forto.Ori.fromSide(this.layout.zone))]:
-          this.layout.popover[
-            Forto.Ori.mainAxis(Forto.Ori.fromSide(this.layout.zone))
-          ] +
+        [axes.cross.prop]: axes.cross.pos(this.layout.popover),
+        [axes.main.prop]:
+          axes.main.pos(this.layout.popover) +
           // TODO this should be same as enter size
-          -20 *
-            // TODO orientation check instead of side check
-            (this.layout.zone.side === Forto.Ori.Side.Top ||
-            this.layout.zone.side === Forto.Ori.Side.Left
-              ? 1
-              : -1),
+          awayFromTarget(this.layout.zone, 20),
       }
       this.exiting = Pop.tween({
         from: this.popoverReaction.get(),

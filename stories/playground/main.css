@@ -13,6 +13,12 @@ html {
 
 .Popover-body {
   padding: 4rem;
+  background: white;
+  z-index: 2;
+}
+
+.Popover-tip {
+  z-index: 1;
 }
 
 /* Target */
