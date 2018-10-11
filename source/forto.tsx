@@ -9,6 +9,8 @@ interface Subscription {
   unsubscribe(): void
 }
 
+// TODO: Create issue with Forto, we need a better DSL :)
+
 const crossAxis = (zone: Forto.Zone) =>
   Forto.Ori.crossAxis(Forto.Ori.fromSide(zone))
 
@@ -21,11 +23,11 @@ const createAxes = (zone: Forto.Zone) => {
   return {
     cross: {
       prop: ca,
-      pos: (pos: any) => pos[ca],
+      posAxis: (pos: any) => pos[ca],
     },
     main: {
       prop: ma,
-      pos: (pos: any) => pos[ma],
+      posAxis: (pos: any) => pos[ma],
     },
   }
 }
@@ -74,13 +76,13 @@ class FortoPop extends React.Component<Props, {}> {
   popoverReaction: null | Pop.ValueReaction = null
   exiting: any
   tipChangingZones: null | Pop.ColdSubscription = null
+  hasEntered: boolean = false
 
   render() {
     return (
       <div ref={this.popoverRef} style={{ position: "absolute" }}>
         <div className="Popover-body" children={this.props.body} />
-        {/* <Tip.Component width={tipShape.width} height={tipShape.height} /> */}
-        <Tip.Component width={8} height={8} />
+        <Tip.Component size={8} />
       </div>
     )
   }
@@ -100,9 +102,12 @@ class FortoPop extends React.Component<Props, {}> {
       { x: 0, y: 5, opacity: 0 },
       popoverStyle.set,
     )
-    const tipReaction = Pop.value({ x: 0, y: 5 }, tipStyle.set)
+    const tipReaction = Pop.value(
+      { x: 0, y: 5, rotate: 0, originX: 0, originY: 8 },
+      tipStyle.set,
+    )
 
-    const layouts = Forto.DOM.observeWithPolling(
+    const layoutChanges = Forto.DOM.observeWithPolling(
       // const layouts = Forto.DOM.observe(
       {
         elligibleZones: this.props.place,
@@ -113,41 +118,29 @@ class FortoPop extends React.Component<Props, {}> {
     )
 
     this.popoverReaction = popoverReaction
-    this.layoutsSubscription = layouts.subscribe(
+    this.layoutsSubscription = layoutChanges.subscribe(
       (newLayout: Forto.Calculation) => {
         console.log("newLayout", newLayout)
 
-        if (!this.layout) {
-          // console.log("enter for first time")
-          // TODO: Create issue with Forto, we need a better DSL :)
-          // }
-          const axes = createAxes(newLayout.zone)
-          popoverReaction.update({
-            ...(popoverReaction.get() as any),
-            [axes.cross.prop]: axes.cross.pos(newLayout.popover),
-            [axes.main.prop]:
-              axes.main.pos(newLayout.popover) +
-              awayFromTarget(newLayout.zone, 15),
-          })
-          popoverReaction.velocityCheck({ timestamp: 0, delta: 0 })
-        }
-
         // Handle Tip
         if (!this.layout) {
-          Tip.updateElementShape(
-            arrangement.tip!,
-            // Tip.calcShape(this.props.tipSize, newLayout.zone.side),
-            Tip.calcShape(8, newLayout.zone.side),
-          )
           Pop.spring({
             from: tipReaction!.get(),
-            to: newLayout!.tip!,
+            to: {
+              ...newLayout!.tip!,
+              rotate: tipRotationForZone(newLayout.zone),
+              originX: 0,
+              originY: 8,
+            },
             velocity: tipReaction!.getVelocity(),
             stiffness: 450,
             damping: 35,
             mass: 1.5,
           }).start(tipReaction)
         } else {
+          console.log(
+            this.tipChangingZones && this.tipChangingZones.getProgress!().pos,
+          )
           // TODO
           // The problem here is that layout measurements will be made in accordance with tip
           // before it is rotated, then once rotated, will overshoot new natural layout. The
@@ -163,12 +156,14 @@ class FortoPop extends React.Component<Props, {}> {
                 track: "pos",
                 from: this.layout.tip!,
                 to: {
-                  [axesBefore.cross.prop]: axesBefore.cross.pos(
+                  [axesBefore.cross.prop]: axesBefore.cross.posAxis(
                     this.layout.tip,
                   ),
                   [axesBefore.main.prop]:
-                    axesBefore.main.pos(this.layout.tip) +
+                    axesBefore.main.posAxis(this.layout.tip) +
                     awayFromTarget(this.layout.zone, 8),
+                  originX: 0,
+                  originY: 8,
                 },
                 duration: 350,
               },
@@ -176,9 +171,11 @@ class FortoPop extends React.Component<Props, {}> {
                 track: "pos",
                 to: {
                   rotate: tipRotationForZone(newLayout.zone),
-                  [axesAfter.cross.prop]: axesAfter.cross.pos(newLayout.tip),
+                  [axesAfter.cross.prop]: axesAfter.cross.posAxis(
+                    newLayout.tip,
+                  ),
                   [axesAfter.main.prop]:
-                    axesAfter.main.pos(newLayout.tip) +
+                    axesAfter.main.posAxis(newLayout.tip) +
                     awayFromTarget(newLayout.zone, 8),
                 },
                 duration: 0,
@@ -188,6 +185,8 @@ class FortoPop extends React.Component<Props, {}> {
                 to: {
                   ...newLayout.tip!,
                   rotate: tipRotationForZone(newLayout.zone),
+                  originX: 0,
+                  originY: 8,
                 },
                 duration: 350,
               },
@@ -197,13 +196,18 @@ class FortoPop extends React.Component<Props, {}> {
               },
             })
           } else if (
-            this.tipChangingZones &&
-            this.tipChangingZones.getProgress!() === 1
+            !this.tipChangingZones ||
+            this.tipChangingZones.getProgress!().pos === 1
           ) {
-            // tipStyle.set(newLayout.tip!)
+            console.log("tip animate")
             Pop.spring({
               from: tipReaction!.get(),
-              to: this.layout!.tip!,
+              to: {
+                ...this.layout!.tip!,
+                rotate: tipRotationForZone(newLayout.zone),
+                originX: 0,
+                originY: 8,
+              },
               velocity: tipReaction!.getVelocity(),
               stiffness: 450,
               damping: 35,
@@ -215,21 +219,42 @@ class FortoPop extends React.Component<Props, {}> {
         this.layout = newLayout
         if (this.props.pose === "exit") return
 
-        this.springToLayout()
+        if (!this.hasEntered) {
+          this.movePopoverIntoPreLayoutPosition(popoverReaction, newLayout)
+        }
+        this.animatePopoverToLayout(popoverReaction, newLayout)
+
+        this.hasEntered = true
       },
     )
   }
 
-  springToLayout() {
-    // console.log("springToLayout")
+  movePopoverIntoPreLayoutPosition(
+    popoverReaction: Pop.ValueReaction,
+    layout: Forto.Calculation,
+  ) {
+    const axes = createAxes(layout.zone)
+    popoverReaction.update({
+      ...(popoverReaction.get() as any),
+      [axes.cross.prop]: axes.cross.posAxis(layout.popover),
+      [axes.main.prop]:
+        axes.main.posAxis(layout.popover) + awayFromTarget(layout.zone, 15),
+    })
+    popoverReaction.velocityCheck({ timestamp: 0, delta: 0 })
+  }
+
+  animatePopoverToLayout(
+    popoverReaction: Pop.ValueReaction,
+    layout: Forto.Calculation,
+  ) {
     Pop.spring({
-      from: this.popoverReaction!.get(),
-      to: { ...this.layout!.popover, opacity: 1 },
-      velocity: this.popoverReaction!.getVelocity(),
+      from: popoverReaction.get(),
+      to: { ...layout.popover, opacity: 1 },
+      velocity: popoverReaction.getVelocity(),
       stiffness: 450,
       damping: 35,
       mass: 1.5,
-    }).start(this.popoverReaction!)
+    }).start(popoverReaction)
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -243,7 +268,7 @@ class FortoPop extends React.Component<Props, {}> {
       // console.log("interrupt")
       // TODO https://github.com/Popmotion/popmotion/issues/543
       this.exiting.stop()
-      this.springToLayout()
+      this.animatePopoverToLayout(this.popoverReaction, this.layout)
     } else if (
       this.layout &&
       this.popoverReaction &&
@@ -264,9 +289,9 @@ class FortoPop extends React.Component<Props, {}> {
       // TODO better DSL from forto
       const axes = createAxes(this.layout.zone)
       const newXY = {
-        [axes.cross.prop]: axes.cross.pos(this.layout.popover),
+        [axes.cross.prop]: axes.cross.posAxis(this.layout.popover),
         [axes.main.prop]:
-          axes.main.pos(this.layout.popover) +
+          axes.main.posAxis(this.layout.popover) +
           // TODO this should be same as enter size
           awayFromTarget(this.layout.zone, 20),
       }

@@ -1,56 +1,17 @@
 import * as React from "react"
 
-type Direction = "Bottom" | "Top" | "Right" | "Left"
-
-type Shape = {
-  points: string
-  width: number
-  height: number
-}
-
-// TODO refactor comments
-const calcPoints = (size: number, direction: Direction): string => {
-  const mainLength = size
-  const crossLength = size * 2
-  const points =
-    direction === "Bottom" // direction top
-      ? `0,${mainLength} ${mainLength},0, ${crossLength},${mainLength}`
-      : direction === "Top" // Direction bottom
-        ? `0,0 ${mainLength},${mainLength}, ${crossLength},0`
-        : direction === "Right"
-          ? `${mainLength},0 0,${mainLength}, ${mainLength},${crossLength}`
-          : `0,0 ${mainLength},${mainLength}, 0,${crossLength}`
-
-  return points
-}
-
-const calcShape = (size: number, side: Direction) => {
-  const isPortrait = side === "Top" || side === "Bottom"
-  const mainLength = size
-  const crossLength = size * 2
-  return {
-    width: isPortrait ? crossLength : mainLength,
-    height: isPortrait ? mainLength : crossLength,
-    points: calcPoints(size, side),
-  }
-}
-
-const updateElementShape = (tip: Element, tipShape: Shape) => {
-  tip.setAttribute("width", String(tipShape.width))
-  tip.setAttribute("height", String(tipShape.height))
-  const tipShapeEl = tip.querySelector(".Popover-tipShape") as Element
-  tipShapeEl.setAttribute("points", tipShape.points)
-}
-
-const Component = ({ width, height }: { width: number; height: number }) => (
+const Component = ({ size }: { size: number }) => (
   <svg
     className="Popover-tip"
     style={{ position: "absolute", display: "block", left: 0, top: 0 }}
-    width={width || 0}
-    height={height || 0}
+    width={size}
+    height={size * 2}
   >
-    <polygon className="Popover-tipShape" />
+    <polygon
+      className="Popover-tipShape"
+      points={`0,0 ${size},${size}, 0,${size * 2}`}
+    />
   </svg>
 )
 
-export { calcShape, updateElementShape, Component }
+export { Component }

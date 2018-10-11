@@ -51,7 +51,6 @@ class Popover extends React.Component<Props, { el: null | Element }> {
   render() {
     // TODO Refactor initial tip sizing logic
     const { isOpen, children, appendTarget, ...fortoPopProps } = this.props
-    // const tipShape = Tip.calcShape(this.props.tipSize, "Bottom")
     const popover = (
       <Transition>
         {isOpen ? (

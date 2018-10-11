@@ -13,7 +13,7 @@ html {
 
 .Popover-body {
   padding: 4rem;
-  background: white;
+  /* background: white; */
   z-index: 2;
 }
 
