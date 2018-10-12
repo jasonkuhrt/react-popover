@@ -142,111 +142,104 @@ class FortoPop extends React.Component<Props, {}> {
       (newLayout: Forto.Calculation) => {
         console.log("newLayout", newLayout)
 
-        // Handle Tip
-        if (!this.layout) {
-          Pop.spring({
-            from: tipReaction!.get(),
-            to: {
-              ...newLayout!.tip!,
-              rotate: tipRotationForZone(newLayout.zone),
-              originX: 0,
-              originY: 8,
-            },
-            velocity: tipReaction!.getVelocity(),
-            stiffness: 450,
-            damping: 35,
-            mass: 1.5,
-          }).start(tipReaction)
-        } else {
-          console.log(
-            this.tipChangingZones && this.tipChangingZones.getProgress!().pos,
-          )
-          // TODO
-          // The problem here is that layout measurements will be made in accordance with tip
-          // before it is rotated, then once rotated, will overshoot new natural layout. The
-          // rotation does trigger change detection however then we need to integrate that
-          // detection in this existing running animationn.
-          const zoneChange = this.layout.zone.side !== newLayout.zone.side
-          if (zoneChange) {
-            console.log("do tip zone-change animation")
-            const axesBefore = createAxes(this.layout.zone)
-            const axesAfter = createAxes(newLayout.zone)
-            this.tipChangingZones = Pop.timeline([
-              {
-                track: "pos",
-                from: this.layout.tip!,
-                to: {
-                  [axesBefore.cross.prop]: axesBefore.cross.posAxis(
-                    this.layout.tip,
-                  ),
-                  [axesBefore.main.prop]:
-                    axesBefore.main.posAxis(this.layout.tip) +
-                    awayFromTarget(this.layout.zone, 8),
-                  originX: 0,
-                  originY: 8,
-                },
-                duration: 350,
-              },
-              {
-                track: "pos",
-                to: {
-                  rotate: tipRotationForZone(newLayout.zone),
-                  [axesAfter.cross.prop]: axesAfter.cross.posAxis(
-                    newLayout.tip,
-                  ),
-                  [axesAfter.main.prop]:
-                    axesAfter.main.posAxis(newLayout.tip) +
-                    awayFromTarget(newLayout.zone, 8),
-                },
-                duration: 0,
-              },
-              {
-                track: "pos",
-                to: {
-                  ...newLayout.tip!,
-                  rotate: tipRotationForZone(newLayout.zone),
-                  originX: 0,
-                  originY: 8,
-                },
-                duration: 350,
-              },
-            ]).start({
-              update: (tl: any) => {
-                tipReaction.update(tl.pos)
-              },
-            })
-          } else if (
-            !this.tipChangingZones ||
-            this.tipChangingZones.getProgress!().pos === 1
-          ) {
-            console.log("tip animate")
-            Pop.spring({
-              from: tipReaction!.get(),
-              to: {
-                ...this.layout!.tip!,
-                rotate: tipRotationForZone(newLayout.zone),
-                originX: 0,
-                originY: 8,
-              },
-              velocity: tipReaction!.getVelocity(),
-              stiffness: 450,
-              damping: 35,
-              mass: 1.5,
-            }).start(tipReaction)
+        // TODO As exiting continue animating everything else...?
+        if (this.props.pose !== "exit") {
+          if (!this.hasEntered) {
+            this.movePopoverIntoPreLayoutPosition(popoverReaction, newLayout)
+            this.moveTipIntoPreLayoutPosition(tipReaction, newLayout)
           }
+          this.animateTipToLayout(tipReaction, newLayout, this.layout)
+          this.animatePopoverToLayout(popoverReaction, newLayout)
+          this.hasEntered = true
         }
-
         this.layout = newLayout
-        if (this.props.pose === "exit") return
-
-        if (!this.hasEntered) {
-          this.movePopoverIntoPreLayoutPosition(popoverReaction, newLayout)
-        }
-        this.animatePopoverToLayout(popoverReaction, newLayout)
-
-        this.hasEntered = true
       },
     )
+  }
+
+  moveTipIntoPreLayoutPosition(
+    tipReaction: Pop.ValueReaction,
+    layout: Forto.Calculation,
+  ) {
+    const axes = createAxes(layout.zone)
+    tipReaction.update({
+      ...(tipReaction.get() as any),
+      [axes.cross.prop]: axes.cross.posAxis(layout.tip),
+      [axes.main.prop]:
+        axes.main.posAxis(layout.tip) + awayFromTarget(layout.zone, 8),
+      rotate: tipRotationForZone(layout.zone),
+    })
+    tipReaction.velocityCheck({ timestamp: 0, delta: 0 })
+  }
+
+  animateTipToLayout(
+    tipReaction: Pop.ValueReaction,
+    layout: Forto.Calculation,
+    layoutBefore: null | Forto.Calculation,
+  ) {
+    if (layoutBefore && layoutBefore.zone.side !== layout.zone.side) {
+      // TODO
+      // The problem here is that layout measurements will be made in accordance with tip
+      // before it is rotated, then once rotated, will overshoot new natural layout. The
+      // rotation does trigger change detection however then we need to integrate that
+      // detection in this existing running animationn.
+      console.log("do tip zone-change animation")
+      const axesBefore = createAxes(layoutBefore.zone)
+      const axesAfter = createAxes(layout.zone)
+      this.tipChangingZones = Pop.timeline([
+        {
+          track: "pos",
+          from: layoutBefore.tip!,
+          to: {
+            ...(tipReaction.get() as any),
+            [axesBefore.cross.prop]: axesBefore.cross.posAxis(layoutBefore.tip),
+            [axesBefore.main.prop]:
+              axesBefore.main.posAxis(layoutBefore.tip) +
+              awayFromTarget(layoutBefore.zone, 8),
+          },
+          duration: 350,
+        },
+        {
+          track: "pos",
+          to: {
+            ...(tipReaction.get() as any),
+            rotate: tipRotationForZone(layout.zone),
+            [axesAfter.cross.prop]: axesAfter.cross.posAxis(layout.tip),
+            [axesAfter.main.prop]:
+              axesAfter.main.posAxis(layout.tip) +
+              awayFromTarget(layout.zone, 8),
+          },
+          duration: 0,
+        },
+        {
+          track: "pos",
+          to: {
+            ...(tipReaction.get() as any),
+            ...layout.tip!,
+            rotate: tipRotationForZone(layout.zone),
+          },
+          duration: 350,
+        },
+      ]).start({
+        update: (tl: any) => {
+          tipReaction.update(tl.pos)
+        },
+      })
+    } else {
+      Pop.spring({
+        from: tipReaction.get(),
+        to: {
+          ...(tipReaction.get() as any),
+          ...layout.tip!,
+          // TODO Consider doing conditional check for zone change
+          rotate: tipRotationForZone(layout.zone),
+        },
+        velocity: tipReaction!.getVelocity(),
+        stiffness: 450,
+        damping: 35,
+        mass: 1.5,
+      }).start(tipReaction)
+    }
   }
 
   movePopoverIntoPreLayoutPosition(
