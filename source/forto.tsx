@@ -1,13 +1,33 @@
 import * as React from "react"
 import * as Forto from "forto"
 import * as Pop from "popmotion"
-import * as Tip from "./tip"
 import * as F from "./utils"
 
 interface Subscription {
   closed: boolean
   unsubscribe(): void
 }
+
+interface TipProps {
+  size: number
+}
+
+/**
+ * TODO
+ */
+const Tip: React.SFC<TipProps> = ({ size }) => (
+  <svg
+    className="Popover-tip"
+    style={{ position: "absolute", display: "block", left: 0, top: 0 }}
+    width={size}
+    height={size * 2}
+  >
+    <polygon
+      className="Popover-tipShape"
+      points={`0,0 ${size},${size}, 0,${size * 2}`}
+    />
+  </svg>
+)
 
 // TODO: Create issue with Forto, we need a better DSL :)
 
@@ -82,7 +102,7 @@ class FortoPop extends React.Component<Props, {}> {
     return (
       <div ref={this.popoverRef} style={{ position: "absolute" }}>
         <div className="Popover-body" children={this.props.body} />
-        <Tip.Component size={8} />
+        <Tip size={8} />
       </div>
     )
   }
