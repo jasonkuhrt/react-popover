@@ -123,24 +123,24 @@ class FortoPop extends React.Component<Props, {}> {
       popoverStyle.set,
     )
     const tipReaction = Pop.value(
-      { x: 0, y: 5, rotate: 0, originX: 0, originY: 8 },
+      { x: 0, y: 0, rotate: 0, originX: -50, originY: 0.001 },
       tipStyle.set,
     )
 
-    const layoutChanges = Forto.DOM.observeWithPolling(
-      // const layouts = Forto.DOM.observe(
+    const layoutChanges = Forto.DOM.observe(
       {
         elligibleZones: this.props.place,
         preferredZones: this.props.preferPlace,
+        tipSize: 8,
+        pollIntervalMs: this.props.refreshIntervalMs || 1000,
       },
       arrangement,
-      this.props.refreshIntervalMs || 1000,
     )
 
     this.popoverReaction = popoverReaction
     this.layoutsSubscription = layoutChanges.subscribe(
       (newLayout: Forto.Calculation) => {
-        console.log("newLayout", newLayout)
+        // console.log("newLayout", newLayout)
 
         // TODO As exiting continue animating everything else...?
         if (this.props.pose !== "exit") {
