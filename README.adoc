@@ -23,7 +23,64 @@ yarn add react-popover
 
 ## Examples
 
-Look at the link:https://littlebits.github.io/react-popover[stories in our storybook].
+Here is a minimal example of react-popover that the popover is displayed by clicking the button.
+
+```jsx
+import React from "react";
+import ReactDOM from "react-dom";
+import Popover from "react-popover";
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { isOpen: false };
+  }
+
+  togglePopover = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+  };
+
+  render() {
+    return (
+      <div className="App">
+        <Popover
+          isOpen={this.state.isOpen}
+          body={<div>Popover Content</div>}
+          place="below"
+          onOuterAction={this.togglePopover}
+        >
+          <button onClick={this.togglePopover}>Toggle Popover</button>
+        </Popover>
+      </div>
+    );
+  }
+}
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+```
+
+react-popover does not come with any styles by default. You can modify the design of react-popover by adding styles to `.Popover-body` and `.Popover-tipShape`.
+
+```css
+.Popover-body {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 2rem 4rem;
+  background: hsl(0, 0%, 27%);
+  color: white;
+  border-radius: 0.3rem;
+}
+
+.Popover-tipShape {
+  fill: hsl(0, 0%, 27%);
+}
+```
+
+## Demos
+
+* link:https://littlebits.github.io/react-popover[Stories in our storybook]
+* link:https://codesandbox.io/s/y31xy6lvw1[CodeSandbox demo]
 
 ## API
 
