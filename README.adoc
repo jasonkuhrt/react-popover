@@ -73,6 +73,11 @@ The amount of time in milliseconds that it takes to complete the enter and exit 
 
 ---
 
+#### `offset :: Number`
+Defines the offset of the popover from the element in pixels. Defaults to '4'.
+
+---
+
 #### `tipSize :: Number`
 Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 
