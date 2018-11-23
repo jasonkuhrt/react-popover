@@ -1,6 +1,5 @@
 :toc: macro
 :toc-title:
-:toclevels: 99
 
 # react-popover
 
@@ -8,8 +7,6 @@ image:https://travis-ci.org/littlebits/react-popover.svg?branch=master["Build St
 
 
 toc::[]
-
-
 
 ## React Versions Support
 
@@ -21,76 +18,161 @@ toc::[]
 yarn add react-popover
 ```
 
-## Examples
+## Live Demo
 
 Look at the link:https://littlebits.github.io/react-popover[stories in our storybook].
 
-## API
+## Basics
 
-### `export default` `Popover(props, target)`
+React-popover is a lightweight responsive popover.
 
-#### `props :: {...}`
+```jsx
+import Popover from 'react-popover';
 
----
+<Popover
+  body="Im the content of the responsive popover"
+  isOpen
+>
+<div>I am a popover</div>
+</Popover>
+```
+____
+You should not set target prop and children at the same time since both refer to the node on which the Popover would be displayed.
+____
 
-##### `body :: Node | Array Node`
-The `popover` content.
+## Placements
 
----
-
-##### `isOpen :: Boolean`
-Determines Whether or not the popover is rendered.
-
----
-
-##### `preferPlace :: Enum String | Null`
-Sets a ***preference*** of where to position the Popover. Only useful to specify placement in case of multiple available fits. Defaults to `null`. Valid values are:
+Placement of a popover is controlled by two props: `preferPlace` and `place` with these available options.
 
 `above | right | below | left` :: Prefer an explicit side.
 `row | column` :: Prefer an orientation.
 `start | end` :: Prefer an order.
 `null` :: No preference, automatic resolution. This is the default.
 
----
-
-##### `place :: String | Null`
-Like `preferPlace` except that the given place is a ***requirement***. The resolver becomes scoped or disabled. It is scoped if the `place` is an `orientation` or `order` but disabled if it is a `side`. For example `place: "row"` scopes the resolver to `above` or `below` placement but `place: "above"` removes any need for the resolver.
-
----
-
-##### `onOuterAction :: (Event) -> Void`
-A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
-
----
-
-##### `refreshIntervalMs :: Number | Falsey`
-The polling speed (AKA time between each poll) in milliseconds for checking if a layout refresh is required. This polling is required because it is the only robust way to track the position of a target in the DOM. Defaults to `200`. Set to a falsey value to disable.
-
----
-
-#### `enterExitTransitionDurationMs :: Number | Falsey`
-The amount of time in milliseconds that it takes to complete the enter and exit animation. Defaults to '500'.
-
----
-
-#### `tipSize :: Number`
-Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
-
----
-
-##### Standard
-
-* Properties like `className` and `style`.
+If none is set, Popover will automatically resolve the placement of popover on target node with a highly responsive behavior.
+Popover automatically resolves and set its placement to the side of target with most space.
+For instance, if target has more space on the right than any other side, the popover will be rendered to the right of the target.
 
 
----
+if `preferPlace` is set (say `above`), popover will be rendered to `above` only if there is enough space to render overlay. If space above doesnt fit, the side with the max space will be the placement of Popover.
+`preferPlace` can be scoped to an orientation using `row` and `column`. If `preferPlace` is set to `row`, for instance, Popover will resolve to any of `above` and `below` only if they fit else the next placement with the max space would be used.
 
-#### `target :: ReactElement`
+`place` behaves like `preferPlace` but its set as a constant position of Popover. Same behavior of `preferPlace` is shown if set to an orientation
+`place` prop overrides `preferPlace` prop.
 
-- The React Element that this popover will orient itself around. `target` `rendering tree` is unaffected. `Popover` _will_ become its `owner`.
+____
+`row` maps to `above` and `below`
 
----
+`column` maps to `left` and `right`
+____
 
-#### `appendTarget :: DOMElement`
 
-- The DOM element which the https://reactjs.org/docs/portals.html[portal] will mount into. In effect the popover will become an appended child of this DOM element. Defaults to 'document.body'.
+```jsx
+<Popover
+  body="Im the content of the highly responsive popover"
+  isOpen
+  preferPlace="above"
+>
+<Button>I am a popover</Button>
+</Popover>
+```
+
+```jsx
+import Popover from 'react-popover';
+
+class PopComponent extends React.Component {
+  state = { isOpen: true }
+  ref = React.createRef();
+
+  render() {
+    const { isOpen } = this.state;
+
+    return (
+      <div>
+        <p>I show an inlined <span ref={this.ref}>popover</span></p>
+        <Popover
+          body="Im the content of the highly responsive popover"
+          isOpen={isOpen}
+          preferPlace="right"
+          target={this.ref}
+        />
+      </div>
+    )
+  }
+}
+```
+
+The rest (arrow position on target and location of arrow on popover) is responsively taken care of.
+The position of arrow will be located at the center of Popover and point to the center of the target node by default.
+If there isnt enough space to render at the centers, arrow pointer will be automatically shifted to different locations on both target and overlay at the same placement position.
+Take a look at this link:https://littlebits.github.io/react-popover[example].
+
+
+## API
+
+|===
+| Name | Required | type | default | description
+
+|`body`
+|true
+|any
+|`undefined`
+|Content of popover.
+
+|`isOpen`
+|false
+|any
+|false
+|Shows popover overlay if set to true.
+
+|`preferPlace`
+|false
+|See link:#placements[Placements]
+|`undefined`
+|Preferred placement position of popover even if multiple placements have enough space to render popover.
+
+|`place`
+|false
+|See link:#placements[Placements]
+|`undefined`
+|Constant (scoped) placement of popover regardless of availability of more fitting placement positions. Read link:L97[Placements].
+
+|`onOuterAction`
+|false
+|`(SyntheticEvent) => void`
+|`undefined`
+|A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
+
+|`refreshIntervalMs`
+|false
+|`number`, `boolean:false`
+|200ms
+|The polling speed (AKA time interval between each poll) in milliseconds for checking if a layout refresh is required. This polling is required because it is the only robust way to track the position of a target in the DOM. Defaults to `200`. Set to a `false` value to disable.
+
+|`enterExitTransitionDurationMs`
+|false
+|`number`, `boolean:false`
+|500ms
+|The amount of time in milliseconds that it takes to complete the enter and exit animation.
+
+|`tipSize`
+|false
+|`number`
+|7
+|Defines the size of the arrow tip pointer. Set to 0.01 to disable tip.
+
+|`target`
+|false
+|`React$Node`
+|`undefined`
+|The React Node that this popover will orient itself around. `target` rendering tree is unaffected. `Popover` _will_ become its `owner`. This can also be set as `children`.
+
+|`appendTarget`
+|false
+|`React$Portal` read https://reactjs.org/docs/portals.html[Portal]
+|`undefined`
+|Usually Popover is mounted as a child of `document.body` for consistent layout. If `appendTarget` is set, Popover will render as a child of `appendTarget` instead of `document.body`.
+|===
+
+
+* Standard React properties like `className` and `style` are passed on to the overlay container element.
