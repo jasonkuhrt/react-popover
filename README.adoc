@@ -104,7 +104,7 @@ class PopComponent extends React.Component {
 
 The rest (arrow position on target and location of arrow on popover) is responsively taken care of.
 The position of arrow will be located at the center of Popover and point to the center of the target node by default.
-If there isnt enough space to render at the centers, arrow pointer will be automatically shifted to different at the same placement position.
+If there isnt enough space to render at the centers, arrow pointer will be automatically shifted to different locations on both target and overlay at the same placement position.
 Take a look at this link:https://littlebits.github.io/react-popover[example].
 
 
@@ -127,31 +127,31 @@ Take a look at this link:https://littlebits.github.io/react-popover[example].
 
 |`preferPlace`
 |false
-|See link:#placements[Placement]
+|See link:#placements[Placements]
 |`undefined`
-|Preferred placement of popover if multiple placements have enough space to render popover.
+|Preferred placement position of popover even if multiple placements have enough space to render popover.
 
 |`place`
 |false
-|See link:#placements[Placement]
+|See link:#placements[Placements]
 |`undefined`
-|Constant (scoped) placement of popover regardless of availability of more fitting placement. Read link:L97[Placement].
+|Constant (scoped) placement of popover regardless of availability of more fitting placement positions. Read link:L97[Placements].
 
 |`onOuterAction`
 |false
-|`(SyntheticEvent<*>) => void`
+|`(SyntheticEvent) => void`
 |`undefined`
 |A callback function executed every time the user does an action (`mousedown` or `touchstart`) outside the DOM tree of both `Popover` and `Target`. A canonical use-case is to automatically close the Popover on any external user action.
 
 |`refreshIntervalMs`
 |false
-|`number`, `boolean: false`
+|`number`, `boolean:false`
 |200ms
 |The polling speed (AKA time interval between each poll) in milliseconds for checking if a layout refresh is required. This polling is required because it is the only robust way to track the position of a target in the DOM. Defaults to `200`. Set to a `false` value to disable.
 
 |`enterExitTransitionDurationMs`
 |false
-|`number`, `boolean: false`
+|`number`, `boolean:false`
 |500ms
 |The amount of time in milliseconds that it takes to complete the enter and exit animation.
 
