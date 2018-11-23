@@ -25,7 +25,8 @@ Look at the link:https://littlebits.github.io/react-popover[stories in our story
 ## Basics
 
 React-popover is a lightweight responsive popover.
-```
+
+```jsx
 import Popover from 'react-popover';
 
 <Popover
