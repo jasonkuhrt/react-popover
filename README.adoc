@@ -56,7 +56,7 @@ For instance, if target has more space on the right than any other side, the pop
 if `preferPlace` is set (say `above`), popover will be rendered to `above` only if there is enough space to render overlay. If space above doesnt fit, the side with the max space will be the placement of Popover.
 `preferPlace` can be scoped to an orientation using `row` and `column`. If `preferPlace` is set to `row`, for instance, Popover will resolve to any of `above` and `below` only if they fit else the next placement with the max space would be used.
 
-`place` behaves like `preferPlace` but its set as an constant position of Popover. Same behavior of `preferPlace` is shown if set to an orientation
+`place` behaves like `preferPlace` but its set as a constant position of Popover. Same behavior of `preferPlace` is shown if set to an orientation
 `place` prop overrides `preferPlace` prop.
 
 ____
@@ -70,24 +70,38 @@ ____
 <Popover
   body="Im the content of the highly responsive popover"
   isOpen
-  preferPlace="top"
+  preferPlace="above"
 >
-<div>I am a popover</div>
+<Button>I am a popover</Button>
 </Popover>
 ```
 
 ```jsx
-<Popover
-  body="Im the content of the highly responsive popover"
-  isOpen
-  preferPlace="top"
-  place="bottom"
->
-<div>I am a popover</div>
-</Popover>
+import Popover from 'react-popover';
+
+class PopComponent extends React.Component {
+  state = { isOpen: true }
+  ref = React.createRef();
+
+  render() {
+    const { isOpen } = this.state;
+
+    return (
+      <div>
+        <p>I show an inlined <span ref={this.ref}>popover</span></p>
+        <Popover
+          body="Im the content of the highly responsive popover"
+          isOpen={isOpen}
+          preferPlace="right"
+          target={this.ref}
+        />
+      </div>
+    )
+  }
+}
 ```
 
-The rest (placement point on target and location of arrow on popover) is responsively taken care of.
+The rest (arrow position on target and location of arrow on popover) is responsively taken care of.
 The position of arrow will be located at the center of Popover and point to the center of the target node by default.
 If there isnt enough space to render at the centers, arrow pointer will be automatically shifted to different at the same placement position.
 Take a look at this link:https://littlebits.github.io/react-popover[example].
@@ -95,9 +109,8 @@ Take a look at this link:https://littlebits.github.io/react-popover[example].
 
 ## API
 
-.Table React-popover
 |===
-|Column Name |Column Required |Column type |Column default|Column description
+| Name | Required | type | default | description
 
 |`body`
 |true
