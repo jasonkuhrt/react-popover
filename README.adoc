@@ -18,7 +18,7 @@ toc::[]
 yarn add react-popover
 ```
 
-## Examples
+## Live Demo
 
 Look at the link:https://littlebits.github.io/react-popover[stories in our storybook].
 
