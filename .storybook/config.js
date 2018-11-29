@@ -1,14 +1,19 @@
-import { configure } from "@storybook/react"
-import { setOptions } from "@storybook/addon-options"
+import { configure, addDecorator } from "@storybook/react"
+import { withOptions } from "@storybook/addon-options"
 
-function loadStories() {
+const loadStories = () => {
   require("../stories")
 }
 
-setOptions({
-  showAddonPanel: false,
-  showSearchBox: false,
-  showStoriesPanel: false,
-})
+addDecorator(
+  // TODO update typings to type withOptions with Options
+  // For now, if you want to know the available options,
+  // click into the module to see the typings source.
+  withOptions({
+    showAddonPanel: false,
+    showSearchBox: false,
+    showStoriesPanel: false,
+  }),
+)
 
 configure(loadStories, module)
