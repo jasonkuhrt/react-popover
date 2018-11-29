@@ -3,6 +3,24 @@ import * as Forto from "forto"
 import * as Pop from "popmotion"
 import * as F from "./utils"
 
+interface Pos {
+  x: number
+  y: number
+}
+
+/**
+ * Helper to move an object around with Pop motion without actually animating it.
+ * This is useful when an object needs to animation from a starting position
+ * that it isn't already in. Classic use-case is an "enter" animation.
+ */
+const noAnimUpdate = (
+  reaction: Pop.ValueReaction,
+  props: any, // TODO Popmotion does not export a Value type to use here.
+): void => {
+  reaction.update(props)
+  reaction.velocityCheck({ timestamp: 0, delta: 0 })
+}
+
 interface Subscription {
   closed: boolean
   unsubscribe(): void
@@ -41,13 +59,29 @@ const createAxes = (zone: Forto.Zone) => {
   const ca = crossAxis(zone)
   const ma = mainAxis(zone)
   return {
+    translate: (pos: Pos, change: { cross?: number; main?: number }): Pos => {
+      const pos_ = { ...pos }
+
+      if (change.cross !== undefined) {
+        pos_[ca] += change.cross
+      }
+
+      if (change.main !== undefined) {
+        pos_[ma] += change.main
+      }
+
+      return pos_
+    },
+    awayFromTarget: (n: number): number => {
+      return n * layoutOrderNum(zone)
+    },
     cross: {
       prop: ca,
-      posAxis: (pos: any) => pos[ca],
+      get: (pos: Pos): number => pos[ca],
     },
     main: {
       prop: ma,
-      posAxis: (pos: any) => pos[ma],
+      get: (pos: Pos): number => pos[ma],
     },
   }
 }
@@ -58,18 +92,14 @@ const layoutOrderNum = (zone: Forto.Zone): -1 | 1 => {
     : 1
 }
 
-const awayFromTarget = (zone: Forto.Zone, n: number) => {
-  return n * layoutOrderNum(zone)
-}
-
-const tipRotationForZone = (zone: Forto.Zone) => {
+const tipRotationForZone = (zone: Forto.Zone): number => {
   return zone.side === "Bottom"
     ? 270
     : zone.side === "Top"
-      ? 90
-      : zone.side === "Right"
-        ? 180
-        : 0
+    ? 90
+    : zone.side === "Right"
+    ? 180
+    : 0
 }
 
 // TODO Support ref, outerAction will need it
@@ -162,14 +192,14 @@ class FortoPop extends React.Component<Props, {}> {
     layout: Forto.Calculation,
   ) {
     const axes = createAxes(layout.zone)
-    tipReaction.update({
+
+    noAnimUpdate(tipReaction, {
       ...(tipReaction.get() as any),
-      [axes.cross.prop]: axes.cross.posAxis(layout.tip),
-      [axes.main.prop]:
-        axes.main.posAxis(layout.tip) + awayFromTarget(layout.zone, 8),
+      ...axes.translate(layout.tip!, {
+        main: axes.awayFromTarget(8),
+      }),
       rotate: tipRotationForZone(layout.zone),
     })
-    tipReaction.velocityCheck({ timestamp: 0, delta: 0 })
   }
 
   animateTipToLayout(
@@ -192,10 +222,9 @@ class FortoPop extends React.Component<Props, {}> {
           from: layoutBefore.tip!,
           to: {
             ...(tipReaction.get() as any),
-            [axesBefore.cross.prop]: axesBefore.cross.posAxis(layoutBefore.tip),
-            [axesBefore.main.prop]:
-              axesBefore.main.posAxis(layoutBefore.tip) +
-              awayFromTarget(layoutBefore.zone, 8),
+            ...axesBefore.translate(layoutBefore.tip!, {
+              main: axesBefore.awayFromTarget(8),
+            }),
           },
           duration: 350,
         },
@@ -204,10 +233,9 @@ class FortoPop extends React.Component<Props, {}> {
           to: {
             ...(tipReaction.get() as any),
             rotate: tipRotationForZone(layout.zone),
-            [axesAfter.cross.prop]: axesAfter.cross.posAxis(layout.tip),
-            [axesAfter.main.prop]:
-              axesAfter.main.posAxis(layout.tip) +
-              awayFromTarget(layout.zone, 8),
+            ...axesAfter.translate(layout.tip!, {
+              main: axesAfter.awayFromTarget(8),
+            }),
           },
           duration: 0,
         },
@@ -247,13 +275,13 @@ class FortoPop extends React.Component<Props, {}> {
     layout: Forto.Calculation,
   ) {
     const axes = createAxes(layout.zone)
-    popoverReaction.update({
+
+    noAnimUpdate(popoverReaction, {
       ...(popoverReaction.get() as any),
-      [axes.cross.prop]: axes.cross.posAxis(layout.popover),
-      [axes.main.prop]:
-        axes.main.posAxis(layout.popover) + awayFromTarget(layout.zone, 15),
+      ...axes.translate(layout.popover, {
+        main: axes.awayFromTarget(15),
+      }),
     })
-    popoverReaction.velocityCheck({ timestamp: 0, delta: 0 })
   }
 
   animatePopoverToLayout(
@@ -301,13 +329,10 @@ class FortoPop extends React.Component<Props, {}> {
       // weird XY as if current XY is a lag
       // TODO better DSL from forto
       const axes = createAxes(this.layout.zone)
-      const newXY = {
-        [axes.cross.prop]: axes.cross.posAxis(this.layout.popover),
-        [axes.main.prop]:
-          axes.main.posAxis(this.layout.popover) +
-          // TODO this should be same as enter size
-          awayFromTarget(this.layout.zone, 20),
-      }
+      const newXY = axes.translate(this.layout.popover, {
+        // TODO this should be same as enter size
+        main: axes.awayFromTarget(20),
+      })
       this.exiting = Pop.tween({
         from: this.popoverReaction.get(),
         to: { ...newXY, opacity: 0 },
