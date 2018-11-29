@@ -23,11 +23,13 @@
   "description": "A popover for react",
   "devDependencies": {
     "@babel/core": "^7",
+    "@storybook/addon-options": "^4.0.8",
     "@storybook/react": "^4.0.0-alpha",
     "@storybook/storybook-deployer": "^2.0.0",
     "@types/ramda": "^0.25.38",
     "@types/react": "^16.4.14",
     "@types/react-dom": "^16.0.7",
+    "@types/storybook__addon-options": "^3.2.2",
     "@types/storybook__react": "^3.0.9",
     "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8",
