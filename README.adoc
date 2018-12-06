@@ -94,3 +94,41 @@ Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 #### `appendTarget :: DOMElement`
 
 - The DOM element which the https://reactjs.org/docs/portals.html[portal] will mount into. In effect the popover will become an appended child of this DOM element. Defaults to 'document.body'.
+
+## Accessibility
+
+react-popover tries to ensure the popover will be accessible for screen reader technology, however if the content is complex or multiple children elements are passed in you will have to supply the popover the `aria-describedby` attribute with the `Popover-body` manually:
+```js
+<Popover isOpen={isOpen} body="This is where you would explain stuff">
+  <MyComplexComponent
+    aria-describedby="Popover-body"
+  />
+</Popover>
+```
+
+### Keyboard accessibility
+
+To ensure your popover can be used without a mouse it's important to ensure the popover can be interacted with only using the keyboard. This can be accomplished with the `onBlur` and `onFocus` handlers, as well as the `tabIndex` prop:
+```js
+// this allows the popover tooltip to be closed even if its still focused on.
+closePopoverWhenEscaping = event => {
+  if (event.key === "Escape") {
+    this.hidePopover
+  }
+}
+
+<Popover isOpen={isOpen} body="This is where you would explain stuff">
+  <div
+    tabIndex="0" // this allows the div to be reached using the tab key
+    className="Row"
+    onMouseOver={() => this.showPopover}
+    onMouseOut={() => this.hidePopover}
+    onFocus={() => this.showPopover} // this shows the Popover tooltip when someone tabs to this div
+    onBlur={() => this.hidePopover} // this hides the Popover tooltip when someone tabs away from this div
+    onKeyDown={this.closePopoverWhenEscaping}
+    children={this.props.children}
+  />
+</Popover>
+```
+
+Additional information on keyboard accessibility can be found on the https://webaim.org/techniques/keyboard/[webAIM website]

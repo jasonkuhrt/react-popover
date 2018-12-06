@@ -11,17 +11,26 @@ class Row extends React.Component {
   toggle(toState = null) {
     this.setState({ isOpen: toState === null ? !this.state.isOpen : toState })
   }
+  closePopoverWhenEscaping = event => {
+    if (event.key === "Escape") {
+      this.toggle(false)
+    }
+  }
   render() {
     const { isOpen } = this.state
     return (
       <Popover
         isOpen={isOpen}
-        body="!"
+        body="This is where you would explain stuff"
         children={
           <div
+            tabIndex="0"
             className="Row"
             onMouseOver={() => this.toggle(true)}
             onMouseOut={() => this.toggle(false)}
+            onFocus={() => this.toggle(true)}
+            onBlur={() => this.toggle(false)}
+            onKeyDown={this.closePopoverWhenEscaping}
             children={this.props.children}
           />
         }
