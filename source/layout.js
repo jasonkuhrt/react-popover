@@ -26,14 +26,17 @@ axes.column.main = axes.row.cross
 axes.column.cross = axes.row.main
 
 const types = [
-  { name: "side", values: ["start", "end"] },
-  { name: "standing", values: ["above", "right", "below", "left"] },
-  { name: "flow", values: ["column", "row"] },
+  { name: "side", values: [ "start", "end" ]},
+  { name: "standing", values: [ "above", "right", "below", "left" ]},
+  { name: "flow", values: [ "column", "row" ]},
 ]
 
 const validTypeValues = types.reduce((xs, { values }) => xs.concat(values), [])
 
-const centerOfSize = (flow, axis, size) => size[axes[flow][axis].size] / 2
+const centerOfSize = (flow, axis, size) => {
+  // console.log("size", size, axis, flow, size[axes[flow][axis].size], size[axes[flow][axis].size] / 2)
+  return size[axes[flow][axis].size]/2
+}
 
 const centerOfBounds = (flow, axis, bounds) =>
   bounds[axes[flow][axis].start] + bounds[axes[flow][axis].size] / 2
@@ -42,16 +45,18 @@ const centerOfBoundsFromBounds = (flow, axis, boundsTo, boundsFrom) =>
   centerOfBounds(flow, axis, boundsTo) - boundsFrom[axes[flow][axis].start]
 
 const place = (flow, axis, align, bounds, size) => {
+
   const axisProps = axes[flow][axis]
+
   return align === "center"
-    ? centerOfBounds(flow, axis, bounds) - centerOfSize(flow, axis, size)
+    ? null //centerOfBounds(flow, axis, bounds) - centerOfSize(flow, axis, size)
     : align === "end"
       ? bounds[axisProps.end]
       : align === "start"
         ? /* DOM rendering unfolds leftward. Therefore if the slave is positioned before
       the master then the slave`s position must in addition be pulled back
       by its [the slave`s] own length. */
-          bounds[axisProps.start] - size[axisProps.size]
+          bounds[axisProps.start] //- size[axisProps.size] / 2
         : null
 }
 
@@ -59,7 +64,7 @@ const place = (flow, axis, align, bounds, size) => {
 
 const El = {}
 
-El.calcBounds = el => {
+El.calcBounds = (el) => {
   if (el === window) {
     return {
       x: 0,
@@ -83,22 +88,22 @@ El.calcBounds = el => {
   }
 }
 
-El.calcSize = el =>
+El.calcSize = (el) =>
   el === window
     ? { w: el.innerWidth, h: el.innerHeight }
     : { w: el.offsetWidth, h: el.offsetHeight }
 
-El.calcScrollSize = el =>
+El.calcScrollSize = (el) =>
   el === window
     ? {
-        w: el.scrollX || el.pageXOffset,
-        h: el.scrollY || el.pageYOffset,
-      }
+      w: el.scrollX || el.pageXOffset,
+      h: el.scrollY || el.pageYOffset,
+    }
     : { w: el.scrollLeft, h: el.scrollTop }
 
 /* Misc Utilities */
 
-const getPreferenceType = preference =>
+const getPreferenceType = (preference) =>
   types.reduce(
     (found, type) =>
       found ? found : type.values.indexOf(preference) !== -1 ? type.name : null,
@@ -107,7 +112,7 @@ const getPreferenceType = preference =>
 
 /* Dimension Fit Checks */
 
-const fitWithinChecker = dimension => (domainSize, itemSize) =>
+const fitWithinChecker = (dimension) => (domainSize, itemSize) =>
   domainSize[dimension] >= itemSize[dimension]
 
 const doesWidthFitWithin = fitWithinChecker("w")
@@ -119,7 +124,7 @@ const doesFitWithin = (domainSize, itemSize) =>
 
 /* Errors */
 
-const createPreferenceError = givenValue =>
+const createPreferenceError = (givenValue) =>
   new Error(
     `The given layout placement of "${givenValue}" is not a valid choice. Valid choices are: ${validTypeValues.join(
       " | ",
@@ -132,21 +137,22 @@ In the case that none fit we should pick the least-not-fitting zone. */
 const pickZone = (opts, frameBounds, targetBounds, size) => {
   const t = targetBounds
   const f = frameBounds
+
   const zones = [
     {
       side: "start",
       standing: "above",
       flow: "column",
       order: -1,
-      w: f.x2,
-      h: t.y,
+      w: f.x2, //- size.w / 2,
+      h: t.y
     },
     {
       side: "end",
       standing: "right",
       flow: "row",
       order: 1,
-      w: f.x2 - t.x2,
+      w: f.x2 - t.x2, //- size.w / 2,
       h: f.y2,
     },
     {
@@ -155,7 +161,7 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
       flow: "column",
       order: 1,
       w: f.x2,
-      h: f.y2 - t.y2,
+      h: f.y2 - t.y2, //- size.h / 2,
     },
     {
       side: "start",
@@ -163,7 +169,7 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
       flow: "row",
       order: -1,
       w: t.x,
-      h: f.y2,
+      h: f.y2, // + size.h / 2,
     },
   ]
 
@@ -172,7 +178,7 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
 
      const area = size.w * size.h  // Popup area is constant and it does not change the order
   */
-  zones.forEach(z => {
+  zones.forEach((z) => {
     // TODO Update to satisfy linter
     // eslint-disable-next-line no-param-reassign
     z.cutOff =
@@ -180,15 +186,17 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
       Math.max(0, Math.min(z.h, size.h))
   })
   zones.sort((a, b) => a.cutOff - b.cutOff)
+  // const availZones = zones.filter((zone) => zone.standing !== "above").filter((zone) => doesFitWithin(zone, size))
 
-  const availZones = zones.filter(zone => doesFitWithin(zone, size))
+  const availZones = zones.filter((zone) => doesFitWithin(zone, size))
+  // console.log("availZones", availZones)
 
   /* If a place is required pick it from the available zones if possible. */
 
   if (opts.place) {
     const type = getPreferenceType(opts.place)
     if (!type) throw createPreferenceError(opts.place)
-    const finder = z => z[type] === opts.place
+    const finder = (z) => z[type] === opts.place
     return find(finder, availZones) || find(finder, zones)
   }
 
@@ -202,14 +210,14 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
 
     // Try to fit first in zone where the pop up fit completely
     const preferredAvailZones = availZones.filter(
-      zone => zone[preferenceType] === opts.preferPlace,
+      (zone) => zone[preferenceType] === opts.preferPlace,
     )
     if (preferredAvailZones.length) return preferredAvailZones[0]
 
     // If there are not areas where the pop up fit completely, it uses the preferred ones
     // in order from the one the fit better
     const preferredZones = zones.filter(
-      zone => zone[preferenceType] === opts.preferPlace,
+      (zone) => zone[preferenceType] === opts.preferPlace,
     )
     if (!availZones.length && preferredZones.length) return preferredZones[0]
   }
@@ -223,25 +231,26 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
 const calcRelPos = (zone, masterBounds, slaveSize) => {
   const { main, cross } = axes[zone.flow]
   /* TODO: The slave is hard-coded to align cross-center with master. */
-  const crossAlign = "center"
+  // const crossAlign = "center"
   const mainStart = place(zone.flow, "main", zone.side, masterBounds, slaveSize)
   const mainSize = slaveSize[main.size]
+
   const crossStart = place(
     zone.flow,
     "cross",
-    crossAlign,
+    zone.side,
     masterBounds,
     slaveSize,
   )
   const crossSize = slaveSize[cross.size]
 
   return {
-    [main.start]: mainStart,
+    [main.start]: (zone.standing === "left") ? mainStart - mainSize : mainStart,
     mainLength: mainSize,
-    [main.end]: mainStart + mainSize,
-    [cross.start]: crossStart,
+    [main.end]: (zone.standing === "left") ? mainStart - mainSize : mainStart,
+    [cross.start]: (zone.side === "end") ? crossStart - crossSize : crossStart,
     crossLength: crossSize,
-    [cross.end]: crossStart + crossSize,
+    [cross.end]: (zone.side === "end") ? crossStart + crossSize : crossStart,
   }
 }
 

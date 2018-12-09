@@ -5,6 +5,7 @@
     "clean": "rm -rf build",
     "deploy-storybook": "storybook-to-ghpages",
     "build": "yarn run clean && babel --out-dir build source",
+    "watch": "babel --watch --out-dir build source",
     "dev": "start-storybook -p 6006",
     "postversion": "yarn run build && git push && git push --tags && npm publish && release",
     "build-storybook": "build-storybook"
@@ -15,13 +16,7 @@
     "lodash.throttle": "^3.0.3",
     "prop-types": "^15.5.10"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/littlebits/react-popover.git"
-  },
-  "author": "Jason Kuhrt <jasonkuhrt@me.com> (http://jasonkuhrt.com/)",
   "name": "react-popover",
-  "homepage": "https://github.com/littlebits/react-popover",
   "main": "index.js",
   "description": "A specification backed popover for react",
   "devDependencies": {
@@ -47,9 +42,6 @@
     "react-draggable": "3.0.3",
     "react-test-renderer": "16",
     "release": "^4.0.0"
-  },
-  "bugs": {
-    "url": "https://github.com/littlebits/react-popover/issues"
   },
   "eslintConfig": {
     "parser": "babel-eslint",
