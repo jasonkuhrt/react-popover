@@ -51,6 +51,7 @@ class Popover extends React.Component {
   static propTypes = {
     body: T.node.isRequired,
     children: T.element.isRequired,
+    Tip: T.func,
     appendTarget: T.object,
     className: T.string,
     enterExitTransitionDurationMs: T.number,
@@ -59,16 +60,19 @@ class Popover extends React.Component {
     place: T.oneOf(Layout.validTypeValues),
     preferPlace: T.oneOf(Layout.validTypeValues),
     refreshIntervalMs: T.oneOfType([T.number, T.bool]),
+    slide: T.bool,
     style: T.object,
     tipSize: T.number,
     onOuterAction: T.func,
   }
   static defaultProps = {
+    Tip,
     tipSize: 7,
     preferPlace: null,
     place: null,
     offset: 4,
     isOpen: false,
+    slide: false,
     onOuterAction: Utils.noop,
     enterExitTransitionDurationMs: 500,
     children: null,
@@ -328,12 +332,33 @@ class Popover extends React.Component {
     this.setState({ exiting: true })
     this.exitingAnimationTimer2 = setTimeout(() => {
       setTimeout(() => {
-        if (this.containerEl) {
+        if (!this.containerEl) {
+          return
+        }
+
+        if (this.props.slide) {
+          switch (this.props.place) {
+            case "left": {
+              this.containerEl.style.transform = "scaleX(0)"
+              break
+            }
+
+            case "right": {
+              this.containerEl.style.transform = "scaleX(0)"
+              break
+            }
+
+            // default same as "above" or "below"
+            default: {
+              this.containerEl.style.transform = "scaleY(0)"
+            }
+          }
+        } else {
           this.containerEl.style.transform = `${
             flowToPopoverTranslations[this.zone.flow]
           }(${this.zone.order * 50}px)`
-          this.containerEl.style.opacity = "0"
         }
+        this.containerEl.style.opacity = "0"
       }, 0)
     }, 0)
 
@@ -343,10 +368,38 @@ class Popover extends React.Component {
   }
   animateEnter() {
     /* Prepare `entering` style so that we can then animate it toward `entered`. */
+    if (this.props.slide) {
+      switch (this.props.place) {
+        case "above": {
+          this.containerEl.style.transformOrigin = "bottom"
+          this.containerEl.style.transform = "scaleY(0)"
+          break
+        }
 
-    this.containerEl.style.transform = `${
-      flowToPopoverTranslations[this.zone.flow]
-    }(${this.zone.order * 50}px)`
+        case "left": {
+          this.containerEl.style.transformOrigin = "right"
+          this.containerEl.style.transform = "scaleX(0)"
+          break
+        }
+
+        case "right": {
+          this.containerEl.style.transformOrigin = "left"
+          this.containerEl.style.transform = "scaleX(0)"
+          break
+        }
+
+        // default same as "below"
+        default: {
+          this.containerEl.style.transformOrigin = "top"
+          this.containerEl.style.transform = "scaleY(0)"
+        }
+      }
+    } else {
+      this.containerEl.style.transform = `${
+        flowToPopoverTranslations[this.zone.flow]
+      }(${this.zone.order * 50}px)`
+    }
+
     this.containerEl.style[
       jsprefix("Transform")
     ] = this.containerEl.style.transform
@@ -363,14 +416,45 @@ class Popover extends React.Component {
         "transform",
       )} 150ms ease-in`
     }
-    this.containerEl.style.transitionProperty = "top, left, opacity, transform"
+    if (this.props.slide) {
+      this.containerEl.style.transitionProperty = "opacity, transform"
+    } else {
+      this.containerEl.style.transitionProperty = "top, left, opacity, transform"
+    }
+
     this.containerEl.style.transitionDuration = `${
       this.props.enterExitTransitionDurationMs
     }ms`
     this.containerEl.style.transitionTimingFunction =
       "cubic-bezier(0.230, 1.000, 0.320, 1.000)"
     this.containerEl.style.opacity = "1"
-    this.containerEl.style.transform = "translateY(0)"
+
+    if (this.props.slide) {
+      switch (this.props.place) {
+        case "above": {
+          this.containerEl.style.transform = "scaleY(1)"
+          break
+        }
+
+        case "left": {
+          this.containerEl.style.transform = "scaleX(1)"
+          break
+        }
+
+        case "right": {
+          this.containerEl.style.transform = "scaleX(1)"
+          break
+        }
+
+        // default same as "below"
+        default: {
+          this.containerEl.style.transform = "scaleY(1)"
+        }
+      }
+    } else {
+      this.containerEl.style.transform = "translateY(0)"
+    }
+
     this.containerEl.style[
       jsprefix("Transform")
     ] = this.containerEl.style.transform
@@ -487,7 +571,7 @@ class Popover extends React.Component {
     Object.assign(this, { containerEl })
   }
   render() {
-    const { className = "", style = {}, tipSize } = this.props
+    const { className = "", style = {}, tipSize, Tip } = this.props
     const { standing } = this.state
 
     const popoverProps = {

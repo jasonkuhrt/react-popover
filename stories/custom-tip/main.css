@@ -1,0 +1,24 @@
+.pos-rel {
+  position: relative;
+}
+
+.size-20 {
+  height: 20px;
+  width: 20px;
+}
+
+.t-6 {
+  top: 6px;
+}
+
+.l-10 {
+  left: 10px;
+}
+
+.rotate-45 {
+  transform: rotate(45deg);
+}
+
+.bg {
+  background: hsl(0, 0%, 27%);
+}

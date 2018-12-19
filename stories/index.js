@@ -4,12 +4,14 @@ import { storiesOf } from "@storybook/react"
 import React from "react"
 import Playground from "./playground/main"
 import Rows from "./rows/main"
+import CustomTip from "./custom-tip/main"
 
 // import { Button, Welcome } from "@storybook/react/demo";
 
 storiesOf("Popover", module)
   .add("Playground", () => <Playground />)
   .add("Rows", () => <Rows />)
+  .add("Custom Tip", () => <CustomTip />)
 
 // storiesOf("Welcome", module).add("to Storybook", () => <Welcome showApp={linkTo("Button")} />);
 //
