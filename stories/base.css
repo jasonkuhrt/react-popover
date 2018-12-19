@@ -1,4 +1,3 @@
-
 /* Boilerplate */
 
 html {
@@ -20,12 +19,10 @@ body {
   flex: 1;
 }
 
-
 #app {
   display: flex;
   flex: 1;
 }
-
 
 /* Popover */
 
@@ -39,5 +36,5 @@ body {
 }
 
 .Popover-tipShape {
-  fill: hsl(0, 0%, 27%)
+  fill: hsl(0, 0%, 27%);
 }

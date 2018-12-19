@@ -1,10 +1,10 @@
 {
   "license": "MIT",
-  "version": "0.5.4",
+  "version": "0.5.10",
   "scripts": {
     "clean": "rm -rf build",
     "deploy-storybook": "storybook-to-ghpages",
-    "build": "yarn run clean && babel --out-dir build lib",
+    "build": "yarn run clean && babel --out-dir build source",
     "dev": "start-storybook -p 6006",
     "postversion": "yarn run build && git push && git push --tags && npm publish && release",
     "build-storybook": "build-storybook"
@@ -38,13 +38,15 @@
     "babel-preset-stage-1": "^6.3.13",
     "eslint": "^3.17.1",
     "eslint-config-littlebits": "^0.6.2",
-    "prettier": "^1.7.3",
+    "husky": "^0.14.3",
+    "prettier": "^1.13.5",
+    "pretty-quick": "^1.6.0",
     "ramda": "^0.18.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-draggable": "3.0.3",
     "react-test-renderer": "16",
-    "release": "^2.5.2"
+    "release": "^4.0.0"
   },
   "bugs": {
     "url": "https://github.com/littlebits/react-popover/issues"
@@ -64,5 +66,14 @@
       "react",
       "stage-1"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "all"
   }
 }
