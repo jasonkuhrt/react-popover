@@ -56,6 +56,11 @@ interface Props {
   target: HTMLElement
   frame: Window | HTMLElement
   body: React.ReactNode
+  /**
+   * Interval in time between checks for if new relayout is necessary.
+   * Setting to `null` will disable polling altogether and rely solely on
+   * events like window resize for doing relayout. Defaults to 1000.
+   */
   refreshIntervalMs: null | number
   place: Forto.Settings.Order | Forto.Settings.Ori.Side | Forto.Settings.Ori.Ori
   preferPlace:
@@ -72,7 +77,7 @@ class FortoPop extends React.Component<Props, {}> {
   }
   layout: null | Forto.Calculation = null
   popoverRef = React.createRef<HTMLDivElement>()
-  layoutsSubscription: null | Subscription = null
+  fortoLayoutsSubscription: null | Subscription = null
   popoverReaction: null | Pop.ValueReaction = null
   exiting: any
   tipChangingZones: null | Pop.ColdSubscription = null
@@ -121,7 +126,7 @@ class FortoPop extends React.Component<Props, {}> {
     )
 
     this.popoverReaction = popoverReaction
-    this.layoutsSubscription = layoutChanges.subscribe(
+    this.fortoLayoutsSubscription = layoutChanges.subscribe(
       (newLayout: Forto.Calculation) => {
         // TODO As exiting continue animating everything else...?
         if (this.props.pose !== "exit") {
@@ -301,8 +306,8 @@ class FortoPop extends React.Component<Props, {}> {
   }
 
   componentWillUnmount() {
-    if (this.layoutsSubscription) {
-      this.layoutsSubscription.unsubscribe()
+    if (this.fortoLayoutsSubscription) {
+      this.fortoLayoutsSubscription.unsubscribe()
     }
     if (this.popoverReaction) {
       this.popoverReaction.stop()
