@@ -13,9 +13,7 @@
     "noUnusedParameters": true,
     "importHelpers": true,
     "jsx": "react",
-    "rootDirs": ["src", "stories"],
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "src",
     "allowSyntheticDefaultImports": true,
     "lib": ["es5", "es6", "es7", "es2017", "dom"]
   },
