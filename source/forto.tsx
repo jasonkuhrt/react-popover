@@ -46,15 +46,15 @@ const tipRotationForZone = (zone: Forto.Zone): number => {
   return zone.side === "Bottom"
     ? 270
     : zone.side === "Top"
-      ? 90
-      : zone.side === "Right"
-        ? 180
-        : 0
+    ? 90
+    : zone.side === "Right"
+    ? 180
+    : 0
 }
 
 interface Props {
-  target: Element
-  frame: Window | React.RefObject<HTMLElement>
+  target: HTMLElement
+  frame: Window | HTMLElement
   body: React.ReactNode
   refreshIntervalMs: null | number
   place: Forto.Settings.Order | Forto.Settings.Ori.Side | Forto.Settings.Ori.Ori
@@ -89,12 +89,8 @@ class FortoPop extends React.Component<Props, {}> {
 
   componentDidMount() {
     const arrangement = {
-      // TODO is this .current safe?
-      target: this.props.target!,
-      frame:
-        this.props.frame === window
-          ? this.props.frame
-          : (this.props.frame as any).current,
+      target: this.props.target,
+      frame: this.props.frame,
       tip: this.popoverRef.current!.querySelector(".Popover-tip")!,
       popover: this.popoverRef.current!.querySelector(".Popover-body")!,
     }

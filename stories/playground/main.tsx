@@ -83,18 +83,22 @@ class Main extends React.Component {
 
     const frame = <div id="frame" ref={this.state.frameRef} />
 
-    const popoverProps = {
-      isOpen: this.state.popoverIsOpen,
-      preferPlace: this.state.preferPlace,
-      place: this.state.place,
-      onOuterAction: this.closePopover,
-      body: [
-        <h1 key="a">Popover Title</h1>,
-        <div key="b">Popover contents</div>,
-      ],
-      appendTarget: document.querySelector("#root")!,
-      frame: this.state.frameRef,
-    }
+    const targetWithPopover = (
+      <Popover
+        isOpen={this.state.popoverIsOpen}
+        preferPlace={this.state.preferPlace}
+        place={this.state.place}
+        onOuterAction={this.closePopover}
+        body={[
+          <h1 key="a">Popover Title</h1>,
+          <div key="b">Popover contents</div>,
+        ]}
+        appendTarget={document.querySelector("#root")!}
+        frame={this.state.frameRef}
+      >
+        {target}
+      </Popover>
+    )
 
     const controls = (
       <form>
@@ -113,7 +117,7 @@ class Main extends React.Component {
       <div id="app">
         {frame}
         {controls}
-        <Popover {...popoverProps}>{target}</Popover>
+        {targetWithPopover}
       </div>
     )
   }

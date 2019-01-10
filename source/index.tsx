@@ -101,13 +101,27 @@ class Popover extends React.Component<Props, State> {
 
   render() {
     // TODO Refactor initial tip sizing logic
-    const { isOpen, children, appendTarget, ...fortoPopProps } = this.props
+    const {
+      isOpen,
+      children,
+      appendTarget,
+      frame,
+      ...fortoPopProps
+    } = this.props
+
+    const resolvedFrame =
+      this.props.frame instanceof Window
+        ? this.props.frame
+        : this.props.frame.current
+        ? this.props.frame.current
+        : null
 
     const popover = (
       <Transition>
-        {isOpen && this.state.target.current ? (
+        {isOpen && this.state.target.current && resolvedFrame ? (
           <FortoPop
             {...fortoPopProps}
+            frame={resolvedFrame}
             target={this.state.target.current}
             ref={this.state.popover}
           />
