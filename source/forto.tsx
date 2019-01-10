@@ -52,7 +52,6 @@ const tipRotationForZone = (zone: Forto.Zone): number => {
         : 0
 }
 
-// TODO Support ref, outerAction will need it
 interface Props {
   target: Element
   frame: Window | React.RefObject<HTMLElement>

@@ -28,22 +28,29 @@ class Main extends React.Component {
     frameRef: React.createRef<HTMLDivElement>(),
   }
 
-  togglePopover(toState?: boolean) {
+  togglePopover = (toState?: boolean) => {
     const popoverIsOpen =
       typeof toState === "boolean" ? toState : !this.state.popoverIsOpen
     this.setState({
       popoverIsOpen,
     })
   }
-  changePreferPlace(event: any) {
+
+  closePopover = () => {
+    this.togglePopover(false)
+  }
+
+  changePreferPlace = (event: any) => {
     const preferPlace =
       event.target.value === "null" ? null : event.target.value
     this.setState({ preferPlace })
   }
-  changePlace(event: any) {
+
+  changePlace = (event: any) => {
     const place = event.target.value === "null" ? null : event.target.value
     this.setState({ place })
   }
+
   render() {
     const targetProps = {
       className: [
@@ -80,7 +87,7 @@ class Main extends React.Component {
       isOpen: this.state.popoverIsOpen,
       preferPlace: this.state.preferPlace,
       place: this.state.place,
-      onOuterAction: () => this.togglePopover(false),
+      onOuterAction: this.closePopover,
       body: [
         <h1 key="a">Popover Title</h1>,
         <div key="b">Popover contents</div>,

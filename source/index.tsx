@@ -6,6 +6,12 @@ import FortoPop from "./forto"
 import Transition from "./transition"
 import { noop } from "./utils"
 
+type HTMLRef = React.RefObject<HTMLElement>
+
+const createHTMLRef = (): HTMLRef => {
+  return React.createRef<HTMLElement>()
+}
+
 type Props = {
   body: React.ReactNode
   children: React.ReactElement<unknown> // TODO infer?
@@ -22,7 +28,12 @@ type Props = {
   onOuterAction(event: MouseEvent | TouchEvent): void
 }
 
-class Popover extends React.Component<Props, { el: null | Element }> {
+type State = {
+  target: HTMLRef
+  popover: React.RefObject<FortoPop>
+}
+
+class Popover extends React.Component<Props, State> {
   static defaultProps = {
     frame: window,
     tipSize: 7,
@@ -36,27 +47,70 @@ class Popover extends React.Component<Props, { el: null | Element }> {
     appendTarget: Platform.isClient ? Platform.document!.body : null,
   }
 
-  targetRef = React.createRef<HTMLDivElement>()
+  state = {
+    target: createHTMLRef(),
+    popover: React.createRef<FortoPop>(),
+  }
 
-  // checkForOuterAction = (event: MouseEvent | TouchEvent) => {
-  //   const isOuterAction =
-  //     event.target &&
-  //     event.target instanceof Element &&
-  //     !(
-  //       this.state.arrangement!.popover.contains(event.target) ||
-  //       this.state.arrangement!.target.contains(event.target) ||
-  //       this.state.arrangement!.tip.contains(event.target)
-  //     )
-  //   if (isOuterAction) this.props.onOuterAction(event)
-  // }
+  checkForOuterAction = (event: MouseEvent | TouchEvent) => {
+    if (
+      // Event occured against an HTML Element
+      event.target &&
+      event.target instanceof Element &&
+      // Refs are loaded
+      this.state.target.current &&
+      this.state.popover.current &&
+      this.state.popover.current!.popoverRef.current &&
+      // Event occured outside of the arrangement
+      !(
+        this.state.target.current!.contains(event.target as Element) ||
+        this.state.popover.current!.popoverRef.current!.contains(
+          event.target as Element,
+        )
+      )
+    )
+      this.props.onOuterAction(event)
+  }
+
+  /**
+   * Track user actions on the page. Anything that occurs _outside_ the Popover boundaries
+   * should close the Popover.
+   */
+  outerActionTrackingStart = () => {
+    if (Platform.document) {
+      Platform.document!.addEventListener("mousedown", this.checkForOuterAction)
+      Platform.document!.addEventListener(
+        "touchstart",
+        this.checkForOuterAction,
+      )
+    }
+  }
+
+  outerActionTrackingStop = () => {
+    if (Platform.document) {
+      Platform.document!.removeEventListener(
+        "mousedown",
+        this.checkForOuterAction,
+      )
+      Platform.document!.removeEventListener(
+        "touchstart",
+        this.checkForOuterAction,
+      )
+    }
+  }
 
   render() {
     // TODO Refactor initial tip sizing logic
     const { isOpen, children, appendTarget, ...fortoPopProps } = this.props
+
     const popover = (
       <Transition>
-        {isOpen ? (
-          <FortoPop {...fortoPopProps} target={this.state.el!} />
+        {isOpen && this.state.target.current ? (
+          <FortoPop
+            {...fortoPopProps}
+            target={this.state.target.current}
+            ref={this.state.popover}
+          />
         ) : null}
       </Transition>
     )
@@ -65,9 +119,16 @@ class Popover extends React.Component<Props, { el: null | Element }> {
   }
 
   componentDidMount() {
+    this.outerActionTrackingStart()
     this.setState({
-      el: ReactDOM.findDOMNode(this) as Element,
+      target: {
+        current: ReactDOM.findDOMNode(this) as HTMLElement,
+      },
     })
+  }
+
+  componentWillUnmount() {
+    this.outerActionTrackingStop()
   }
 }
 
