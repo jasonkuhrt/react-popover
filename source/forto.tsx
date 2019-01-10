@@ -46,10 +46,10 @@ const tipRotationForZone = (zone: Forto.Zone): number => {
   return zone.side === "Bottom"
     ? 270
     : zone.side === "Top"
-    ? 90
-    : zone.side === "Right"
-    ? 180
-    : 0
+      ? 90
+      : zone.side === "Right"
+        ? 180
+        : 0
 }
 
 // TODO Support ref, outerAction will need it
