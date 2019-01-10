@@ -113,8 +113,8 @@ class Popover extends React.Component<Props, State> {
       this.props.frame instanceof Window
         ? this.props.frame
         : this.props.frame.current
-        ? this.props.frame.current
-        : null
+          ? this.props.frame.current
+          : null
 
     const popover = (
       <Transition>
