@@ -25,7 +25,9 @@ class Main extends React.Component {
     popoverIsOpen: false,
     preferPlace: undefined,
     place: undefined,
+    frameRef: React.createRef<HTMLDivElement>(),
   }
+
   togglePopover(toState?: boolean) {
     const popoverIsOpen =
       typeof toState === "boolean" ? toState : !this.state.popoverIsOpen
@@ -72,6 +74,8 @@ class Main extends React.Component {
       </Draggable>
     )
 
+    const frame = <div id="frame" ref={this.state.frameRef} />
+
     const popoverProps = {
       isOpen: this.state.popoverIsOpen,
       preferPlace: this.state.preferPlace,
@@ -82,6 +86,7 @@ class Main extends React.Component {
         <div key="b">Popover contents</div>,
       ],
       appendTarget: document.querySelector("#root")!,
+      frame: this.state.frameRef,
     }
 
     const controls = (
@@ -99,6 +104,7 @@ class Main extends React.Component {
 
     return (
       <div id="app">
+        {frame}
         {controls}
         <Popover {...popoverProps}>{target}</Popover>
       </div>
