@@ -18,11 +18,13 @@ type Props = {
     | Forto.Settings.Ori.Ori
   refreshIntervalMs: null | number
   tipSize: number
+  frame: Window | React.RefObject<HTMLElement>
   onOuterAction(event: MouseEvent | TouchEvent): void
 }
 
 class Popover extends React.Component<Props, { el: null | Element }> {
   static defaultProps = {
+    frame: window,
     tipSize: 7,
     preferPlace: null,
     place: null,

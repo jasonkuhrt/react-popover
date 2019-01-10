@@ -3,11 +3,6 @@ import * as Forto from "forto"
 import * as Pop from "popmotion"
 import * as F from "./utils"
 
-interface Pos {
-  x: number
-  y: number
-}
-
 /**
  * Helper to move an object around with Pop motion without actually animating it.
  * This is useful when an object needs to animation from a starting position
@@ -47,64 +42,20 @@ const Tip: React.SFC<TipProps> = ({ size }) => (
   </svg>
 )
 
-// TODO: Create issue with Forto, we need a better DSL :)
-
-const crossAxis = (zone: Forto.Zone) =>
-  Forto.Ori.crossAxis(Forto.Ori.fromSide(zone))
-
-const mainAxis = (zone: Forto.Zone) =>
-  Forto.Ori.mainAxis(Forto.Ori.fromSide(zone))
-
-const createAxes = (zone: Forto.Zone) => {
-  const ca = crossAxis(zone)
-  const ma = mainAxis(zone)
-  return {
-    translate: (pos: Pos, change: { cross?: number; main?: number }): Pos => {
-      const pos_ = { ...pos }
-
-      if (change.cross !== undefined) {
-        pos_[ca] += change.cross
-      }
-
-      if (change.main !== undefined) {
-        pos_[ma] += change.main
-      }
-
-      return pos_
-    },
-    awayFromTarget: (n: number): number => {
-      return n * layoutOrderNum(zone)
-    },
-    cross: {
-      prop: ca,
-      get: (pos: Pos): number => pos[ca],
-    },
-    main: {
-      prop: ma,
-      get: (pos: Pos): number => pos[ma],
-    },
-  }
-}
-
-const layoutOrderNum = (zone: Forto.Zone): -1 | 1 => {
-  return zone.side === Forto.Ori.Side.Top || zone.side === Forto.Ori.Side.Left
-    ? -1
-    : 1
-}
-
 const tipRotationForZone = (zone: Forto.Zone): number => {
   return zone.side === "Bottom"
     ? 270
     : zone.side === "Top"
-      ? 90
-      : zone.side === "Right"
-        ? 180
-        : 0
+    ? 90
+    : zone.side === "Right"
+    ? 180
+    : 0
 }
 
 // TODO Support ref, outerAction will need it
 interface Props {
   target: Element
+  frame: Window | React.RefObject<HTMLElement>
   body: React.ReactNode
   refreshIntervalMs: null | number
   place: Forto.Settings.Order | Forto.Settings.Ori.Side | Forto.Settings.Ori.Ori
@@ -141,7 +92,10 @@ class FortoPop extends React.Component<Props, {}> {
     const arrangement = {
       // TODO is this .current safe?
       target: this.props.target!,
-      frame: window,
+      frame:
+        this.props.frame === window
+          ? this.props.frame
+          : (this.props.frame as any).current,
       tip: this.popoverRef.current!.querySelector(".Popover-tip")!,
       popover: this.popoverRef.current!.querySelector(".Popover-body")!,
     }
@@ -153,6 +107,9 @@ class FortoPop extends React.Component<Props, {}> {
       popoverStyle.set,
     )
     const tipReaction = Pop.value(
+      // Set the origin to center-left. Origin values are percentage based.
+      // Movement is relative to center. Learn more about the weirdness here:
+      // https://github.com/Popmotion/popmotion/issues/573
       { x: 0, y: 0, rotate: 0, originX: -50, originY: 0.001 },
       tipStyle.set,
     )
@@ -163,6 +120,7 @@ class FortoPop extends React.Component<Props, {}> {
         preferredZones: this.props.preferPlace,
         tipSize: 8,
         pollIntervalMs: this.props.refreshIntervalMs || 1000,
+        boundingMode: "always",
       },
       arrangement,
     )
@@ -170,8 +128,6 @@ class FortoPop extends React.Component<Props, {}> {
     this.popoverReaction = popoverReaction
     this.layoutsSubscription = layoutChanges.subscribe(
       (newLayout: Forto.Calculation) => {
-        // console.log("newLayout", newLayout)
-
         // TODO As exiting continue animating everything else...?
         if (this.props.pose !== "exit") {
           if (!this.hasEntered) {
@@ -191,7 +147,7 @@ class FortoPop extends React.Component<Props, {}> {
     tipReaction: Pop.ValueReaction,
     layout: Forto.Calculation,
   ) {
-    const axes = createAxes(layout.zone)
+    const axes = Forto.createCompositor(layout.zone)
 
     noAnimUpdate(tipReaction, {
       ...(tipReaction.get() as any),
@@ -213,9 +169,8 @@ class FortoPop extends React.Component<Props, {}> {
       // before it is rotated, then once rotated, will overshoot new natural layout. The
       // rotation does trigger change detection however then we need to integrate that
       // detection in this existing running animationn.
-      console.log("do tip zone-change animation")
-      const axesBefore = createAxes(layoutBefore.zone)
-      const axesAfter = createAxes(layout.zone)
+      const axesBefore = Forto.createCompositor(layoutBefore.zone)
+      const axesAfter = Forto.createCompositor(layout.zone)
       this.tipChangingZones = Pop.timeline([
         {
           track: "pos",
@@ -274,7 +229,7 @@ class FortoPop extends React.Component<Props, {}> {
     popoverReaction: Pop.ValueReaction,
     layout: Forto.Calculation,
   ) {
-    const axes = createAxes(layout.zone)
+    const axes = Forto.createCompositor(layout.zone)
 
     noAnimUpdate(popoverReaction, {
       ...(popoverReaction.get() as any),
@@ -328,7 +283,7 @@ class FortoPop extends React.Component<Props, {}> {
       // TODO When exiting after a recent animation it animates to a
       // weird XY as if current XY is a lag
       // TODO better DSL from forto
-      const axes = createAxes(this.layout.zone)
+      const axes = Forto.createCompositor(this.layout.zone)
       const newXY = axes.translate(this.layout.popover, {
         // TODO this should be same as enter size
         main: axes.awayFromTarget(20),
