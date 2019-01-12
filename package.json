@@ -2,6 +2,7 @@
   "license": "MIT",
   "version": "0.5.7",
   "scripts": {
+    "fix:prettier": "yarn prettier --write './**/*.{md,ts,js,graphql,yaml}'",
     "clean": "rm -rf build",
     "deploy-storybook": "storybook-to-ghpages",
     "build": "yarn run clean && babel --out-dir build source",

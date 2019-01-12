@@ -1,5 +1,4 @@
 import * as React from "react"
-// import * as F from "./utils"
 
 /**
  * The Transition component makes it possible to run
@@ -21,20 +20,20 @@ class Transition extends React.Component<Props, State> {
         ? // continuing it
           props.children
         : // exiting it
-          !props.children && state.children
-          ? React.cloneElement(state.children, {
-              pose: "exit",
-              onPoseComplete() {
-                state.onExitAnimationComplete()
-              },
-            })
-          : // entering during exiting aka. exit interuption
-            props.children && state.children
-            ? React.cloneElement(props.children, {
-                pose: undefined,
-              })
-            : // continuing nothing
-              null
+        !props.children && state.children
+        ? React.cloneElement(state.children, {
+            pose: "exit",
+            onPoseComplete() {
+              state.onExitAnimationComplete()
+            },
+          })
+        : // entering during exiting aka. exit interuption
+        props.children && state.children
+        ? React.cloneElement(props.children, {
+            pose: undefined,
+          })
+        : // continuing nothing
+          null
 
     return { children }
   }
