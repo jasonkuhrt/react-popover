@@ -1,10 +1,10 @@
 import * as Forto from "forto"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
+import { window, document } from "../lib/platform"
+import { noop } from "../lib/utils"
 import FortoPop from "./forto"
 import Transition from "./transition"
-import { window, document } from "./platform"
-import { noop } from "./utils"
 
 type HTMLRef = React.RefObject<HTMLElement>
 
@@ -104,8 +104,8 @@ class Popover extends React.Component<Props, State> {
       this.props.frame instanceof Window
         ? this.props.frame
         : this.props.frame.current
-          ? this.props.frame.current
-          : null
+        ? this.props.frame.current
+        : null
 
     const popover = (
       <Transition>

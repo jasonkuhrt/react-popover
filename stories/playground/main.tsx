@@ -2,7 +2,7 @@ import * as Forto from "forto"
 import * as R from "ramda"
 import React from "react"
 import Draggable from "react-draggable"
-import Popover from "../../source"
+import Popover from "../../source/components/popover"
 import "../base.css"
 import "./main.css"
 

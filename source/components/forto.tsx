@@ -1,7 +1,7 @@
 import * as React from "react"
 import * as Forto from "forto"
 import * as Pop from "popmotion"
-import * as F from "./utils"
+import * as F from "../lib/utils"
 
 /**
  * Helper to move an object around with Pop motion without actually animating it.
@@ -46,10 +46,10 @@ const tipRotationForZone = (zone: Forto.Zone): number => {
   return zone.side === "Bottom"
     ? 270
     : zone.side === "Top"
-      ? 90
-      : zone.side === "Right"
-        ? 180
-        : 0
+    ? 90
+    : zone.side === "Right"
+    ? 180
+    : 0
 }
 
 interface Props {
