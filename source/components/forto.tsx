@@ -62,11 +62,8 @@ interface Props {
    * events like window resize for doing relayout. Defaults to 1000.
    */
   refreshIntervalMs: null | number
-  place: Forto.Settings.Order | Forto.Settings.Ori.Side | Forto.Settings.Ori.Ori
-  preferPlace:
-    | Forto.Settings.Order
-    | Forto.Settings.Ori.Side
-    | Forto.Settings.Ori.Ori
+  place: Forto.Settings.SettingsUnchecked["elligibleZones"]
+  preferPlace: Forto.Settings.SettingsUnchecked["preferredZones"]
   pose?: "exit"
   onPoseComplete: Function
 }

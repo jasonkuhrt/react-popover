@@ -2,29 +2,20 @@ import * as Forto from "forto"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { window, document } from "../lib/platform"
-import { noop } from "../lib/utils"
+import { noop, createHTMLRef, HTMLRef } from "../lib/utils"
 import FortoPop from "./forto"
 import Transition from "./transition"
 
-type HTMLRef = React.RefObject<HTMLElement>
-
-const createHTMLRef = (): HTMLRef => {
-  return React.createRef<HTMLElement>()
-}
-
 type Props = {
   body: React.ReactNode
-  children: React.ReactElement<any> // TODO infer?
+  children: React.ReactElement<any>
   appendTarget: Element
   isOpen: boolean
-  place: Forto.Settings.Order | Forto.Settings.Ori.Side | Forto.Settings.Ori.Ori
-  preferPlace:
-    | Forto.Settings.Order
-    | Forto.Settings.Ori.Side
-    | Forto.Settings.Ori.Ori
+  place: Forto.Settings.SettingsUnchecked["elligibleZones"]
+  preferPlace: Forto.Settings.SettingsUnchecked["preferredZones"]
   refreshIntervalMs: null | number
   tipSize: number
-  frame: Window | React.RefObject<HTMLElement>
+  frame: Window | HTMLRef
   onOuterAction(event: MouseEvent | TouchEvent): void
 }
 
@@ -39,7 +30,6 @@ class Popover extends React.Component<Props, State> {
     tipSize: 7,
     preferPlace: null,
     place: null,
-    // offset: 4,
     isOpen: false,
     onOuterAction: noop,
     children: null,
@@ -52,6 +42,25 @@ class Popover extends React.Component<Props, State> {
     popover: React.createRef<FortoPop>(),
   }
 
+  componentDidMount() {
+    this.outerActionTrackingStart()
+    this.setState({
+      target: {
+        current: ReactDOM.findDOMNode(this) as HTMLElement,
+      },
+    })
+  }
+
+  componentWillUnmount() {
+    this.outerActionTrackingStop()
+  }
+
+  /**
+   * Check if a user tap/click occured outside this popover
+   * and its target, and if so trigger a callback. This is convenient
+   * for users to implement logic like "close popover upon
+   * outer action".
+   */
   checkForOuterAction = (event: MouseEvent | TouchEvent) => {
     if (
       // Event occured against an HTML Element
@@ -73,8 +82,8 @@ class Popover extends React.Component<Props, State> {
   }
 
   /**
-   * Track user actions on the page. Anything that occurs _outside_ the Popover boundaries
-   * should close the Popover.
+   * Track user actions on the page. Anything that occurs _outside_
+   * the Popover boundaries should close the Popover.
    */
   outerActionTrackingStart = () => {
     if (document) {
@@ -91,7 +100,6 @@ class Popover extends React.Component<Props, State> {
   }
 
   render() {
-    // TODO Refactor initial tip sizing logic
     const {
       isOpen,
       children,
@@ -121,19 +129,6 @@ class Popover extends React.Component<Props, State> {
     )
 
     return [children, ReactDOM.createPortal(popover, appendTarget)]
-  }
-
-  componentDidMount() {
-    this.outerActionTrackingStart()
-    this.setState({
-      target: {
-        current: ReactDOM.findDOMNode(this) as HTMLElement,
-      },
-    })
-  }
-
-  componentWillUnmount() {
-    this.outerActionTrackingStop()
   }
 }
 
