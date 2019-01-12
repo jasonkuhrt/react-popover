@@ -14,7 +14,7 @@ const createHTMLRef = (): HTMLRef => {
 
 type Props = {
   body: React.ReactNode
-  children: React.ReactElement<unknown> // TODO infer?
+  children: React.ReactElement<any> // TODO infer?
   appendTarget: Element
   isOpen: boolean
   place: Forto.Settings.Order | Forto.Settings.Ori.Side | Forto.Settings.Ori.Ori
