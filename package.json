@@ -5,6 +5,7 @@
     "clean": "rm -rf build",
     "deploy-storybook": "storybook-to-ghpages",
     "build": "yarn run clean && babel --out-dir build source",
+    "check:types": "tsc --noEmit",
     "dev": "start-storybook -p 6006 -c .storybook",
     "postversion": "yarn run build && git push && git push --tags && npm publish && release",
     "build-storybook": "build-storybook"

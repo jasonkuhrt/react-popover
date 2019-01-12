@@ -9,4 +9,4 @@ export default {
   window: WINDOW,
   document: DOCUMENT,
 }
-export { isServer, isClient, WINDOW as window, DOCUMENT as document }
+export { WINDOW as window, DOCUMENT as document }

@@ -1,9 +1,9 @@
 import * as Forto from "forto"
 import * as React from "react"
 import * as ReactDOM from "react-dom"
-import * as Platform from "./platform"
 import FortoPop from "./forto"
 import Transition from "./transition"
+import { window, document } from "./platform"
 import { noop } from "./utils"
 
 type HTMLRef = React.RefObject<HTMLElement>
@@ -44,7 +44,7 @@ class Popover extends React.Component<Props, State> {
     onOuterAction: noop,
     children: null,
     refreshIntervalMs: 200,
-    appendTarget: Platform.isClient ? Platform.document!.body : null,
+    appendTarget: document ? document.body : null,
   }
 
   state = {
@@ -77,25 +77,16 @@ class Popover extends React.Component<Props, State> {
    * should close the Popover.
    */
   outerActionTrackingStart = () => {
-    if (Platform.document) {
-      Platform.document!.addEventListener("mousedown", this.checkForOuterAction)
-      Platform.document!.addEventListener(
-        "touchstart",
-        this.checkForOuterAction,
-      )
+    if (document) {
+      document.addEventListener("mousedown", this.checkForOuterAction)
+      document.addEventListener("touchstart", this.checkForOuterAction)
     }
   }
 
   outerActionTrackingStop = () => {
-    if (Platform.document) {
-      Platform.document!.removeEventListener(
-        "mousedown",
-        this.checkForOuterAction,
-      )
-      Platform.document!.removeEventListener(
-        "touchstart",
-        this.checkForOuterAction,
-      )
+    if (document) {
+      document.removeEventListener("mousedown", this.checkForOuterAction)
+      document.removeEventListener("touchstart", this.checkForOuterAction)
     }
   }
 
@@ -113,8 +104,8 @@ class Popover extends React.Component<Props, State> {
       this.props.frame instanceof Window
         ? this.props.frame
         : this.props.frame.current
-          ? this.props.frame.current
-          : null
+        ? this.props.frame.current
+        : null
 
     const popover = (
       <Transition>
