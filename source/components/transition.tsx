@@ -87,7 +87,7 @@ class Transition extends React.Component<Props, State> {
         const injectionProps = {
           pose: "exit",
           onPoseComplete: state.onExitAnimationComplete,
-        } as any
+        }
 
         return {
           children: React.cloneElement(childCase.state, injectionProps),
