@@ -115,7 +115,6 @@ class FortoPop extends React.Component<Props, {}> {
       {
         elligibleZones: this.props.place,
         preferredZones: this.props.preferPlace,
-        tipSize: 8,
         pollIntervalMs: this.props.refreshIntervalMs || 1000,
         boundingMode: "always",
       },

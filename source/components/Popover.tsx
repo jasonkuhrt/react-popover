@@ -3,7 +3,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { window, document } from "../lib/platform"
 import { noop, createHTMLRef, HTMLRef } from "../lib/utils"
-import FortoPop from "./Forto"
+import PopoverCore from "./PopoverCore"
 import Transition from "./Transition"
 
 type Props = {
@@ -14,20 +14,18 @@ type Props = {
   place: Forto.Settings.SettingsUnchecked["elligibleZones"]
   preferPlace: Forto.Settings.SettingsUnchecked["preferredZones"]
   refreshIntervalMs: null | number
-  tipSize: number
   frame: Window | HTMLRef
   onOuterAction(event: MouseEvent | TouchEvent): void
 }
 
 type State = {
   target: HTMLRef
-  popover: React.RefObject<FortoPop>
+  popover: React.RefObject<PopoverCore>
 }
 
 class Popover extends React.Component<Props, State> {
   static defaultProps = {
     frame: window,
-    tipSize: 7,
     preferPlace: null,
     place: null,
     isOpen: false,
@@ -39,7 +37,7 @@ class Popover extends React.Component<Props, State> {
 
   state = {
     target: createHTMLRef(),
-    popover: React.createRef<FortoPop>(),
+    popover: React.createRef<PopoverCore>(),
   }
 
   componentDidMount() {
@@ -118,7 +116,7 @@ class Popover extends React.Component<Props, State> {
     const popover = (
       <Transition>
         {isOpen && this.state.target.current && resolvedFrame ? (
-          <FortoPop
+          <PopoverCore
             {...fortoPopProps}
             frame={resolvedFrame}
             target={this.state.target.current}
