@@ -1,6 +1,6 @@
 import F from "ramda"
 import React from "react"
-import Popover from "../../source/components/popover"
+import Popover from "../../source/components/Popover"
 import "../base.css"
 import "./main.css"
 

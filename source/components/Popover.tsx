@@ -3,8 +3,8 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { window, document } from "../lib/platform"
 import { noop, createHTMLRef, HTMLRef } from "../lib/utils"
-import FortoPop from "./forto"
-import Transition from "./transition"
+import FortoPop from "./Forto"
+import Transition from "./Transition"
 
 type Props = {
   body: React.ReactNode
