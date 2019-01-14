@@ -6,6 +6,8 @@ import { noop, createHTMLRef, HTMLRef } from "../lib/utils"
 import PopoverCore from "./PopoverCore"
 import Transition from "./Transition"
 
+// TODO: feat: allow use of preferPlace threshold forto feature
+// TODO feat: allow disabling tip
 type Props = {
   body: React.ReactNode
   children: React.ReactElement<any>
@@ -16,6 +18,7 @@ type Props = {
   refreshIntervalMs: null | number
   frame: Window | HTMLRef
   onOuterAction(event: MouseEvent | TouchEvent): void
+  tipSize: number
 }
 
 type State = {
@@ -33,24 +36,12 @@ class Popover extends React.Component<Props, State> {
     children: null,
     refreshIntervalMs: 200,
     appendTarget: document ? document.body : null,
+    tipSize: 8,
   }
 
   state = {
     target: createHTMLRef(),
     popover: React.createRef<PopoverCore>(),
-  }
-
-  componentDidMount() {
-    this.outerActionTrackingStart()
-    this.setState({
-      target: {
-        current: ReactDOM.findDOMNode(this) as HTMLElement,
-      },
-    })
-  }
-
-  componentWillUnmount() {
-    this.outerActionTrackingStop()
   }
 
   /**
@@ -97,14 +88,21 @@ class Popover extends React.Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    this.outerActionTrackingStart()
+    this.setState({
+      target: {
+        current: ReactDOM.findDOMNode(this) as HTMLElement,
+      },
+    })
+  }
+
+  componentWillUnmount() {
+    this.outerActionTrackingStop()
+  }
+
   render() {
-    const {
-      isOpen,
-      children,
-      appendTarget,
-      frame,
-      ...fortoPopProps
-    } = this.props
+    const { isOpen, children, appendTarget, frame, ...coreProps } = this.props
 
     const resolvedFrame =
       this.props.frame instanceof Window
@@ -117,7 +115,7 @@ class Popover extends React.Component<Props, State> {
       <Transition>
         {isOpen && this.state.target.current && resolvedFrame ? (
           <PopoverCore
-            {...fortoPopProps}
+            {...coreProps}
             frame={resolvedFrame}
             target={this.state.target.current}
             ref={this.state.popover}

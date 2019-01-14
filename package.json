@@ -12,6 +12,7 @@
     "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@types/zen-observable": "^0.8.0",
     "forto": "^1.0.0-beta.4",
     "popmotion": "^8.4.0"
   },

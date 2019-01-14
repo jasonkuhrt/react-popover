@@ -1,7 +1,8 @@
 import * as React from "react"
 import * as Forto from "forto"
-import * as Pop from "popmotion"
+import * as Popmotion from "popmotion"
 import * as F from "../lib/utils"
+import Tip, { tipRotationForZone } from "./Tip"
 
 /**
  * Helper to move an object around with Pop motion without actually animating it.
@@ -9,47 +10,11 @@ import * as F from "../lib/utils"
  * that it isn't already in. Classic use-case is an "enter" animation.
  */
 const noAnimUpdate = (
-  reaction: Pop.ValueReaction,
+  reaction: Popmotion.ValueReaction,
   props: any, // TODO Popmotion does not export a Value type to use here.
 ): void => {
   reaction.update(props)
   reaction.velocityCheck({ timestamp: 0, delta: 0 })
-}
-
-interface Subscription {
-  closed: boolean
-  unsubscribe(): void
-}
-
-interface TipProps {
-  size: number
-}
-
-/**
- * TODO
- */
-const Tip: React.SFC<TipProps> = ({ size }) => (
-  <svg
-    className="Popover-tip"
-    style={{ position: "absolute", display: "block", left: 0, top: 0 }}
-    width={size}
-    height={size * 2}
-  >
-    <polygon
-      className="Popover-tipShape"
-      points={`0,0 ${size},${size}, 0,${size * 2}`}
-    />
-  </svg>
-)
-
-const tipRotationForZone = (zone: Forto.Zone): number => {
-  return zone.side === "Bottom"
-    ? 270
-    : zone.side === "Top"
-    ? 90
-    : zone.side === "Right"
-    ? 180
-    : 0
 }
 
 interface Props {
@@ -64,89 +29,44 @@ interface Props {
   refreshIntervalMs: null | number
   place: Forto.Settings.SettingsUnchecked["elligibleZones"]
   preferPlace: Forto.Settings.SettingsUnchecked["preferredZones"]
-  pose?: "exit"
+  pose: null | "exit"
   onPoseComplete: Function
+  tipSize: number
 }
 
-class FortoPop extends React.Component<Props, {}> {
+class PopoverCore extends React.Component<Props, {}> {
   static defaultProps = {
     onPoseComplete: F.noop,
+    pose: null,
   }
-  layout: null | Forto.Calculation = null
+
+  // TODO refactor: Use React State feature instead of raw class state
+  popoverReaction: Popmotion.ValueReaction = Popmotion.value({
+    x: 0,
+    y: 5,
+    opacity: 0,
+  })
+  // Set the origin to center-left. Origin values are percentage based.
+  // Movement is relative to center. Learn more about the weirdness here:
+  // https://github.com/Popmotion/popmotion/issues/573
+  tipReaction: Popmotion.ValueReaction = Popmotion.value({
+    x: 0,
+    y: 0,
+    rotate: 0,
+    originX: -50,
+    originY: 0.001,
+  })
   popoverRef = React.createRef<HTMLDivElement>()
-  fortoLayoutsSubscription: null | Subscription = null
-  popoverReaction: null | Pop.ValueReaction = null
+  layout: null | Forto.Calculation = null
+  fortoLayoutsSubscription: null | ZenObservable.Subscription = null
   exiting: any
-  tipChangingZones: null | Pop.ColdSubscription = null
-  hasEntered: boolean = false
+  tipChangingZones: null | Popmotion.ColdSubscription = null
 
-  render() {
-    return (
-      <div ref={this.popoverRef} style={{ position: "absolute" }}>
-        <div className="Popover-body" children={this.props.body} />
-        <Tip size={8} />
-      </div>
-    )
-  }
-
-  componentDidMount() {
-    const arrangement = {
-      target: this.props.target,
-      frame: this.props.frame,
-      tip: this.popoverRef.current!.querySelector(".Popover-tip")!,
-      popover: this.popoverRef.current!.querySelector(".Popover-body")!,
-    }
-
-    const popoverStyle = Pop.styler(this.popoverRef.current!, {})
-    const tipStyle = Pop.styler(arrangement.tip, {})
-    const popoverReaction = Pop.value(
-      { x: 0, y: 5, opacity: 0 },
-      popoverStyle.set,
-    )
-    const tipReaction = Pop.value(
-      // Set the origin to center-left. Origin values are percentage based.
-      // Movement is relative to center. Learn more about the weirdness here:
-      // https://github.com/Popmotion/popmotion/issues/573
-      { x: 0, y: 0, rotate: 0, originX: -50, originY: 0.001 },
-      tipStyle.set,
-    )
-
-    const layoutChanges = Forto.DOM.observe(
-      {
-        elligibleZones: this.props.place,
-        preferredZones: this.props.preferPlace,
-        pollIntervalMs: this.props.refreshIntervalMs || 1000,
-        boundingMode: "always",
-      },
-      arrangement,
-    )
-
-    this.popoverReaction = popoverReaction
-    this.fortoLayoutsSubscription = layoutChanges.subscribe(
-      (newLayout: Forto.Calculation) => {
-        // TODO As exiting continue animating everything else...?
-        if (this.props.pose !== "exit") {
-          if (!this.hasEntered) {
-            this.movePopoverIntoPreLayoutPosition(popoverReaction, newLayout)
-            this.moveTipIntoPreLayoutPosition(tipReaction, newLayout)
-          }
-          this.animateTipToLayout(tipReaction, newLayout, this.layout)
-          this.animatePopoverToLayout(popoverReaction, newLayout)
-          this.hasEntered = true
-        }
-        this.layout = newLayout
-      },
-    )
-  }
-
-  moveTipIntoPreLayoutPosition(
-    tipReaction: Pop.ValueReaction,
-    layout: Forto.Calculation,
-  ) {
+  moveTipIntoPreLayoutPosition(layout: Forto.Calculation) {
     const axes = Forto.createCompositor(layout.zone)
 
-    noAnimUpdate(tipReaction, {
-      ...(tipReaction.get() as any),
+    noAnimUpdate(this.tipReaction, {
+      ...(this.tipReaction.get() as any),
       ...axes.translate(layout.tip!, {
         main: axes.awayFromTarget(8),
       }),
@@ -155,7 +75,6 @@ class FortoPop extends React.Component<Props, {}> {
   }
 
   animateTipToLayout(
-    tipReaction: Pop.ValueReaction,
     layout: Forto.Calculation,
     layoutBefore: null | Forto.Calculation,
   ) {
@@ -167,12 +86,12 @@ class FortoPop extends React.Component<Props, {}> {
       // detection in this existing running animationn.
       const axesBefore = Forto.createCompositor(layoutBefore.zone)
       const axesAfter = Forto.createCompositor(layout.zone)
-      this.tipChangingZones = Pop.timeline([
+      this.tipChangingZones = Popmotion.timeline([
         {
           track: "pos",
           from: layoutBefore.tip!,
           to: {
-            ...(tipReaction.get() as any),
+            ...(this.tipReaction.get() as any),
             ...axesBefore.translate(layoutBefore.tip!, {
               main: axesBefore.awayFromTarget(8),
             }),
@@ -182,7 +101,7 @@ class FortoPop extends React.Component<Props, {}> {
         {
           track: "pos",
           to: {
-            ...(tipReaction.get() as any),
+            ...(this.tipReaction.get() as any),
             rotate: tipRotationForZone(layout.zone),
             ...axesAfter.translate(layout.tip!, {
               main: axesAfter.awayFromTarget(8),
@@ -193,7 +112,7 @@ class FortoPop extends React.Component<Props, {}> {
         {
           track: "pos",
           to: {
-            ...(tipReaction.get() as any),
+            ...(this.tipReaction.get() as any),
             ...layout.tip!,
             rotate: tipRotationForZone(layout.zone),
           },
@@ -201,52 +120,90 @@ class FortoPop extends React.Component<Props, {}> {
         },
       ]).start({
         update: (tl: any) => {
-          tipReaction.update(tl.pos)
+          this.tipReaction.update(tl.pos)
         },
       })
     } else {
-      Pop.spring({
-        from: tipReaction.get(),
+      Popmotion.spring({
+        from: this.tipReaction.get(),
         to: {
-          ...(tipReaction.get() as any),
+          ...(this.tipReaction.get() as any),
           ...layout.tip!,
           // TODO Consider doing conditional check for zone change
           rotate: tipRotationForZone(layout.zone),
         },
-        velocity: tipReaction!.getVelocity(),
+        velocity: this.tipReaction!.getVelocity(),
         stiffness: 450,
         damping: 35,
         mass: 1.5,
-      }).start(tipReaction)
+      }).start(this.tipReaction)
     }
   }
 
-  movePopoverIntoPreLayoutPosition(
-    popoverReaction: Pop.ValueReaction,
-    layout: Forto.Calculation,
-  ) {
+  movePopoverIntoPreLayoutPosition(layout: Forto.Calculation) {
     const axes = Forto.createCompositor(layout.zone)
 
-    noAnimUpdate(popoverReaction, {
-      ...(popoverReaction.get() as any),
+    noAnimUpdate(this.popoverReaction, {
+      ...(this.popoverReaction.get() as any),
       ...axes.translate(layout.popover, {
         main: axes.awayFromTarget(15),
       }),
     })
   }
 
-  animatePopoverToLayout(
-    popoverReaction: Pop.ValueReaction,
-    layout: Forto.Calculation,
-  ) {
-    Pop.spring({
-      from: popoverReaction.get(),
+  animatePopoverToLayout(layout: Forto.Calculation) {
+    Popmotion.spring({
+      from: this.popoverReaction.get(),
       to: { ...layout.popover, opacity: 1 },
-      velocity: popoverReaction.getVelocity(),
+      velocity: this.popoverReaction.getVelocity(),
       stiffness: 450,
       damping: 35,
       mass: 1.5,
-    }).start(popoverReaction)
+    }).start(this.popoverReaction)
+  }
+
+  componentDidMount() {
+    const arrangement = {
+      target: this.props.target,
+      frame: this.props.frame,
+      tip: this.popoverRef.current!.querySelector(".Popover-tip")!,
+      popover: this.popoverRef.current!.querySelector(".Popover-body")!,
+    }
+
+    const popoverStyle = Popmotion.styler(this.popoverRef.current!, {})
+    const tipStyle = Popmotion.styler(arrangement.tip, {})
+
+    this.popoverReaction.subscribe(popoverStyle.set)
+    this.tipReaction.subscribe(tipStyle.set)
+
+    const layoutChanges = Forto.DOM.observe(
+      {
+        elligibleZones: this.props.place,
+        preferredZones: this.props.preferPlace,
+        pollIntervalMs: this.props.refreshIntervalMs || 1000,
+        boundingMode: "always",
+        tipSize: this.props.tipSize,
+      },
+      arrangement,
+    )
+
+    let initialLayout = true
+
+    this.fortoLayoutsSubscription = layoutChanges.subscribe(
+      (newLayout: Forto.Calculation) => {
+        // TODO As exiting continue animating everything else...?
+        if (this.props.pose !== "exit") {
+          if (initialLayout) {
+            this.movePopoverIntoPreLayoutPosition(newLayout)
+            this.moveTipIntoPreLayoutPosition(newLayout)
+            initialLayout = false
+          }
+          this.animateTipToLayout(newLayout, this.layout)
+          this.animatePopoverToLayout(newLayout)
+        }
+        this.layout = newLayout
+      },
+    )
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -255,12 +212,12 @@ class FortoPop extends React.Component<Props, {}> {
       this.layout &&
       this.popoverReaction &&
       prevProps.pose !== this.props.pose &&
-      this.props.pose === undefined
+      this.props.pose === null
     ) {
       // console.log("interrupt")
       // TODO https://github.com/Popmotion/popmotion/issues/543
       this.exiting.stop()
-      this.animatePopoverToLayout(this.popoverReaction, this.layout)
+      this.animatePopoverToLayout(this.layout)
     } else if (
       this.layout &&
       this.popoverReaction &&
@@ -284,7 +241,7 @@ class FortoPop extends React.Component<Props, {}> {
         // TODO this should be same as enter size
         main: axes.awayFromTarget(20),
       })
-      this.exiting = Pop.tween({
+      this.exiting = Popmotion.tween({
         from: this.popoverReaction.get(),
         to: { ...newXY, opacity: 0 },
         duration: 150,
@@ -309,7 +266,16 @@ class FortoPop extends React.Component<Props, {}> {
       this.popoverReaction.stop()
     }
   }
+
+  render() {
+    return (
+      <div ref={this.popoverRef} style={{ position: "absolute" }}>
+        <div className="Popover-body">{this.props.body}</div>
+        <Tip size={this.props.tipSize} />
+      </div>
+    )
+  }
 }
 
-export default FortoPop
-export { FortoPop as Component, Props }
+export default PopoverCore
+export { PopoverCore as Component, Props }
