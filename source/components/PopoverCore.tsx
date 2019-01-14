@@ -206,6 +206,11 @@ class PopoverCore extends React.Component<Props, {}> {
     )
   }
 
+  componentWillUnmount() {
+    this.fortoLayoutsSubscription!.unsubscribe() // ! b/c guranteed by mount lifecycle
+    this.popoverReaction.stop()
+  }
+
   componentDidUpdate(prevProps: Props) {
     // console.log("componentDidUpdate")
     if (
@@ -255,15 +260,6 @@ class PopoverCore extends React.Component<Props, {}> {
           this.props.onPoseComplete()
         },
       })
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.fortoLayoutsSubscription) {
-      this.fortoLayoutsSubscription.unsubscribe()
-    }
-    if (this.popoverReaction) {
-      this.popoverReaction.stop()
     }
   }
 
