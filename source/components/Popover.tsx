@@ -6,8 +6,9 @@ import { noop, createHTMLRef, HTMLRef } from "../lib/utils"
 import PopoverCore from "./PopoverCore"
 import Transition from "./Transition"
 
-// TODO: feat: allow use of preferPlace threshold forto feature
+// TODO feat: allow use of preferPlace threshold forto feature
 // TODO feat: allow disabling tip
+// TODO feat: allow custom Popmotion animations
 type Props = {
   body: React.ReactNode
   children: React.ReactElement<any>

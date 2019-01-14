@@ -4,19 +4,6 @@ import * as Popmotion from "popmotion"
 import * as F from "../lib/utils"
 import Tip, { tipRotationForZone } from "./Tip"
 
-/**
- * Helper to move an object around with Pop motion without actually animating it.
- * This is useful when an object needs to animation from a starting position
- * that it isn't already in. Classic use-case is an "enter" animation.
- */
-const noAnimUpdate = (
-  reaction: Popmotion.ValueReaction,
-  props: any, // TODO Popmotion does not export a Value type to use here.
-): void => {
-  reaction.update(props)
-  reaction.velocityCheck({ timestamp: 0, delta: 0 })
-}
-
 interface Props {
   target: HTMLElement
   frame: Window | HTMLElement
@@ -58,41 +45,63 @@ class PopoverCore extends React.Component<Props, {}> {
   })
   popoverRef = React.createRef<HTMLDivElement>()
   layout: null | Forto.Calculation = null
+  prevLayout: null | Forto.Calculation = null
   fortoLayoutsSubscription: null | ZenObservable.Subscription = null
   exiting: any
   tipChangingZones: null | Popmotion.ColdSubscription = null
 
-  moveTipIntoPreLayoutPosition(layout: Forto.Calculation) {
+  /**
+   * TODO
+   */
+  preAnimate(layout: Forto.Calculation) {
     const axes = Forto.createCompositor(layout.zone)
 
-    noAnimUpdate(this.tipReaction, {
+    F.noAnimUpdate(this.tipReaction, {
       ...(this.tipReaction.get() as any),
       ...axes.translate(layout.tip!, {
         main: axes.awayFromTarget(8),
       }),
       rotate: tipRotationForZone(layout.zone),
     })
+
+    F.noAnimUpdate(this.popoverReaction, {
+      ...(this.popoverReaction.get() as any),
+      ...axes.translate(layout.popover, {
+        main: axes.awayFromTarget(15),
+      }),
+    })
   }
 
-  animateTipToLayout(
-    layout: Forto.Calculation,
-    layoutBefore: null | Forto.Calculation,
-  ) {
-    if (layoutBefore && layoutBefore.zone.side !== layout.zone.side) {
+  /**
+   * TODO
+   */
+  animate(layout: Forto.Calculation, prevLayout: null | Forto.Calculation) {
+    // Animate the body
+    Popmotion.spring({
+      from: this.popoverReaction.get(),
+      to: { ...layout.popover, opacity: 1 },
+      velocity: this.popoverReaction.getVelocity(),
+      stiffness: 450,
+      damping: 35,
+      mass: 1.5,
+    }).start(this.popoverReaction)
+
+    // Animate the tip
+    if (prevLayout && prevLayout.zone.side !== layout.zone.side) {
       // TODO
       // The problem here is that layout measurements will be made in accordance with tip
       // before it is rotated, then once rotated, will overshoot new natural layout. The
       // rotation does trigger change detection however then we need to integrate that
       // detection in this existing running animationn.
-      const axesBefore = Forto.createCompositor(layoutBefore.zone)
+      const axesBefore = Forto.createCompositor(prevLayout.zone)
       const axesAfter = Forto.createCompositor(layout.zone)
       this.tipChangingZones = Popmotion.timeline([
         {
           track: "pos",
-          from: layoutBefore.tip!,
+          from: prevLayout.tip!,
           to: {
             ...(this.tipReaction.get() as any),
-            ...axesBefore.translate(layoutBefore.tip!, {
+            ...axesBefore.translate(prevLayout.tip!, {
               main: axesBefore.awayFromTarget(8),
             }),
           },
@@ -140,28 +149,6 @@ class PopoverCore extends React.Component<Props, {}> {
     }
   }
 
-  movePopoverIntoPreLayoutPosition(layout: Forto.Calculation) {
-    const axes = Forto.createCompositor(layout.zone)
-
-    noAnimUpdate(this.popoverReaction, {
-      ...(this.popoverReaction.get() as any),
-      ...axes.translate(layout.popover, {
-        main: axes.awayFromTarget(15),
-      }),
-    })
-  }
-
-  animatePopoverToLayout(layout: Forto.Calculation) {
-    Popmotion.spring({
-      from: this.popoverReaction.get(),
-      to: { ...layout.popover, opacity: 1 },
-      velocity: this.popoverReaction.getVelocity(),
-      stiffness: 450,
-      damping: 35,
-      mass: 1.5,
-    }).start(this.popoverReaction)
-  }
-
   componentDidMount() {
     const arrangement = {
       target: this.props.target,
@@ -176,7 +163,9 @@ class PopoverCore extends React.Component<Props, {}> {
     this.popoverReaction.subscribe(popoverStyle.set)
     this.tipReaction.subscribe(tipStyle.set)
 
-    const layoutChanges = Forto.DOM.observe(
+    let initialLayout = true
+
+    this.fortoLayoutsSubscription = Forto.DOM.observe(
       {
         elligibleZones: this.props.place,
         preferredZones: this.props.preferPlace,
@@ -185,25 +174,18 @@ class PopoverCore extends React.Component<Props, {}> {
         tipSize: this.props.tipSize,
       },
       arrangement,
-    )
-
-    let initialLayout = true
-
-    this.fortoLayoutsSubscription = layoutChanges.subscribe(
-      (newLayout: Forto.Calculation) => {
-        // TODO As exiting continue animating everything else...?
-        if (this.props.pose !== "exit") {
-          if (initialLayout) {
-            this.movePopoverIntoPreLayoutPosition(newLayout)
-            this.moveTipIntoPreLayoutPosition(newLayout)
-            initialLayout = false
-          }
-          this.animateTipToLayout(newLayout, this.layout)
-          this.animatePopoverToLayout(newLayout)
+    ).subscribe((newLayout: Forto.Calculation) => {
+      // TODO As exiting continue animating everything else...?
+      if (this.props.pose !== "exit") {
+        if (initialLayout) {
+          this.preAnimate(newLayout)
+          initialLayout = false
         }
-        this.layout = newLayout
-      },
-    )
+        this.animate(newLayout, this.layout)
+      }
+      this.prevLayout = this.layout
+      this.layout = newLayout
+    })
   }
 
   componentWillUnmount() {
@@ -211,6 +193,8 @@ class PopoverCore extends React.Component<Props, {}> {
     this.popoverReaction.stop()
   }
 
+  // TODO Refactor this and document why its needed
+  // If we can remove need for it we do not need to store layout on class state then
   componentDidUpdate(prevProps: Props) {
     // console.log("componentDidUpdate")
     if (
@@ -222,7 +206,7 @@ class PopoverCore extends React.Component<Props, {}> {
       // console.log("interrupt")
       // TODO https://github.com/Popmotion/popmotion/issues/543
       this.exiting.stop()
-      this.animatePopoverToLayout(this.layout)
+      this.animate(this.layout, this.prevLayout)
     } else if (
       this.layout &&
       this.popoverReaction &&
