@@ -78,10 +78,14 @@ Defines the size of the tip pointer.  Use .01 to disable tip.  Defaults to '7'.
 
 ---
 
+#### `offset :: Number`
+Offset allows users to control the distance betweent the tip and the target. Defaults to '4'.
+
+---
+
 ##### Standard
 
 * Properties like `className` and `style`.
-
 
 ---
 
