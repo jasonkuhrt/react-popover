@@ -57,6 +57,7 @@ class Popover extends React.Component {
     isOpen: T.bool,
     offset: T.number,
     place: T.oneOf(Layout.validTypeValues),
+    crossAlign: T.oneOf(["center", "center-start", "center-end"]),
     preferPlace: T.oneOf(Layout.validTypeValues),
     refreshIntervalMs: T.oneOfType([T.number, T.bool]),
     style: T.object,
@@ -67,6 +68,7 @@ class Popover extends React.Component {
     tipSize: 7,
     preferPlace: null,
     place: null,
+    crossAlign: "center",
     offset: 4,
     isOpen: false,
     onOuterAction: Utils.noop,
@@ -174,7 +176,7 @@ class Popover extends React.Component {
     /* When positioning self on the cross-axis do not exceed frame bounds. The strategy to achieve
     this is thus: First position cross-axis self to the cross-axis-center of the the target. Then,
     offset self by the amount that self is past the boundaries of frame. */
-    const pos = Layout.calcRelPos(zone, tb, this.size)
+    const pos = Layout.calcRelPos(zone, tb, this.size, this.props.crossAlign)
 
     /* Offset allows users to control the distance betweent the tip and the target. */
     pos[axis.main.start] += this.props.offset * zone.order

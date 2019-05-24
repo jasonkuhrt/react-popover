@@ -43,16 +43,16 @@ const centerOfBoundsFromBounds = (flow, axis, boundsTo, boundsFrom) =>
 
 const place = (flow, axis, align, bounds, size) => {
   const axisProps = axes[flow][axis]
-  return align === "center"
-    ? centerOfBounds(flow, axis, bounds) - centerOfSize(flow, axis, size)
-    : align === "end"
-      ? bounds[axisProps.end]
-      : align === "start"
-        ? /* DOM rendering unfolds leftward. Therefore if the slave is positioned before
-      the master then the slave`s position must in addition be pulled back
-      by its [the slave`s] own length. */
-          bounds[axisProps.start] - size[axisProps.size]
-        : null
+  return {
+    center: centerOfBounds(flow, axis, bounds) - centerOfSize(flow, axis, size),
+    end: bounds[axisProps.end],
+    /* DOM rendering unfolds leftward. Therefore if the slave is positioned before
+       the master then the slave`s position must in addition be pulled back
+       by its [the slave`s] own length. */
+    start: bounds[axisProps.start] - size[axisProps.size],
+    "center-start": bounds[axisProps.start],
+    "center-end": bounds[axisProps.end] - size[axisProps.size],
+  }[align]
 }
 
 /* Element Layout Queries */
@@ -220,10 +220,8 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
 
 /* TODO Document this. */
 
-const calcRelPos = (zone, masterBounds, slaveSize) => {
+const calcRelPos = (zone, masterBounds, slaveSize, crossAlign) => {
   const { main, cross } = axes[zone.flow]
-  /* TODO: The slave is hard-coded to align cross-center with master. */
-  const crossAlign = "center"
   const mainStart = place(zone.flow, "main", zone.side, masterBounds, slaveSize)
   const mainSize = slaveSize[main.size]
   const crossStart = place(
