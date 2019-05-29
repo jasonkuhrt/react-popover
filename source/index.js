@@ -54,9 +54,11 @@ class Popover extends React.Component {
     appendTarget: T.object,
     className: T.string,
     enterExitTransitionDurationMs: T.number,
+    enterExitTransitionDistancePx: T.number,
     isOpen: T.bool,
     offset: T.number,
     place: T.oneOf(Layout.validTypeValues),
+    crossAlign: T.oneOf(["center", "center-start", "center-end"]),
     preferPlace: T.oneOf(Layout.validTypeValues),
     refreshIntervalMs: T.oneOfType([T.number, T.bool]),
     style: T.object,
@@ -67,10 +69,12 @@ class Popover extends React.Component {
     tipSize: 7,
     preferPlace: null,
     place: null,
+    crossAlign: "center",
     offset: 4,
     isOpen: false,
     onOuterAction: Utils.noop,
     enterExitTransitionDurationMs: 500,
+    enterExitTransitionDistancePx: 50,
     children: null,
     refreshIntervalMs: 200,
     appendTarget: Platform.isClient ? Platform.document.body : null,
@@ -174,7 +178,7 @@ class Popover extends React.Component {
     /* When positioning self on the cross-axis do not exceed frame bounds. The strategy to achieve
     this is thus: First position cross-axis self to the cross-axis-center of the the target. Then,
     offset self by the amount that self is past the boundaries of frame. */
-    const pos = Layout.calcRelPos(zone, tb, this.size)
+    const pos = Layout.calcRelPos(zone, tb, this.size, this.props.crossAlign)
 
     /* Offset allows users to control the distance betweent the tip and the target. */
     pos[axis.main.start] += this.props.offset * zone.order
@@ -331,7 +335,7 @@ class Popover extends React.Component {
         if (this.containerEl) {
           this.containerEl.style.transform = `${
             flowToPopoverTranslations[this.zone.flow]
-          }(${this.zone.order * 50}px)`
+          }(${this.zone.order * this.props.enterExitTransitionDistancePx}px)`
           this.containerEl.style.opacity = "0"
         }
       }, 0)
@@ -346,7 +350,7 @@ class Popover extends React.Component {
 
     this.containerEl.style.transform = `${
       flowToPopoverTranslations[this.zone.flow]
-    }(${this.zone.order * 50}px)`
+    }(${this.zone.order * this.props.enterExitTransitionDistancePx}px)`
     this.containerEl.style[
       jsprefix("Transform")
     ] = this.containerEl.style.transform
