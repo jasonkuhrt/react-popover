@@ -54,6 +54,7 @@ class Popover extends React.Component {
     appendTarget: T.object,
     className: T.string,
     enterExitTransitionDurationMs: T.number,
+    enterExitTransitionDistancePx: T.number,
     isOpen: T.bool,
     offset: T.number,
     place: T.oneOf(Layout.validTypeValues),
@@ -73,6 +74,7 @@ class Popover extends React.Component {
     isOpen: false,
     onOuterAction: Utils.noop,
     enterExitTransitionDurationMs: 500,
+    enterExitTransitionDistancePx: 50,
     children: null,
     refreshIntervalMs: 200,
     appendTarget: Platform.isClient ? Platform.document.body : null,
@@ -333,7 +335,7 @@ class Popover extends React.Component {
         if (this.containerEl) {
           this.containerEl.style.transform = `${
             flowToPopoverTranslations[this.zone.flow]
-          }(${this.zone.order * 50}px)`
+          }(${this.zone.order * this.props.enterExitTransitionDistancePx}px)`
           this.containerEl.style.opacity = "0"
         }
       }, 0)
@@ -348,7 +350,7 @@ class Popover extends React.Component {
 
     this.containerEl.style.transform = `${
       flowToPopoverTranslations[this.zone.flow]
-    }(${this.zone.order * 50}px)`
+    }(${this.zone.order * this.props.enterExitTransitionDistancePx}px)`
     this.containerEl.style[
       jsprefix("Transform")
     ] = this.containerEl.style.transform
