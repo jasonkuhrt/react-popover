@@ -10,13 +10,13 @@ import Platform from "./platform"
 import Tip from "./tip"
 import Utils from "./utils"
 
-const log = Debug("react-popover")
+const log = console.warn //Debug("react-popover")
 
 const supportedCSSValue = Utils.clientOnly(cssVendor.supportedValue)
 
-const jsprefix = x => `${cssVendor.prefix.js}${x}`
+const jsprefix = (x) => `${cssVendor.prefix.js}${x}`
 
-const cssprefix = x => `${cssVendor.prefix.css}${x}`
+const cssprefix = (x) => `${cssVendor.prefix.css}${x}`
 
 const cssvalue = (prop, value) =>
   supportedCSSValue(prop, value) || cssprefix(value)
@@ -58,7 +58,7 @@ class Popover extends React.Component {
     offset: T.number,
     place: T.oneOf(Layout.validTypeValues),
     preferPlace: T.oneOf(Layout.validTypeValues),
-    refreshIntervalMs: T.oneOfType([T.number, T.bool]),
+    refreshIntervalMs: T.oneOfType([ T.number, T.bool ]),
     style: T.object,
     tipSize: T.number,
     onOuterAction: T.func,
@@ -75,7 +75,7 @@ class Popover extends React.Component {
     refreshIntervalMs: 200,
     appendTarget: Platform.isClient ? Platform.document.body : null,
   }
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       standing: "above",
@@ -84,7 +84,7 @@ class Popover extends React.Component {
       toggle: this.props.isOpen || false, // for business logic tracking, should popover close/open?
     }
   }
-  componentDidMount() {
+  componentDidMount () {
     /* Our component needs a DOM Node reference to the child so that it can be
     measured so that we can correctly layout the popover. We do not have any
     control over the child so cannot leverage refs. We could wrap our own
@@ -96,7 +96,7 @@ class Popover extends React.Component {
     this.targetEl = ReactDOM.findDOMNode(this)
     if (this.props.isOpen) this.enter()
   }
-  componentWillReceiveProps(propsNext) {
+  componentWillReceiveProps (propsNext) {
     //log(`Component received props!`, propsNext)
     const willOpen = !this.props.isOpen && propsNext.isOpen
     const willClose = this.props.isOpen && !propsNext.isOpen
@@ -104,7 +104,7 @@ class Popover extends React.Component {
     if (willOpen) this.open()
     else if (willClose) this.close()
   }
-  componentDidUpdate(propsPrev, statePrev) {
+  componentDidUpdate (propsPrev, statePrev) {
     //log(`Component did update!`)
     const didOpen = !statePrev.toggle && this.state.toggle
     const didClose = statePrev.toggle && !this.state.toggle
@@ -112,7 +112,7 @@ class Popover extends React.Component {
     if (didOpen) this.enter()
     else if (didClose) this.exit()
   }
-  componentWillUnmount() {
+  componentWillUnmount () {
     /* If the Popover is unmounted while animating,
     clear the animation so no setState occured */
     this.animateExitStop()
@@ -121,7 +121,7 @@ class Popover extends React.Component {
     would be an error. Also see issue 55. */
     if (this.hasTracked) this.untrackPopover()
   }
-  resolvePopoverLayout() {
+  resolvePopoverLayout () {
     /* Find the optimal zone to position self. Measure the size of each zone and use the one with
     the greatest area. */
 
@@ -144,7 +144,7 @@ class Popover extends React.Component {
     http://overconstrained.io community for its general layout system via the
     constraint-solver Cassowary. */
     if (this.zone)
-      this.size[this.zone.flow === "row" ? "h" : "w"] += this.props.tipSize
+      {this.size[this.zone.flow === "row" ? "h" : "w"] += this.props.tipSize}
     const zone = Layout.pickZone(
       pickerSettings,
       this.frameBounds,
@@ -152,7 +152,7 @@ class Popover extends React.Component {
       this.size,
     )
     if (this.zone)
-      this.size[this.zone.flow === "row" ? "h" : "w"] -= this.props.tipSize
+      {this.size[this.zone.flow === "row" ? "h" : "w"] -= this.props.tipSize}
 
     const tb = this.targetBounds
     this.zone = zone
@@ -218,12 +218,12 @@ class Popover extends React.Component {
       log("popoverCrossLength does not fit within buffered frame.")
       pos[axis.cross.start] = (frameCrossLength - pos.crossLength) / 2
     } else if (popoverCrossStart < frameCrossInnerStart) {
-      log("popoverCrossStart cannot reverse without exceeding frame.")
-      pos[axis.cross.start] = frameCrossInnerStart
+      log("popoverCrossStart cannot reverse without exceeding frame.", JSON.stringify(pos))
+      pos[axis.cross.start] = frameCrossInnerStart //+ this.size[axis.cross.size]
     } else if (popoverCrossEnd > frameCrossInnerEnd) {
-      log("popoverCrossEnd cannot travel without exceeding frame.")
+      log("popoverCrossEnd cannot travel without exceeding frame.", this.size[axis.cross.size])
       pos[axis.cross.start] =
-        pos[axis.cross.start] - (pos[axis.cross.end] - frameCrossInnerEnd)
+        pos[axis.cross.start] - (pos[axis.cross.end] - frameCrossInnerEnd) //- this.size[axis.cross.size] / 2
     }
 
     /* So far the link position has been calculated relative to the target. To calculate the absolute
@@ -248,6 +248,10 @@ class Popover extends React.Component {
     /* Apply Absolute Positioning. */
 
     log("pos", pos)
+    if(pos.y < 0) {
+      pos.y = 0
+    }
+
     if (this.containerEl) {
       this.containerEl.style.top = `${pos.y}px`
       this.containerEl.style.left = `${pos.x}px`
@@ -268,7 +272,7 @@ class Popover extends React.Component {
       this.props.tipSize
 
     if (tipCrossPos < dockingEdgeBufferLength)
-      tipCrossPos = dockingEdgeBufferLength
+      {tipCrossPos = dockingEdgeBufferLength}
     else if (
       tipCrossPos >
       pos.crossLength - dockingEdgeBufferLength - this.props.tipSize * 2
@@ -285,10 +289,10 @@ class Popover extends React.Component {
   checkTargetReposition = () => {
     if (this.measureTargetBounds()) this.resolvePopoverLayout()
   }
-  measurePopoverSize() {
+  measurePopoverSize () {
     this.size = Layout.El.calcSize(this.containerEl)
   }
-  measureTargetBounds() {
+  measureTargetBounds () {
     const newTargetBounds = Layout.El.calcBounds(this.targetEl)
 
     if (
@@ -301,30 +305,30 @@ class Popover extends React.Component {
     this.targetBounds = newTargetBounds
     return true
   }
-  open() {
+  open () {
     if (this.state.exiting) this.animateExitStop()
     this.setState({ toggle: true, exited: false })
   }
-  close() {
+  close () {
     this.setState({ toggle: false })
   }
-  enter() {
+  enter () {
     if (Platform.isServer) return
     log("enter!")
     this.trackPopover()
     this.animateEnter()
   }
-  exit() {
+  exit () {
     log("exit!")
     this.animateExit()
     this.untrackPopover()
   }
-  animateExitStop() {
+  animateExitStop () {
     clearTimeout(this.exitingAnimationTimer1)
     clearTimeout(this.exitingAnimationTimer2)
     this.setState({ exiting: false })
   }
-  animateExit() {
+  animateExit () {
     this.setState({ exiting: true })
     this.exitingAnimationTimer2 = setTimeout(() => {
       setTimeout(() => {
@@ -341,7 +345,7 @@ class Popover extends React.Component {
       this.setState({ exited: true, exiting: false })
     }, this.props.enterExitTransitionDurationMs)
   }
-  animateEnter() {
+  animateEnter () {
     /* Prepare `entering` style so that we can then animate it toward `entered`. */
 
     this.containerEl.style.transform = `${
@@ -375,7 +379,7 @@ class Popover extends React.Component {
       jsprefix("Transform")
     ] = this.containerEl.style.transform
   }
-  trackPopover() {
+  trackPopover () {
     const minScrollRefreshIntervalMs = 200
     const minResizeRefreshIntervalMs = 200
 
@@ -441,13 +445,13 @@ class Popover extends React.Component {
     this.measureTargetBounds()
     this.resolvePopoverLayout()
   }
-  checkForOuterAction = event => {
+  checkForOuterAction = (event) => {
     const isOuterAction =
       !this.containerEl.contains(event.target) &&
       !this.targetEl.contains(event.target)
     if (isOuterAction) this.props.onOuterAction(event)
   }
-  untrackPopover() {
+  untrackPopover () {
     clearInterval(this.checkLayoutInterval)
     this.frameEl.removeEventListener("scroll", this.onFrameScroll)
     resizeEvent.off(this.frameEl, this.onFrameResize)
@@ -480,13 +484,13 @@ class Popover extends React.Component {
     this.measureFrameBounds()
     this.resolvePopoverLayout()
   }
-  measureFrameBounds() {
+  measureFrameBounds () {
     this.frameBounds = Layout.El.calcBounds(this.frameEl)
   }
-  getContainerNodeRef = containerEl => {
+  getContainerNodeRef = (containerEl) => {
     Object.assign(this, { containerEl })
   }
-  render() {
+  render () {
     const { className = "", style = {}, tipSize } = this.props
     const { standing } = this.state
 

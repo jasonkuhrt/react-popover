@@ -48,15 +48,17 @@ const place = (flow, axis, align, bounds, size) => {
 
   const axisProps = axes[flow][axis]
 
+  console.log(align, "size[axisProps.size]", size[axisProps.size], "axes[flow][axis]", axes[flow][axis])
+
   return align === "center"
     ? null //centerOfBounds(flow, axis, bounds) - centerOfSize(flow, axis, size)
     : align === "end"
-      ? bounds[axisProps.end]
+      ? bounds[axisProps.end] // - size[axisProps.size] / 2
       : align === "start"
         ? /* DOM rendering unfolds leftward. Therefore if the slave is positioned before
       the master then the slave`s position must in addition be pulled back
       by its [the slave`s] own length. */
-          bounds[axisProps.start] //- size[axisProps.size] / 2
+          bounds[axisProps.start] // + size[axisProps.size] / 2
         : null
 }
 
@@ -145,14 +147,14 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
       flow: "column",
       order: -1,
       w: f.x2, //- size.w / 2,
-      h: t.y
+      h: t.y // + size.h // / 2
     },
     {
       side: "end",
       standing: "right",
       flow: "row",
       order: 1,
-      w: f.x2 - t.x2, //- size.w / 2,
+      w: f.x2 - t.x2 + size.w / 2, // - size.w / 2,
       h: f.y2,
     },
     {
@@ -161,15 +163,15 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
       flow: "column",
       order: 1,
       w: f.x2,
-      h: f.y2 - t.y2, //- size.h / 2,
+      h: f.y2 - t.y2 + size.h / 2, //- size.h / 2,
     },
     {
       side: "start",
       standing: "left",
       flow: "row",
       order: -1,
-      w: t.x,
-      h: f.y2, // + size.h / 2,
+      w: t.x + size.w / 2,
+      h: f.y2 //- t.y2, // + size.h / 2,
     },
   ]
 
@@ -244,14 +246,22 @@ const calcRelPos = (zone, masterBounds, slaveSize) => {
   )
   const crossSize = slaveSize[cross.size]
 
-  return {
+  const ret = {
     [main.start]: (zone.standing === "left") ? mainStart - mainSize : mainStart,
     mainLength: mainSize,
-    [main.end]: (zone.standing === "left") ? mainStart - mainSize : mainStart,
+    [main.end]: (zone.standing === "left") ? mainStart + mainSize : mainStart,
     [cross.start]: (zone.side === "end") ? crossStart - crossSize : crossStart,
     crossLength: crossSize,
-    [cross.end]: (zone.side === "end") ? crossStart + crossSize : crossStart,
+    [cross.end]: (zone.side === "end") ? crossStart + crossSize : crossStart + crossSize,
   }
+
+  // if(ret[cross.start] < 0) {
+  //   ret[cross.start] = 0
+  // }
+
+  console.table("T", zone, "main", main, "cross", cross, mainStart, mainSize, crossStart, crossSize, ret)
+
+  return ret
 }
 
 export default {

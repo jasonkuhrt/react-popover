@@ -59,11 +59,14 @@ var place = function place(flow, axis, align, bounds, size) {
 
   var axisProps = axes[flow][axis];
 
+  console.log(align, "size[axisProps.size]", size[axisProps.size], "axes[flow][axis]", axes[flow][axis]);
+
   return align === "center" ? null //centerOfBounds(flow, axis, bounds) - centerOfSize(flow, axis, size)
-  : align === "end" ? bounds[axisProps.end] : align === "start" ? /* DOM rendering unfolds leftward. Therefore if the slave is positioned before
-                                                                  the master then the slave`s position must in addition be pulled back
-                                                                  by its [the slave`s] own length. */
-  bounds[axisProps.start] //- size[axisProps.size] / 2
+  : align === "end" ? bounds[axisProps.end] // - size[axisProps.size] / 2
+  : align === "start" ? /* DOM rendering unfolds leftward. Therefore if the slave is positioned before
+                        the master then the slave`s position must in addition be pulled back
+                        by its [the slave`s] own length. */
+  bounds[axisProps.start] // + size[axisProps.size] / 2
   : null;
 };
 
@@ -148,13 +151,13 @@ var pickZone = function pickZone(opts, frameBounds, targetBounds, size) {
     flow: "column",
     order: -1,
     w: f.x2, //- size.w / 2,
-    h: t.y
+    h: t.y // + size.h // / 2
   }, {
     side: "end",
     standing: "right",
     flow: "row",
     order: 1,
-    w: f.x2 - t.x2, //- size.w / 2,
+    w: f.x2 - t.x2 + size.w / 2, // - size.w / 2,
     h: f.y2
   }, {
     side: "end",
@@ -162,14 +165,14 @@ var pickZone = function pickZone(opts, frameBounds, targetBounds, size) {
     flow: "column",
     order: 1,
     w: f.x2,
-    h: f.y2 - t.y2 //- size.h / 2,
+    h: f.y2 - t.y2 + size.h / 2 //- size.h / 2,
   }, {
     side: "start",
     standing: "left",
     flow: "row",
     order: -1,
-    w: t.x,
-    h: f.y2 // + size.h / 2,
+    w: t.x + size.w / 2,
+    h: f.y2 //- t.y2, // + size.h / 2,
   }];
 
   /* Order the zones by the amount of popup that would be cut out if that zone is used.
@@ -232,7 +235,7 @@ var pickZone = function pickZone(opts, frameBounds, targetBounds, size) {
 /* TODO Document this. */
 
 var calcRelPos = function calcRelPos(zone, masterBounds, slaveSize) {
-  var _ref2;
+  var _ret;
 
   var _axes$zone$flow = axes[zone.flow],
       main = _axes$zone$flow.main,
@@ -246,7 +249,15 @@ var calcRelPos = function calcRelPos(zone, masterBounds, slaveSize) {
   var crossStart = place(zone.flow, "cross", zone.side, masterBounds, slaveSize);
   var crossSize = slaveSize[cross.size];
 
-  return _ref2 = {}, _defineProperty(_ref2, main.start, zone.standing === "left" ? mainStart - mainSize : mainStart), _defineProperty(_ref2, "mainLength", mainSize), _defineProperty(_ref2, main.end, zone.standing === "left" ? mainStart - mainSize : mainStart), _defineProperty(_ref2, cross.start, zone.side === "end" ? crossStart - crossSize : crossStart), _defineProperty(_ref2, "crossLength", crossSize), _defineProperty(_ref2, cross.end, zone.side === "end" ? crossStart + crossSize : crossStart), _ref2;
+  var ret = (_ret = {}, _defineProperty(_ret, main.start, zone.standing === "left" ? mainStart - mainSize : mainStart), _defineProperty(_ret, "mainLength", mainSize), _defineProperty(_ret, main.end, zone.standing === "left" ? mainStart + mainSize : mainStart), _defineProperty(_ret, cross.start, zone.side === "end" ? crossStart - crossSize : crossStart), _defineProperty(_ret, "crossLength", crossSize), _defineProperty(_ret, cross.end, zone.side === "end" ? crossStart + crossSize : crossStart + crossSize), _ret);
+
+  // if(ret[cross.start] < 0) {
+  //   ret[cross.start] = 0
+  // }
+
+  console.table("T", zone, "main", main, "cross", cross, mainStart, mainSize, crossStart, crossSize, ret);
+
+  return ret;
 };
 
 exports.default = {

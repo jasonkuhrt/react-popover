@@ -62,7 +62,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var log = (0, _debug2.default)("react-popover");
+var log = console.warn; //Debug("react-popover")
 
 var supportedCSSValue = _utils2.default.clientOnly(cssVendor.supportedValue);
 
@@ -223,9 +223,13 @@ var Popover = function (_React$Component) {
         way at any time for any arbitrary trigger. There may be value in investigating the
         http://overconstrained.io community for its general layout system via the
         constraint-solver Cassowary. */
-      };if (this.zone) this.size[this.zone.flow === "row" ? "h" : "w"] += this.props.tipSize;
+      };if (this.zone) {
+        this.size[this.zone.flow === "row" ? "h" : "w"] += this.props.tipSize;
+      }
       var zone = _layout2.default.pickZone(pickerSettings, this.frameBounds, this.targetBounds, this.size);
-      if (this.zone) this.size[this.zone.flow === "row" ? "h" : "w"] -= this.props.tipSize;
+      if (this.zone) {
+        this.size[this.zone.flow === "row" ? "h" : "w"] -= this.props.tipSize;
+      }
 
       var tb = this.targetBounds;
       this.zone = zone;
@@ -289,11 +293,11 @@ var Popover = function (_React$Component) {
         log("popoverCrossLength does not fit within buffered frame.");
         pos[axis.cross.start] = (frameCrossLength - pos.crossLength) / 2;
       } else if (popoverCrossStart < frameCrossInnerStart) {
-        log("popoverCrossStart cannot reverse without exceeding frame.");
-        pos[axis.cross.start] = frameCrossInnerStart;
+        log("popoverCrossStart cannot reverse without exceeding frame.", JSON.stringify(pos));
+        pos[axis.cross.start] = frameCrossInnerStart; //+ this.size[axis.cross.size]
       } else if (popoverCrossEnd > frameCrossInnerEnd) {
-        log("popoverCrossEnd cannot travel without exceeding frame.");
-        pos[axis.cross.start] = pos[axis.cross.start] - (pos[axis.cross.end] - frameCrossInnerEnd);
+        log("popoverCrossEnd cannot travel without exceeding frame.", this.size[axis.cross.size]);
+        pos[axis.cross.start] = pos[axis.cross.start] - (pos[axis.cross.end] - frameCrossInnerEnd); //- this.size[axis.cross.size] / 2
       }
 
       /* So far the link position has been calculated relative to the target. To calculate the absolute
@@ -316,6 +320,10 @@ var Popover = function (_React$Component) {
       /* Apply Absolute Positioning. */
 
       log("pos", pos);
+      if (pos.y < 0) {
+        pos.y = 0;
+      }
+
       if (this.containerEl) {
         this.containerEl.style.top = pos.y + "px";
         this.containerEl.style.left = pos.x + "px";
@@ -335,7 +343,9 @@ var Popover = function (_React$Component) {
       specifies the length from base to tip which is half of total length already. */
       this.props.tipSize;
 
-      if (tipCrossPos < dockingEdgeBufferLength) tipCrossPos = dockingEdgeBufferLength;else if (tipCrossPos > pos.crossLength - dockingEdgeBufferLength - this.props.tipSize * 2) {
+      if (tipCrossPos < dockingEdgeBufferLength) {
+        tipCrossPos = dockingEdgeBufferLength;
+      } else if (tipCrossPos > pos.crossLength - dockingEdgeBufferLength - this.props.tipSize * 2) {
         tipCrossPos = pos.crossLength - dockingEdgeBufferLength - this.props.tipSize * 2;
       }
 
