@@ -145,35 +145,41 @@ var pickZone = function pickZone(opts, frameBounds, targetBounds, size) {
   var t = targetBounds;
   var f = frameBounds;
 
-  var zones = [{
-    side: "start",
-    standing: "above",
-    flow: "column",
-    order: -1,
-    w: f.x2, //- size.w / 2,
-    h: t.y // + size.h // / 2
-  }, {
+  var zones = [
+  // {
+  //   side: "start",
+  //   standing: "above",
+  //   flow: "column",
+  //   order: -1,
+  //   w: f.x2,
+  //   h: t.y // + size.h // / 2
+  // },
+  {
     side: "end",
     standing: "right",
     flow: "row",
     order: 1,
-    w: f.x2 - t.x2 + size.w / 2, // - size.w / 2,
+    w: f.x2 - t.x,
     h: f.y2
-  }, {
-    side: "end",
-    standing: "below",
-    flow: "column",
-    order: 1,
-    w: f.x2,
-    h: f.y2 - t.y2 + size.h / 2 //- size.h / 2,
-  }, {
+  },
+  // {
+  //   side: "end",
+  //   standing: "below",
+  //   flow: "column",
+  //   order: 1,
+  //   w: f.x2,
+  //   h: f.y2, // + size.h / 2, //- size.h / 2,
+  // },
+  {
     side: "start",
     standing: "left",
     flow: "row",
     order: -1,
-    w: t.x + size.w / 2,
-    h: f.y2 //- t.y2, // + size.h / 2,
+    w: t.x,
+    h: f.y2
   }];
+
+  console.warn("ZONES", zones, t, f, size);
 
   /* Order the zones by the amount of popup that would be cut out if that zone is used.
      The first one in the array is the one that cuts the least amount.
@@ -193,7 +199,7 @@ var pickZone = function pickZone(opts, frameBounds, targetBounds, size) {
   var availZones = zones.filter(function (zone) {
     return doesFitWithin(zone, size);
   });
-  // console.log("availZones", availZones)
+  console.log("availZones", availZones);
 
   /* If a place is required pick it from the available zones if possible. */
 
@@ -249,7 +255,12 @@ var calcRelPos = function calcRelPos(zone, masterBounds, slaveSize) {
   var crossStart = place(zone.flow, "cross", zone.side, masterBounds, slaveSize);
   var crossSize = slaveSize[cross.size];
 
-  var ret = (_ret = {}, _defineProperty(_ret, main.start, zone.standing === "left" ? mainStart - mainSize : mainStart), _defineProperty(_ret, "mainLength", mainSize), _defineProperty(_ret, main.end, zone.standing === "left" ? mainStart + mainSize : mainStart), _defineProperty(_ret, cross.start, zone.side === "end" ? crossStart - crossSize : crossStart), _defineProperty(_ret, "crossLength", crossSize), _defineProperty(_ret, cross.end, zone.side === "end" ? crossStart + crossSize : crossStart + crossSize), _ret);
+  var ret = (_ret = {
+    mainLength: mainSize,
+    crossLength: crossSize
+  }, _defineProperty(_ret, main.start, zone.standing === "left" ? mainStart - mainSize : mainStart), _defineProperty(_ret, main.end, zone.standing === "left" ? mainStart + mainSize : mainStart + mainSize), _defineProperty(_ret, cross.start, zone.side === "end" ? crossStart - crossSize / 2 + mainStart / 2 : crossStart), _defineProperty(_ret, cross.end, zone.side === "end" ? crossStart + crossSize / 2 + mainStart / 2 : crossStart + crossSize), _ret);
+
+  console.log("CROSSSIZE", crossSize / 2, "crossStart", crossStart / 2, "mainSize", mainSize / 2, "mainStart", mainStart / 2);
 
   // if(ret[cross.start] < 0) {
   //   ret[cross.start] = 0
