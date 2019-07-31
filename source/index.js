@@ -1,3 +1,4 @@
+/* eslint-disable react/no-find-dom-node */
 import * as cssVendor from "css-vendor"
 import Debug from "debug"
 import throttle from "lodash.throttle"
@@ -10,7 +11,7 @@ import Platform from "./platform"
 import Tip from "./tip"
 import Utils from "./utils"
 
-const log = console.warn //Debug("react-popover")
+const log = Debug("react-popover")
 
 const supportedCSSValue = Utils.clientOnly(cssVendor.supportedValue)
 
@@ -60,6 +61,7 @@ class Popover extends React.Component {
     preferPlace: T.oneOf(Layout.validTypeValues),
     refreshIntervalMs: T.oneOfType([ T.number, T.bool ]),
     style: T.object,
+    targetAtom: T.object,
     tipSize: T.number,
     onOuterAction: T.func,
   }
@@ -69,6 +71,7 @@ class Popover extends React.Component {
     place: null,
     offset: 4,
     isOpen: false,
+    target: null,
     onOuterAction: Utils.noop,
     enterExitTransitionDurationMs: 500,
     children: null,
@@ -101,11 +104,15 @@ class Popover extends React.Component {
     const willOpen = !this.props.isOpen && propsNext.isOpen
     const willClose = this.props.isOpen && !propsNext.isOpen
 
+    // log("TARGET in react-popover", propsNext.targetAtom)
+    this.targetEl = ReactDOM.findDOMNode(propsNext.targetAtom? propsNext.targetAtom : this)
+
     if (willOpen) this.open()
     else if (willClose) this.close()
   }
   componentDidUpdate (propsPrev, statePrev) {
-    //log(`Component did update!`)
+    log("Component did update!")
+
     const didOpen = !statePrev.toggle && this.state.toggle
     const didClose = statePrev.toggle && !this.state.toggle
 

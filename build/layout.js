@@ -55,11 +55,11 @@ var centerOfBoundsFromBounds = function centerOfBoundsFromBounds(flow, axis, bou
   return centerOfBounds(flow, axis, boundsTo) - boundsFrom[axes[flow][axis].start];
 };
 
+// eslint-disable-next-line no-unused-vars
 var place = function place(flow, axis, align, bounds, size) {
 
   var axisProps = axes[flow][axis];
-
-  console.log(align, "size[axisProps.size]", size[axisProps.size], "axes[flow][axis]", axes[flow][axis]);
+  // console.log(align, "size[axisProps.size]", size[axisProps.size], "axes[flow][axis]", axes[flow][axis])
 
   return align === "center" ? null //centerOfBounds(flow, axis, bounds) - centerOfSize(flow, axis, size)
   : align === "end" ? bounds[axisProps.end] // - size[axisProps.size] / 2
@@ -179,7 +179,7 @@ var pickZone = function pickZone(opts, frameBounds, targetBounds, size) {
     h: f.y2
   }];
 
-  console.warn("ZONES", zones, t, f, size);
+  // console.warn("ZONES", zones, t, f, size)
 
   /* Order the zones by the amount of popup that would be cut out if that zone is used.
      The first one in the array is the one that cuts the least amount.
@@ -199,7 +199,7 @@ var pickZone = function pickZone(opts, frameBounds, targetBounds, size) {
   var availZones = zones.filter(function (zone) {
     return doesFitWithin(zone, size);
   });
-  console.log("availZones", availZones);
+  // console.log("availZones", availZones)
 
   /* If a place is required pick it from the available zones if possible. */
 
@@ -260,13 +260,8 @@ var calcRelPos = function calcRelPos(zone, masterBounds, slaveSize) {
     crossLength: crossSize
   }, _defineProperty(_ret, main.start, zone.standing === "left" ? mainStart - mainSize : mainStart), _defineProperty(_ret, main.end, zone.standing === "left" ? mainStart + mainSize : mainStart + mainSize), _defineProperty(_ret, cross.start, zone.side === "end" ? crossStart - crossSize / 2 + mainStart / 2 : crossStart), _defineProperty(_ret, cross.end, zone.side === "end" ? crossStart + crossSize / 2 + mainStart / 2 : crossStart + crossSize), _ret);
 
-  console.log("CROSSSIZE", crossSize / 2, "crossStart", crossStart / 2, "mainSize", mainSize / 2, "mainStart", mainStart / 2);
-
-  // if(ret[cross.start] < 0) {
-  //   ret[cross.start] = 0
-  // }
-
-  console.table("T", zone, "main", main, "cross", cross, mainStart, mainSize, crossStart, crossSize, ret);
+  // console.log("CROSSSIZE", crossSize / 2 , "crossStart", crossStart / 2, "mainSize", mainSize / 2, "mainStart", mainStart / 2);
+  // console.log("All info", zone, "main", main, "cross", cross, mainStart, mainSize, crossStart, crossSize, ret);
 
   return ret;
 };

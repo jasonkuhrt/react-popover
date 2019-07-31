@@ -44,11 +44,11 @@ const centerOfBounds = (flow, axis, bounds) =>
 const centerOfBoundsFromBounds = (flow, axis, boundsTo, boundsFrom) =>
   centerOfBounds(flow, axis, boundsTo) - boundsFrom[axes[flow][axis].start]
 
+// eslint-disable-next-line no-unused-vars
 const place = (flow, axis, align, bounds, size) => {
 
   const axisProps = axes[flow][axis]
-
-  console.log(align, "size[axisProps.size]", size[axisProps.size], "axes[flow][axis]", axes[flow][axis])
+  // console.log(align, "size[axisProps.size]", size[axisProps.size], "axes[flow][axis]", axes[flow][axis])
 
   return align === "center"
     ? null //centerOfBounds(flow, axis, bounds) - centerOfSize(flow, axis, size)
@@ -175,7 +175,7 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
     },
   ]
 
-  console.warn("ZONES", zones, t, f, size)
+  // console.warn("ZONES", zones, t, f, size)
 
   /* Order the zones by the amount of popup that would be cut out if that zone is used.
      The first one in the array is the one that cuts the least amount.
@@ -193,7 +193,7 @@ const pickZone = (opts, frameBounds, targetBounds, size) => {
   // const availZones = zones.filter((zone) => zone.standing !== "above").filter((zone) => doesFitWithin(zone, size))
 
   const availZones = zones.filter((zone) => doesFitWithin(zone, size))
-  console.log("availZones", availZones)
+  // console.log("availZones", availZones)
 
   /* If a place is required pick it from the available zones if possible. */
 
@@ -257,13 +257,8 @@ const calcRelPos = (zone, masterBounds, slaveSize) => {
     [cross.end]: (zone.side === "end") ? crossStart + crossSize / 2 + mainStart / 2: crossStart + crossSize,
   }
 
-  console.log("CROSSSIZE", crossSize / 2 , "crossStart", crossStart / 2, "mainSize", mainSize / 2, "mainStart", mainStart / 2)
-
-  // if(ret[cross.start] < 0) {
-  //   ret[cross.start] = 0
-  // }
-
-  console.table("T", zone, "main", main, "cross", cross, mainStart, mainSize, crossStart, crossSize, ret)
+  // console.log("CROSSSIZE", crossSize / 2 , "crossStart", crossStart / 2, "mainSize", mainSize / 2, "mainStart", mainStart / 2);
+  // console.log("All info", zone, "main", main, "cross", cross, mainStart, mainSize, crossStart, crossSize, ret);
 
   return ret
 }
