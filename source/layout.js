@@ -66,7 +66,7 @@ const place = (flow, axis, align, bounds, size) => {
 
 const El = {}
 
-El.calcBounds = (el) => {
+El.calcBounds = (el, atom) => {
   if (el === window) {
     return {
       x: 0,
@@ -81,9 +81,9 @@ El.calcBounds = (el) => {
   const b = el.getBoundingClientRect()
 
   return {
-    x: b.left,
+    x: b.left - (atom ? 16 : 0),
     y: b.top,
-    x2: b.right,
+    x2: b.right + (atom ? 16 : 0),
     y2: b.bottom,
     w: b.right - b.left,
     h: b.bottom - b.top,

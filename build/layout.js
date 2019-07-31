@@ -74,7 +74,7 @@ var place = function place(flow, axis, align, bounds, size) {
 
 var El = {};
 
-El.calcBounds = function (el) {
+El.calcBounds = function (el, atom) {
   if (el === _platform.window) {
     return {
       x: 0,
@@ -89,9 +89,9 @@ El.calcBounds = function (el) {
   var b = el.getBoundingClientRect();
 
   return {
-    x: b.left,
+    x: b.left - (atom ? 16 : 0),
     y: b.top,
-    x2: b.right,
+    x2: b.right + (atom ? 16 : 0),
     y2: b.bottom,
     w: b.right - b.left,
     h: b.bottom - b.top

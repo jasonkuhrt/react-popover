@@ -300,7 +300,7 @@ class Popover extends React.Component {
     this.size = Layout.El.calcSize(this.containerEl)
   }
   measureTargetBounds () {
-    const newTargetBounds = Layout.El.calcBounds(this.targetEl)
+    const newTargetBounds = Layout.El.calcBounds(this.targetEl, this.props.targetAtom)
 
     if (
       this.targetBounds &&
