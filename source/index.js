@@ -96,21 +96,19 @@ class Popover extends React.Component {
     this.targetEl = ReactDOM.findDOMNode(this)
     if (this.props.isOpen) this.enter()
   }
-  componentWillReceiveProps(propsNext) {
-    //log(`Component received props!`, propsNext)
-    const willOpen = !this.props.isOpen && propsNext.isOpen
-    const willClose = this.props.isOpen && !propsNext.isOpen
-
-    if (willOpen) this.open()
-    else if (willClose) this.close()
-  }
   componentDidUpdate(propsPrev, statePrev) {
     //log(`Component did update!`)
     const didOpen = !statePrev.toggle && this.state.toggle
     const didClose = statePrev.toggle && !this.state.toggle
 
-    if (didOpen) this.enter()
-    else if (didClose) this.exit()
+    if (didOpen) {
+      this.open() // todo: remove
+      this.enter()
+    }
+    else if (didClose) {
+      this.close() // todo: remove
+      this.exit()
+    }
   }
   componentWillUnmount() {
     /* If the Popover is unmounted while animating,
