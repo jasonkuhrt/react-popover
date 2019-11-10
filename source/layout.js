@@ -84,9 +84,11 @@ El.calcBounds = el => {
 }
 
 El.calcSize = el =>
-  el === window
-    ? { w: el.innerWidth, h: el.innerHeight }
-    : { w: el.offsetWidth, h: el.offsetHeight }
+  el != null ? 
+    el === window
+      ? { w: el.innerWidth, h: el.innerHeight }
+      : { w: el.offsetWidth, h: el.offsetHeight }
+    : {w: 0, h: 0}
 
 El.calcScrollSize = el =>
   el === window
