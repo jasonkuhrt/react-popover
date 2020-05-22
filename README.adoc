@@ -51,6 +51,8 @@ Sets a ***preference*** of where to position the Popover. Only useful to specify
 `start | end` :: Prefer an order.
 `null` :: No preference, automatic resolution. This is the default.
 
+Can use the `static` `POSITIONS` property on the `Popover` component to help reference these values (e.g. `Popover.POSITIONS.START` or `Popover.POSITIONS.ABOVE`)
+
 ---
 
 ##### `place :: String | Null`

@@ -32,6 +32,14 @@ const types = [
 ]
 
 const validTypeValues = types.reduce((xs, { values }) => xs.concat(values), [])
+const POSITIONS = Object.freeze(
+  Object.assign(
+    {},
+    ...validTypeValues.map(
+      value => ({[value.toUpperCase()]: value})
+    )
+  )
+);
 
 const centerOfSize = (flow, axis, size) => size[axes[flow][axis].size] / 2
 
@@ -252,6 +260,7 @@ export default {
   calcRelPos,
   place,
   pickZone,
+  POSITIONS,
   axes,
   centerOfSize,
   centerOfBounds,
@@ -266,6 +275,7 @@ export {
   calcRelPos,
   place,
   pickZone,
+  POSITIONS,
   axes,
   centerOfSize,
   centerOfBounds,
