@@ -4,7 +4,7 @@ import throttle from "lodash.throttle"
 import T from "prop-types"
 import React from "react"
 import ReactDOM from "react-dom"
-import Layout from "./layout"
+import Layout, {POSITIONS} from "./layout"
 import resizeEvent from "./on-resize"
 import Platform from "./platform"
 import Tip from "./tip"
@@ -48,6 +48,7 @@ const flowToPopoverTranslations = {
 }
 
 class Popover extends React.Component {
+  static POSITIONS = POSITIONS
   static propTypes = {
     body: T.node.isRequired,
     children: T.element.isRequired,

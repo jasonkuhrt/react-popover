@@ -16,9 +16,8 @@ const Option = type => <option key={type} value={type} children={type} />
 const createPreferPlaceOptions = R.compose(
   R.prepend([<option key="null" value={null} children="null" />]),
   R.map(Option),
-  R.flatten,
-  R.map(R.path(["values"])),
-  R.path(["types"]),
+  R.values,
+  R.path(["POSITIONS"]),
 )
 
 class Main extends React.Component {
