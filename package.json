@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "css-vendor": "^0.3.1",
-    "debug": "^2.6.8",
+    "debug": "^3.1.0",
     "lodash.throttle": "^3.0.3",
     "prop-types": "^15.5.10"
   },
